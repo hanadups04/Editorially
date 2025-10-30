@@ -6,51 +6,62 @@ import {
   Link,
   Outlet,
   useNavigate,
+  Await,
 } from "react-router-dom";
 import "./App.css";
+import { supabase } from "./supabaseClient.js";
 
 const ProtectedRoute = ({ requiredAccessLvl, children }) => {
-  const [user, loading] = useAuthState(auth);
   const [userAccessLvl, setUserAccessLvl] = useState(null);
   const navigate = useNavigate();
   const [isAccessLvlFetched, setIsAccessLvlFetched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { branchId, currentSlug } = useBranch();
+  // const { branchId, currentSlug } = useBranch();
 
   useEffect(() => {
-    if (loading) {
+    const getUserAndAccess = async () => {
       setIsLoading(true);
-      return;
-    }
 
-    if (!user) {
-      navigate(`/${currentSlug}`);
-      console.log(currentSlug, "currnetSlug");
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
 
-      return;
-    }
+      if (userError || !user) {
+        navigate(`/${currentSlug}`);
+        return;
+      }
 
-    const fetchUserAccessLvl = async () => {
-      setIsLoading(true);
+      setUser(user);
+
       try {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists()) {
-          setUserAccessLvl(userDoc.data().permissions.accessLevel);
-        } else {
-          console.log("User not found in database");
-          console.log(currentSlug, "currnetSlug");
+        // Fetch access level from your users table
+        const { data, error } = await supabase
+          .from("users_tbl")
+          .select("uid, role_id, roles_tbl ( access_level )") // if stored as JSON
+          .eq("uid", user.id)
+          .single();
 
+        if (error || !data) {
+          console.error("User not found or error fetching:", error);
           navigate(`/${currentSlug}`);
+          return;
         }
-      } catch (error) {
-        console.error("Error during sign-in:", error.message);
+
+        // If permissions is stored as plain column, use: select("access_level")
+        const accessLevel = data?.accessLevel;
+
+        setUserAccessLvl(accessLevel);
+      } catch (err) {
+        console.error("Error during fetch:", err.message);
       } finally {
         setIsAccessLvlFetched(true);
         setIsLoading(false);
       }
     };
-    fetchUserAccessLvl();
-  }, [user, loading, navigate]);
+
+    getUserAndAccess();
+  }, [navigate, currentSlug]);
 
   useEffect(() => {
     if (isAccessLvlFetched && !requiredAccessLvl.includes(userAccessLvl)) {
@@ -82,17 +93,17 @@ const ProtectedRoute = ({ requiredAccessLvl, children }) => {
     );
   }
 
-  if (!requiredAccessLvl.includes(userAccessLvl)) {
-    // useEffect(() => {
-    //   navigate("/"); // Redirect to "/"
-    // }, [navigate]);
+  // if (!requiredAccessLvl.includes(userAccessLvl)) {
+  //   // useEffect(() => {
+  //   //   navigate("/"); // Redirect to "/"
+  //   // }, [navigate]);
 
-    return (
-      <div>
-        Unauthorized access. You do not have permission to view this page.
-      </div>
-    );
-  }
+  //   return (
+  //     <div>
+  //       Unauthorized access. You do not have permission to view this page.
+  //     </div>
+  //   );
+  // }
 
   return children ? children : <Outlet />;
 };
