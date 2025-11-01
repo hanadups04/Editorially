@@ -10,6 +10,8 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import { supabase } from "./supabaseClient.js";
+import ProjectPage from "./pages/admin/ProjectPage.jsx";
+import Dashboard from "./pages/admin/Dashboard.jsx";
 
 const ProtectedRoute = ({ requiredAccessLvl, children }) => {
   const [userAccessLvl, setUserAccessLvl] = useState(null);
@@ -93,18 +95,6 @@ const ProtectedRoute = ({ requiredAccessLvl, children }) => {
     );
   }
 
-  // if (!requiredAccessLvl.includes(userAccessLvl)) {
-  //   // useEffect(() => {
-  //   //   navigate("/"); // Redirect to "/"
-  //   // }, [navigate]);
-
-  //   return (
-  //     <div>
-  //       Unauthorized access. You do not have permission to view this page.
-  //     </div>
-  //   );
-  // }
-
   return children ? children : <Outlet />;
 };
 
@@ -119,14 +109,16 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/Login" element={<LoginPage />} />
-          <Route path="/Register" element={<RegisterPage />} />
-          <Route
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/project" element={<ProjectPage />} />
+          <Route path="*" element={<Dashboard />} />
+          {/* <Route path="/Login" element={<LoginPage />} /> */}
+          {/* <Route path="/Register" element={<RegisterPage />} /> */}
+          {/* <Route
             path="/RegisterBranch"
             element={withAccess(RegisterBranch, [1, 2, 3, 4, 5, 6])}
-          />
-          <Route path="/:branchSlug" element={<ThemeLayoutRouter />}>
+          /> */}
+          {/* <Route path="/:branchSlug" element={<ThemeLayoutRouter />}>
             <Route index element={<ThemeViewRouter view="home" />} />
             <Route
               path=":sectionName"
@@ -161,9 +153,9 @@ function App() {
               path="/:branchSlug/Search"
               element={withReaderAccess(SearchPage)}
             />
-          </Route>
+          </Route> */}
 
-          <Route
+          {/* <Route
             path="/Admin"
             element={withAccess(AdminPageTemplate, [6, 5, 4, 3, 2])}
           >
@@ -233,9 +225,9 @@ function App() {
               path="HistoryPage"
               element={withAccess(HistoryPage, [5, 6, 4, 3, 2])}
             />
-          </Route>
+          </Route> */}
 
-          <Route
+          {/* <Route
             path="/TextEditor"
             element={
               <ProtectedRoute requiredAccessLvl={[6, 5, 4, 3, 2]}>
@@ -251,9 +243,9 @@ function App() {
                 <PubEditor />
               </ProtectedRoute>
             }
-          />
+          /> */}
 
-          <Route
+          {/* <Route
             path="/SAdmin" // everything accesslevel inside to be set to 5
             element={withAccess(SuperAdminTemplate, [4, 5])}
           >
@@ -284,7 +276,7 @@ function App() {
               path="branch/:branchId"
               element={withAccess(SingleBranchView, [4, 5])}
             />
-          </Route>
+          </Route> */}
         </Routes>
       </Router>
     </>

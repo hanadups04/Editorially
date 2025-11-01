@@ -1,0 +1,57 @@
+.SidebarAccordion-Parent .accordion-item .accordion-button {
+  background-color: var(--text-color);
+  color: white !important;
+  font-weight: 400 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  border: solid 1px #020b40 !important;
+}
+
+.SidebarAccordion-Parent .accordion-item {
+  border: 1px solid #020b40;
+  border-radius: 0;
+  background-color: #00104e;
+}
+
+.SidebarAccordion-Parent .accordion-item .accordion-button::after {
+  color: white !important;
+  width: 0.8rem;
+  height: 0.8rem;
+  background-size: 0.8rem;
+  filter: brightness(0) invert(1);
+}
+
+.SidebarAccordion-Parent .accordion-button:not(.collapsed) {
+  background-color: var(--text-color);
+  color: white !important;
+  box-shadow: none !important;
+  outline: none !important;
+  border: solid 1px #020b40 !important;
+}
+
+.SidebarAccordion-Parent .accordion-item .accordion-button:focus {
+  color: white !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.SidebarAccordion-Parent .accordion-body {
+  background-color: var(--text-color);
+  color: var(--text-color1);
+  box-shadow: none;
+}
+
+.SidebarAccordion-Parent .accordion-body:hover {
+  background-color: var(--text-color);
+  color: var(--text-color1);
+}
+
+.SidebarAccordion-Parent .accordion-item .accordion-header {
+  background-color: #020b40;
+  color: white !important;
+  padding-left: 20px !important;
+}
+
+.SidebarAccordion-Parent .accordion-item .accordion-header:not(.collapsed) {
+  padding-left: 8px !important;
+}
