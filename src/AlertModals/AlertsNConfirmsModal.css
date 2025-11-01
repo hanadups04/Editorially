@@ -1,0 +1,34 @@
+.AlertsNConfirmsModal-Parent .ConfirmButton {
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  color: var(--text-color1);
+  background: var(--text-color) !important;
+  z-index: 200;
+}
+
+.AlertsNConfirmsModal-Parent .ConfirmButton:hover {
+  background: #242f70 !important;
+}
+
+.AlertsNConfirmsModal-Parent .ConfirmButton:active {
+  background: #0c1963 !important;
+}
+
+.AlertsNConfirmsModal-Parent .CancelButton {
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: solid 1px #cccccc;
+  color: var(--text-color);
+  background-color: var(--text-color1);
+}
+
+.AlertsNConfirmsModal-Parent .CancelButton:hover {
+  background: #f1f1f1 !important;
+}
+
+.AlertsNConfirmsModal-Parent .CancelButton:active {
+  background: #e1e1e1 !important;
+}
