@@ -1,0 +1,92 @@
+.task-card {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.task-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.task-assignee {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.assignee-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-light)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-light);
+  font-weight: var(--font-semibold);
+  font-size: var(--text-base);
+}
+
+.assignee-info {
+  flex: 1;
+}
+
+.assignee-name {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}
+
+.assignee-email {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.task-description {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.task-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border-color);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.task-deadline {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.task-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.task-actions .btn {
+  flex: 1;
+}
