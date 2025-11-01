@@ -1,0 +1,106 @@
+.install-prompt {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  background: hsl(0, 0%, 100%);
+  border: 1px solid hsl(214, 32%, 91%);
+  border-radius: 0.75rem;
+  box-shadow: 0 12px 32px hsla(210, 85%, 42%, 0.16);
+  padding: 1.5rem;
+  z-index: 50;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.dark .install-prompt {
+  background: hsl(215, 25%, 16%);
+  border-color: hsl(217, 33%, 17%);
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: hsl(215, 16%, 47%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.dark .close-button {
+  color: hsl(215, 20%, 65%);
+}
+
+.close-button:hover {
+  color: hsl(215, 25%, 27%);
+}
+
+.dark .close-button:hover {
+  color: hsl(210, 40%, 98%);
+}
+
+.close-button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.prompt-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.icon-wrapper {
+  padding: 0.75rem;
+  background: hsla(210, 85%, 42%, 0.1);
+  border-radius: 0.5rem;
+}
+
+.icon-wrapper svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: hsl(210, 85%, 42%);
+}
+
+.dark .icon-wrapper svg {
+  color: hsl(210, 85%, 48%);
+}
+
+.prompt-text {
+  flex: 1;
+}
+
+.prompt-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.prompt-description {
+  font-size: 0.875rem;
+  color: hsl(215, 16%, 47%);
+  margin-bottom: 1rem;
+}
+
+.dark .prompt-description {
+  color: hsl(215, 20%, 65%);
+}
+
+@media (min-width: 768px) {
+  .install-prompt {
+    left: auto;
+    right: 1.5rem;
+    width: 24rem;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

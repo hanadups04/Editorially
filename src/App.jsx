@@ -12,6 +12,7 @@ import "./App.css";
 import { supabase } from "./supabaseClient.js";
 import ProjectPage from "./pages/admin/ProjectPage.jsx";
 import Dashboard from "./pages/admin/Dashboard.jsx";
+import LandingPage from "./pages/landingPage/LandingPage.jsx";
 
 const ProtectedRoute = ({ requiredAccessLvl, children }) => {
   const [userAccessLvl, setUserAccessLvl] = useState(null);
@@ -109,7 +110,7 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/project" element={<ProjectPage />} />
           <Route path="*" element={<Dashboard />} />
           {/* <Route path="/Login" element={<LoginPage />} /> */}

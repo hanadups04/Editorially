@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Layers, FileEdit, Globe } from "lucide-react";
-import projectManagementImage from "../assets/images/module-project-management.jpg";
-import contentManagementImage from "../assets/images/module-content-management.jpg";
-import publicationSiteImage from "../assets/images/module-content-management.jpg";
+import projectManagementImage from "../../assets/images/module-project-management.jpg";
+import contentManagementImage from "../../assets/images/module-content-management.jpg";
+import publicationSiteImage from "../../assets/images/module-content-management.jpg";
 import "./ModulesPreview.css";
 
 const modules = [
