@@ -1,4 +1,4 @@
-import { Button } from "../../propComponents/Button";
+import { Button } from "../../components/landing/Button";
 import { ArrowRight } from "lucide-react";
 import heroImage from "../../assets/images/hero-image.jpg";
 import "./Hero.css";
