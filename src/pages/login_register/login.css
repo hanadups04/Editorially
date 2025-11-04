@@ -1,0 +1,348 @@
+.Login-Parent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url("../../assets/images/EditoriallyBgNew.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* margin: 15px; */
+}
+
+.Login-Parent .Login-Form {
+  width: 430px;
+  height: 580px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 30px;
+  padding: 30px;
+  position: relative;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border: solid 2px #020b40;
+  /* backdrop-filter: blur(3px); */
+}
+
+.Login-Form .Login-LogoCont {
+  position: absolute;
+  top: -70px; /* Adjust as needed */
+  left: 50%;
+  transform: translateX(-50%);
+  /* background-color: white; */
+  border-radius: 50%;
+  padding: 10px;
+  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+}
+
+.Login-LogoCont .logoLogin {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  /* border: solid 3px #020b40; */
+}
+
+.Login-Form .Login-FormHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+  margin-bottom: 30px;
+  /* background-color: #ccc; */
+}
+
+.Login-FormHeader .BrandName {
+  color: #020b40;
+  font-size: 30px;
+  font-weight: 650;
+  text-align: center;
+}
+
+.Login-FormHeader .Signin {
+  color: #020b40;
+  font-size: 18px;
+  text-align: center;
+}
+
+.Login-Form .Login-FormContent {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  height: fit-content;
+}
+
+.Login-FormContent .FormLabel {
+  color: #020b40;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 5px !important;
+}
+
+.Login-FormContent .Login-Input {
+  border-radius: 10px;
+  border: solid 1px #cccccc9a;
+  /* border: none; */
+  width: 100%;
+  height: 45px;
+  padding-left: 20px;
+  margin-bottom: 10px;
+  color: #020b40;
+  background-color: #f5f5f5;
+  /* box-shadow: 0px 2px rgba(0, 0, 0, 0.1); */
+}
+
+.Login-FormContent .Login-Input:focus {
+  border: solid 2px #242f70;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(36, 47, 112, 0.15);
+}
+
+.Login-FormContent .PasswordCont {
+  border-radius: 10px;
+  border: solid 1px #cccccc9a;
+  background-color: #f5f5f5;
+  display: flex;
+  width: 100%;
+  height: 45px;
+  justify-content: center;
+  align-items: center;
+  padding-right: 10px;
+  margin-bottom: 10px;
+}
+
+.PasswordCont .Password-Input {
+  border-radius: 10px;
+  border: none;
+  width: 100%;
+  height: 45px;
+  padding-left: 20px;
+  color: #020b40;
+  font-size: 16px;
+  background-color: transparent;
+  /* box-shadow: 0px 2px rgba(0, 0, 0, 0.1); */
+}
+
+.PasswordCont .Password-Input:focus {
+  border: none;
+  outline: none !important;
+  /* box-shadow: 0 0 0 2px rgba(36, 47, 112, 0.15); */
+}
+
+.PasswordCont .ShowPass {
+  width: 24px;
+  height: 24px;
+}
+
+.PasswordCont:focus-within {
+  border: solid 2px #020b40;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(36, 47, 112, 0.15);
+}
+
+.Login-FormContent .Login-ForgotPass {
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  width: 100%;
+}
+
+.Login-ForgotPass .Forgot-Password {
+  color: #020b40;
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 10px !important;
+  cursor: pointer;
+}
+
+.Login-ForgotPass .Forgot-Password:hover {
+  color: #0c1963;
+}
+
+.Login-FormContent .btnLogin {
+  width: 100%;
+  padding: 8px 20px;
+  color: var(--text-color1);
+  background-color: var(--text-color);
+  /* background: linear-gradient(to right, #020b40, #242f70); */
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+}
+
+.Login-FormContent .btnLogin:hover {
+  background-color: #242f70;
+  /* background: linear-gradient(to right, #19214d, #404b8a); */
+}
+
+.Login-FormContent .btnLogin:active {
+  background-color: #0c1963;
+  /* background: linear-gradient(to right, #19214d, #404b8a); */
+}
+
+.Login-FormContent hr {
+  width: 90%;
+}
+
+.Login-Form .Login-GoogleCont {
+  display: flex;
+  flex-direction: row;
+  margin-top: 0px !important;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.Login-GoogleCont p {
+  color: #020b40;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.2rem;
+}
+
+.Login-Form .Google-Logo {
+  width: 35px;
+  height: 35px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.Login-Form .Google-Logo:active {
+  transform: scale(1.1);
+}
+
+/* .Login-GoogleCont .inputbtnlogin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  width: 70px;
+  height: 30px;
+  border: none;
+} */
+
+.Login-Form .CreateAccount {
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  /* background-color: #ccc; */
+  /* gap: 50px; */
+  font-size: 13px;
+  margin-top: auto;
+}
+
+.CreateAccount .CreateAccountBtn {
+  display: flex;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  gap: 5px;
+}
+
+.CreateAccountBtn .Sign-In {
+  color: #020b40;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+@media (max-width: 425px) {
+  .Login-Parent .Login-Form {
+    width: 430px;
+    height: 500px;
+    padding: 20px;
+  }
+
+  .Login-Form .Login-FormHeader {
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+
+  .Login-FormHeader .BrandName {
+    font-size: 24px;
+  }
+
+  .Login-FormHeader .Signin {
+    font-size: 16px;
+  }
+
+  .Login-Form .CreateAccount {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    line-height: 0.8 !important;
+    margin-top: 15px;
+    margin-bottom: 10px;
+  }
+
+  .CreateAccount .CreateAccountBtn {
+    margin-top: 10px;
+    margin-bottom: 2px;
+  }
+
+  .Login-GoogleCont p {
+    font-size: 1rem;
+  }
+
+  .Login-Form .Google-Logo {
+    width: 30px;
+    height: 30px;
+  }
+
+  .Login-FormContent .Login-Input {
+    height: 40px;
+  }
+
+  .Login-FormContent .PasswordCont {
+    height: 40px;
+  }
+
+  .PasswordCont .Password-Input {
+    height: 40px;
+  }
+
+  .Login-FormContent .btnLogin {
+    padding: 5px 15px;
+  }
+}
+
+@media (min-width: 426px) and (max-width: 500px) {
+  .Login-Parent .Login-Form {
+    width: 380px;
+  }
+}
+
+@media (min-width: 376px) and (max-width: 425px) {
+  .Login-Parent .Login-Form {
+    width: 360px;
+  }
+}
+
+@media (min-width: 321px) and (max-width: 375px) {
+  .Login-Parent .Login-Form {
+    width: 320px;
+  }
+}
+
+@media (min-width: 1px) and (max-width: 320px) {
+  .Login-Parent .Login-Form {
+    width: 280px;
+  }
+}
+
+@media (min-height: 1px) and (max-height: 660px) {
+  .Login-Parent .Login-Form {
+    justify-content: start;
+    width: 430px;
+    height: 75vh;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .Login-Form .Login-FormHeader {
+    margin-top: 10px !important;
+  }
+}

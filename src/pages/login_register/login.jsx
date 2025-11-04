@@ -60,27 +60,27 @@ export default function Login() {
     // const userDoc = await getDoc(doc(db, "users", userId));
     const { data, error } = await supabase
       .from("users_tbl")
-      .select("uid, role_id, tenant_id, roles_tbl ( access_level )") // if stored as JSON
+      .select("uid, role_id, tenant_id, status, roles_tbl ( access_level )") // if stored as JSON
       .eq("uid", userId)
       .single();
 
     if (data) {
-      setBranchId(data.branchId);
+      setBranchId(data.tenant_id);
 
-      if (userDoc.data().status === "deleted") {
+      if (data.status === "deleted") {
         // ask user if they want to recover their account
         setRecoverAccount(true);
         return;
       }
 
-      if (userDoc.data().status === "disabled") {
+      if (data.status === "disabled") {
         // ask user if they want to recover their account
         alert("your account has been disabled. ask your admin for assistance");
         return;
       }
 
-      const slug = await getSlugByBranchId(userDoc.data().branchId);
-      switch (userDoc.data().permissions.accessLevel) {
+      const slug = await getSlugByBranchId(data.tenant_id);
+      switch (data.roles_tbl.access_level) {
         case 6:
           navigate("/Adviser/AdminDashboard");
           console.log("navigating to adviser");
