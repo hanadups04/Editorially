@@ -66,8 +66,8 @@ export default function MenuList({
       pathname.includes("/Admin/SwHomepage")
     )
       return "eichomepage";
-    if (pathname.includes("/Admin/CmsPage")) return "cms";
-    if (pathname.includes("/Admin/UserManagement")) return "members";
+    if (pathname.includes("/ContentManagement")) return "cms";
+    if (pathname.includes("/Members")) return "members";
     if (pathname.includes("/Admin/ContribHuntParent")) return "applicants";
     if (pathname.startsWith("/Admin/Profile")) return "profile";
     // if (pathname === `/${branchSections.name}` || pathname === "/home")
@@ -120,10 +120,10 @@ export default function MenuList({
       // }
       // break;
       case "cms":
-        navigate("/Admin/CmsPage");
+        navigate("/ContentManagement");
         break;
       case "members":
-        navigate("/Admin/UserManagement");
+        navigate("/Members");
         break;
       case "applicants":
         navigate("/Admin/ContribHuntParent");

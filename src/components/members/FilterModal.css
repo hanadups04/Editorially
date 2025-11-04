@@ -1,0 +1,147 @@
+/* Filter Modal Styles - 60-30-10 Rule */
+/* 60% White (#FFFFFF), 30% Near-Black (#171717), 10% Sky Blue (#0EA5E9) */
+
+.filter-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(23, 23, 23, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.filter-modal-content {
+  background-color: #FFFFFF; /* 60% */
+  padding: 0;
+  border-radius: 0.75rem;
+  max-width: 425px;
+  width: 90%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.filter-modal-header {
+  padding: 1.5rem 1.5rem 1rem;
+}
+
+.filter-modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #171717; /* 30% */
+  margin: 0 0 0.5rem 0;
+}
+
+.filter-modal-description {
+  color: #737373;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.filter-modal-body {
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.filter-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #171717; /* 30% */
+}
+
+.filter-select {
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #E5E5E5;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  background-color: #FFFFFF; /* 60% */
+  color: #171717; /* 30% */
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #0EA5E9; /* 10% - Accent */
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.filter-modal-footer {
+  padding: 1rem 1.5rem 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  border-top: 1px solid #E5E5E5;
+}
+
+.filter-reset-button,
+.filter-apply-button {
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-reset-button {
+  background-color: #F5F5F5;
+  color: #171717; /* 30% */
+}
+
+.filter-reset-button:hover {
+  background-color: #E5E5E5;
+}
+
+.filter-apply-button {
+  background-color: #0EA5E9; /* 10% - Accent */
+  color: #FFFFFF;
+}
+
+.filter-apply-button:hover {
+  background-color: #0284C7;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .filter-modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .filter-reset-button,
+  .filter-apply-button {
+    width: 100%;
+  }
+}

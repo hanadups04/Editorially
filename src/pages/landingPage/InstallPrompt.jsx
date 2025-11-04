@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button } from "../../propComponents/Button";
+import { Button } from "../../components/landing/Button";
 import { Smartphone, X } from "lucide-react";
 import "./InstallPrompt.css";
 
