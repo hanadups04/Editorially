@@ -10,12 +10,7 @@ const Button = ({
   const variantClass = `ui-button-${variant}`;
   const sizeClass = `ui-button-size-${size}`;
 
-  return (
-    <button
-      className={`ui-button ${variantClass} ${sizeClass} ${className}`}
-      {...props}
-    />
-  );
+  return <button className={`${className}`} {...props} />;
 };
 
 export { Button };

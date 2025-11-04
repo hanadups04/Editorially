@@ -13,6 +13,10 @@ import { supabase } from "./supabaseClient.js";
 import ProjectPage from "./pages/admin/ProjectPage.jsx";
 import Dashboard from "./pages/admin/Dashboard.jsx";
 import LandingPage from "./pages/landingPage/LandingPage.jsx";
+import TaskList from "./pages/admin/TaskList.jsx";
+import Calendar from "./pages/admin/Calendar.jsx";
+import Login from "./pages/login_register/login.jsx";
+import Register from "./pages/login_register/register.jsx";
 
 const ProtectedRoute = ({ requiredAccessLvl, children }) => {
   const [userAccessLvl, setUserAccessLvl] = useState(null);
@@ -111,10 +115,12 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/project" element={<ProjectPage />} />
-          <Route path="*" element={<Dashboard />} />
-          {/* <Route path="/Login" element={<LoginPage />} /> */}
-          {/* <Route path="/Register" element={<RegisterPage />} /> */}
+          <Route path="/Project" element={<ProjectPage />} />
+          <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/Projects" element={<TaskList />} />
+          <Route path="/Calendar" element={<Calendar />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/Register" element={<Register />} />
           {/* <Route
             path="/RegisterBranch"
             element={withAccess(RegisterBranch, [1, 2, 3, 4, 5, 6])}
