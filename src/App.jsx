@@ -121,6 +121,7 @@ function App() {
           <Route path="/Calendar" element={<Calendar />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Register" element={<Register />} />
+
           {/* <Route
             path="/RegisterBranch"
             element={withAccess(RegisterBranch, [1, 2, 3, 4, 5, 6])}
