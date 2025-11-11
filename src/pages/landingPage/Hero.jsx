@@ -25,14 +25,7 @@ const Hero = () => {
               Get Started
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button
-              className="btn btn-secondary"
-              // size="lg"
-              // variant="outline"
-              // className="text-lg bg-white/10 border-white/30 hover:bg-white/20 text-primary-foreground"
-            >
-              Learn More
-            </Button>
+            <Button className="btn btn-secondary">Learn More</Button>
           </div>
         </div>
       </div>

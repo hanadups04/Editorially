@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import "./Login2.css";
-import Logo from "../../assets/images/LogoBlueBg.png";
-// import ShowPass from "../../assets/images/showpass.png";
-// import ShowPassOff from "../../assets/images/showpassoff.png";
+import "./login.css";
+// import Logo from "../../assets/images/LogoBlueBg.png";
+import ShowPass from "../../assets/images/showpass.png";
+import ShowPassOff from "../../assets/images/showpassoff.png";
 // import ForgotPassModal from "./ForgotPassModal.jsx";
 import { useNavigate } from "react-router-dom";
 import ReactLoading from "react-loading";
 // import { useBranch } from "../../context/BranchContext.jsx";
 import AlertsNConfirmsModal from "../../AlertModals/AlertsNConfirmsModal.jsx";
 import { isAuthenticated, signIn } from "../../context/auth.js";
+import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
+import { supabase } from "../../supabaseClient.js";
 
 export default function Login() {
   //   const { setBranchId, currentSlug } = useBranch();
@@ -26,7 +28,6 @@ export default function Login() {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
   const [loading, setLoading] = useState(false);
-  const [normLoading, setNormLoading] = useState(false);
 
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState(null);
@@ -41,12 +42,40 @@ export default function Login() {
   };
 
   const handleSubmit = async (e) => {
+    console.log("handle login called");
     e.preventDefault();
 
     try {
-      const currentUser = await signIn(email, password);
+      const currentUser = await signIn(formData.email, formData.password);
       if (currentUser.code === 1) {
-        await fetchUserAccessLvl(currentUser.data.user.id);
+        const userdata = await isAuthenticated();
+        const { data: existing } = await supabase
+          .from("users_tbl")
+          .select("uid") // if stored as JSON
+          .eq("uid", userdata.id)
+          .maybeSingle();
+
+        if (!existing) {
+          console.log("not existing, creating a new one");
+          await supabase.from("users_tbl").insert({
+            uid: currentUser.data.user.id,
+            username: currentUser.data.user.user_metadata.display_name,
+            email: currentUser.data.user.email,
+            // role_id: "role-0001",
+            status: "active",
+            is_notif: true,
+            photoUrl:
+              "https://firebasestorage.googleapis.com/v0/b/nu-publication-system.firebasestorage.app/o/logo.jpg?alt=media&token=fed28218-248d-4ad9-a639-14f072f7e9b9",
+          });
+        }
+        console.log(
+          "acccount existing, proceeding to fetch user acccesslevel "
+        );
+        console.log(
+          "fetch user accesslevel called: ",
+          currentUser.data.user.id
+        );
+        // await fetchUserAccessLvl(currentUser.data.user.id);
       } else {
         setErrorLogin(true);
         setErrorMessage(currentUser.error);
@@ -60,12 +89,12 @@ export default function Login() {
     // const userDoc = await getDoc(doc(db, "users", userId));
     const { data, error } = await supabase
       .from("users_tbl")
-      .select("uid, role_id, tenant_id, status, roles_tbl ( access_level )") // if stored as JSON
+      .select("uid, role_id, tenant_id, status, roles_tbl ( access_level )")
       .eq("uid", userId)
       .single();
 
     if (data) {
-      setBranchId(data.tenant_id);
+      //   setBranchId(data.tenant_id);
 
       if (data.status === "deleted") {
         // ask user if they want to recover their account
@@ -79,7 +108,7 @@ export default function Login() {
         return;
       }
 
-      const slug = await getSlugByBranchId(data.tenant_id);
+      const slug = await ReadFunctions.getSlugByBranchId(data.tenant_id);
       switch (data.roles_tbl.access_level) {
         case 6:
           navigate("/Adviser/AdminDashboard");
@@ -106,27 +135,17 @@ export default function Login() {
           console.log("navigating to reader");
           break;
       }
-      await saveFcmToken();
-      localStorage.setItem(
-        "userPerms",
-        JSON.stringify(userDoc.data().permissions)
-      );
-      await handleUserLogin(user, "from login page");
-
-      // setUserBranch(userDoc.data().branchId);
     } else {
       console.error("User document not found");
       navigate(`/Login`);
     }
   };
   const [openForgotPassModal, setOpenForgotPassModal] = useState(false);
-  const [openSelectBranchModal, setOpenSelectBranchModal] = useState(false);
-  const [pendingGoogleUser, setPendingGoogleUser] = useState(null);
   const [isContinuing, setIsContinuing] = useState(false); // added
 
   const handleContinueReading = async (e) => {
     e.preventDefault();
-    if (normLoading || loading || isContinuing) return;
+    if (loading || isContinuing) return;
     try {
       setIsContinuing(true);
       if (!auth.currentUser) {
@@ -142,26 +161,26 @@ export default function Login() {
     }
   };
 
-  if (authLoading) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 24,
-        }}
-      >
-        <ReactLoading
-          type="spinningBubbles"
-          color="#133e87"
-          height={60}
-          width={60}
-        />
-      </div>
-    );
-  }
+  //   if (authLoading) {
+  //     return (
+  //       <div
+  //         style={{
+  //           display: "flex",
+  //           flexDirection: "column",
+  //           justifyContent: "center",
+  //           alignItems: "center",
+  //           padding: 24,
+  //         }}
+  //       >
+  //         <ReactLoading
+  //           type="spinningBubbles"
+  //           color="#133e87"
+  //           height={60}
+  //           width={60}
+  //         />
+  //       </div>
+  //     );
+  //   }
 
   return (
     <>
@@ -279,8 +298,8 @@ export default function Login() {
                   className="Forgot-Password"
                   onClick={() => setOpenForgotPassModal(true)}
                   style={{
-                    opacity: normLoading || loading ? 0.5 : 1,
-                    cursor: normLoading || loading ? "not-allowed" : "pointer",
+                    opacity: loading ? 0.5 : 1,
+                    cursor: loading ? "not-allowed" : "pointer",
                   }}
                 >
                   Forgot password?
@@ -295,7 +314,7 @@ export default function Login() {
                   width: "100%",
                 }}
               >
-                {normLoading ? (
+                {loading ? (
                   <ReactLoading
                     type="spinningBubbles"
                     color="#133e87"
@@ -315,35 +334,6 @@ export default function Login() {
 
               <hr />
             </div>
-            <div className="Login-GoogleCont">
-              {loading ? (
-                <ReactLoading
-                  type="spinningBubbles"
-                  color="#133e87"
-                  height={60}
-                  width={60}
-                />
-              ) : (
-                <div
-                  onClick={normLoading ? null : loginGoogle}
-                  style={{
-                    opacity: normLoading ? 0.5 : 1,
-                    cursor: normLoading ? "not-allowed" : "pointer",
-                  }}
-                  className="Login-GoogleCont"
-                >
-                  <img
-                    src={GoogleLogo}
-                    alt="Google"
-                    className="Google-Logo"
-                    disabled={isSigningIn}
-                  />
-                  <p>Continue with Google</p>
-                </div>
-              )}
-
-              {/* {isSigningIn ? "Signing in..." : "Sign in with Google"} */}
-            </div>
             <div className="CreateAccount">
               <div className="CreateAccountBtn">
                 <label>Create an Account? </label>
@@ -351,8 +341,8 @@ export default function Login() {
                   href="/Register"
                   className="Sign-In"
                   style={{
-                    opacity: normLoading || loading ? 0.5 : 1,
-                    cursor: normLoading || loading ? "not-allowed" : "pointer",
+                    opacity: loading ? 0.5 : 1,
+                    cursor: loading ? "not-allowed" : "pointer",
                   }}
                 >
                   Sign In
@@ -367,8 +357,8 @@ export default function Login() {
                     navigate("/nuntium");
                   }}
                   style={{
-                    opacity: normLoading || loading ? 0.5 : 1,
-                    cursor: normLoading || loading ? "not-allowed" : "pointer",
+                    opacity: loading ? 0.5 : 1,
+                    cursor: loading ? "not-allowed" : "pointer",
                   }}
                 >
                   Continue Reading
@@ -385,65 +375,6 @@ export default function Login() {
         />
       )}
 
-      {openSelectBranchModal && (
-        <SelectBranchModal
-          onClose={() => setOpenSelectBranchModal(false)}
-          onSelectBranch={async (branch) => {
-            console.log("Selected branch:", branch);
-            setSelectedBranch(branch);
-            setOpenSelectBranchModal(false);
-
-            if (pendingGoogleUser) {
-              await setDoc(doc(db, "users", pendingGoogleUser.uid), {
-                created_at: new Date(),
-                email: pendingGoogleUser.email,
-                uid: pendingGoogleUser.uid,
-                username: pendingGoogleUser.displayName,
-                branchId: branch,
-                recieveNotifications: true,
-                status: "active",
-                accountType: "google",
-                role: "Reader",
-                assignedCount: 0,
-                photoURL: pendingGoogleUser.photoURL,
-
-                permissions: {
-                  accessLevel: 1,
-                  permissions: {
-                    articles: {
-                      canDelete: false,
-                      canEdit: false,
-                      canView: true,
-                    },
-                    topics: {
-                      canAssign: false,
-                      canDelete: false,
-                      canEditTopic: false,
-                      canReturn: false,
-                    },
-                    users: {
-                      canManage: false,
-                    },
-                  },
-                },
-              });
-
-              const userDoc = await getDoc(
-                doc(db, "users", pendingGoogleUser.uid)
-              );
-              if (userDoc.exists()) {
-                await fetchUserAccessLvl(userDoc.data());
-              } else {
-                console.error("User document not found");
-                navigate(`/Login`);
-              }
-
-              // Optionally, fetch user access level or continue login flow here
-              setPendingGoogleUser(null); // Clear temp user
-            }
-          }}
-        />
-      )}
       {recovAcc && (
         <AlertsNConfirmsModal
           type="confirmation"

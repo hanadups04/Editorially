@@ -1,25 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Register.css";
-import NUbranch from "./NUbranch.jsx";
-import GoogleLogo from "../../assets/images/GoogleLogo.png";
-import Logo from "../../assets/images/LogoBlueBg.png";
-import {
-  auth,
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-  fetchSignInMethodsForEmail,
-} from "../../firebaseConfig";
-import { updateProfile } from "firebase/auth";
-import { setDoc, doc, serverTimestamp, getDoc } from "firebase/firestore";
-import { db } from "../../firebaseConfig";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import UpdateFunctions from "../../context/functions/UpdateFunctions.js";
-import { usePermissionContext } from "../../context/PermissionContext.jsx";
 import ReactLoading from "react-loading";
-import TermsModal from "../../TermsModal/TermsModal";
-import { useBranch } from "../../context/BranchContext.jsx";
-import { useAuthState } from "react-firebase-hooks/auth";
+import * as auth from "../../context/auth";
+import { supabase } from "../../supabaseClient";
+// import TermsModal from "../../TermsModal/TermsModal";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -30,36 +15,18 @@ export default function Register() {
     confirmPassword: "",
   });
   const [normLoading, setNormLoading] = useState(false);
-  const { saveFcmToken } = UpdateFunctions();
-  const { handleUserLogin } = usePermissionContext();
-  const { setBranchId, currentSlug } = useBranch();
-  const [user, authLoading] = useAuthState(auth);
-
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const [termsChecked, setTermsChecked] = useState(false);
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-  // const [username, setUsername] = useState("");
   const [error, setError] = useState("");
   const [verifyMessage, setVerifyMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  // const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
   const [invData, setInviteData] = useState({});
   const [tokenData, setTokenData] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-
-  const provider = new GoogleAuthProvider();
-
-  useEffect(() => {
-    if (authLoading) return; // wait for auth to resolve
-    if (user && !isLoggingIn) {
-      navigate(`/${currentSlug}`, { replace: true }); // block login when already authenticated
-    }
-  }, [user, authLoading, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -68,6 +35,7 @@ export default function Register() {
   };
 
   const handleRegister = async (e) => {
+    console.log("napindot ang regikster buttons");
     setIsLoggingIn(true);
     e.preventDefault();
     setSubmitted(true);
@@ -77,11 +45,11 @@ export default function Register() {
     const { email, password, confirmPassword, username, photoUrl, branchId } =
       formData;
 
-    if (!email || !password || !username || !branchId) {
-      setNormLoading(false);
-      setError("Please Fill out all the required inputs.");
-      return;
-    }
+    // if (!email || !password || !username || !branchId) {
+    //   setNormLoading(false);
+    //   setError("Please Fill out all the required inputs.");
+    //   return;
+    // }
 
     if (password !== confirmPassword) {
       setNormLoading(false);
@@ -110,95 +78,40 @@ export default function Register() {
       setError("Please agree to the terms and conditions.");
       return;
     }
-
-    const defaultRnP = {
-      role: "Reader",
-      permissions: {
-        accessLevel: 1,
-        permissions: {
-          articles: {
-            canDelete: false,
-            canEdit: false,
-            canView: true,
-          },
-          topics: {
-            canAssign: false,
-            canDelete: false,
-            canEditTopic: false,
-            canReturn: false,
-          },
-          users: {
-            canManage: false,
-          },
-        },
-      },
-    };
-
     try {
-      // Step 1: Check if email is already registered
-      const signInMethods = await fetchSignInMethodsForEmail(auth, email);
-      if (signInMethods.length > 0) {
-        setNormLoading(false);
+      const signInUser = await auth.signUp(email, password, username);
+      console.log("signinuser: ", signInUser.code);
+      console.log("signinuser: ", signInUser.data);
 
-        setError("This email is already in use.");
-        console.log(signInMethods.length);
-        return;
-      }
-
-      const result = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      await updateProfile(result.user, {
-        displayName: username,
-      });
-
-      await setDoc(doc(db, "users", result.user.uid), {
-        created_at: serverTimestamp(),
-        email: email,
-        uid: result.user.uid,
-        username: username,
-        branchId: branchId,
-        role: invData.role || defaultRnP.role,
-        permissions: invData.permissions || defaultRnP.permissions,
-        recieveNotifications: true,
-        accountType: "standard",
-        status: "active",
-        assignedCount: 0,
-        photoURL:
-          photoUrl ??
-          "https://firebasestorage.googleapis.com/v0/b/nu-publication-system.firebasestorage.app/o/logo.jpg?alt=media&token=fed28218-248d-4ad9-a639-14f072f7e9b9",
-      });
-      setVerifyMessage("Registration successful!");
-
-      await sendEmailVerification(result.user);
-
-      setTimeout(() => {
-        setVerifyMessage(
-          "A verification email has been sent. Please check your inbox."
-        );
-        setNormLoading(false);
-      }, 3000);
-
-      console.log("User Registered:", result.user);
-
-      // await fetchUserAccessLvl(result.user);
-
-      pollForVerification(result.user);
-    } catch (error) {
-      console.error("Registration Error:", error.message);
-      setNormLoading(false);
-      if (error.code === "auth/email-already-in-use") {
-        setNormLoading(false);
-
-        setError("This email is already in use.");
+      if (signInUser.code === 1) {
+        console.log("registering ka na manigga");
+        // await supabase.from("users_tbl").insert({
+        //   uid: signInUser.data.user.id,
+        //   username: username,
+        //   email: email,
+        //   tenant_id: branchId || "tenant-0001",
+        //   role_id: "role-0001",
+        //   status: "active",
+        //   is_notif: true,
+        //   photoUrl:
+        //     "https://firebasestorage.googleapis.com/v0/b/nu-publication-system.firebasestorage.app/o/logo.jpg?alt=media&token=fed28218-248d-4ad9-a639-14f072f7e9b9",
+        // });
       } else {
         setNormLoading(false);
-
-        setError("Invalid email or password!");
+        console.log("register failed due to: ", signInUser.error);
       }
+
+      // setTimeout(() => {
+      //   setVerifyMessage(
+      //     "A verification email has been sent. Please check your inbox."
+      //   );
+      //   setNormLoading(false);
+      // }, 3000);
+
+      // pollForVerification(result.user);
+    } catch (error) {
+      console.error("Registration Error:", error);
+      setNormLoading(false);
     }
   };
 
@@ -266,77 +179,77 @@ export default function Register() {
     }
   };
 
-  useEffect(() => {
-    const run = async () => {
-      const inviteToken = queryParams.get("token");
+  // useEffect(() => {
+  //   const run = async () => {
+  //     const inviteToken = queryParams.get("token");
 
-      if (inviteToken) {
-        setTokenData(true);
-        try {
-          const inviteRes = await fetch(
-            "https://us-central1-nu-publication-system.cloudfunctions.net/checkInviteToken",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ token: inviteToken }),
-            }
-          );
+  //     if (inviteToken) {
+  //       setTokenData(true);
+  //       try {
+  //         const inviteRes = await fetch(
+  //           "https://us-central1-nu-publication-system.cloudfunctions.net/checkInviteToken",
+  //           {
+  //             method: "POST",
+  //             headers: { "Content-Type": "application/json" },
+  //             body: JSON.stringify({ token: inviteToken }),
+  //           }
+  //         );
 
-          const inviteData = await inviteRes.json();
-          setInviteData(inviteData);
-          console.log("inviteData:", inviteData);
+  //         const inviteData = await inviteRes.json();
+  //         setInviteData(inviteData);
+  //         console.log("inviteData:", inviteData);
 
-          if (!inviteData.valid) {
-            setError("Invalid or expired invite link.");
-            return;
-          }
+  //         if (!inviteData.valid) {
+  //           setError("Invalid or expired invite link.");
+  //           return;
+  //         }
 
-          // Move the if block here
-          if (inviteData.branchId) {
-            console.log("inv data is :", inviteData);
-            setFormData((prev) => ({
-              ...prev,
-              email: inviteData.target,
-              branchId: inviteData.branchId,
-            }));
-            setTokenData(false);
-          }
-        } catch (err) {
-          console.error("Error checking invite:", err);
-          setTokenData(false);
-          setError("Unable to verify invite.");
-        }
-      } else {
-        console.log("no invite token, no prefill to do");
-        setTokenData(false);
-      }
-    };
+  //         // Move the if block here
+  //         if (inviteData.branchId) {
+  //           console.log("inv data is :", inviteData);
+  //           setFormData((prev) => ({
+  //             ...prev,
+  //             email: inviteData.target,
+  //             branchId: inviteData.branchId,
+  //           }));
+  //           setTokenData(false);
+  //         }
+  //       } catch (err) {
+  //         console.error("Error checking invite:", err);
+  //         setTokenData(false);
+  //         setError("Unable to verify invite.");
+  //       }
+  //     } else {
+  //       console.log("no invite token, no prefill to do");
+  //       setTokenData(false);
+  //     }
+  //   };
 
-    run();
-  }, []);
+  //   run();
+  // }, []);
 
   const [showTermsModal, setShowTermsModal] = useState(false);
 
-  if (authLoading) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 24,
-        }}
-      >
-        <ReactLoading
-          type="spinningBubbles"
-          color="#133e87"
-          height={60}
-          width={60}
-        />
-      </div>
-    );
-  }
+  // if (authLoading) {
+  //   return (
+  //     <div
+  //       style={{
+  //         display: "flex",
+  //         flexDirection: "column",
+  //         justifyContent: "center",
+  //         alignItems: "center",
+  //         padding: 24,
+  //       }}
+  //     >
+  //       <ReactLoading
+  //         type="spinningBubbles"
+  //         color="#133e87"
+  //         height={60}
+  //         width={60}
+  //       />
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
@@ -359,17 +272,17 @@ export default function Register() {
           ) : (
             <div className="Register-FormContent">
               <p className="FormLabel">Your Branch</p>
-              <NUbranch
+              {/* <NUbranch
                 selectedBranch={formData.branchId}
                 onChange={(branchId) =>
                   setFormData((prev) => ({ ...prev, branchId }))
                 }
-              />
-              {submitted && !formData.branchId && (
+              /> */}
+              {/* {submitted && !formData.branchId && (
                 <p style={{ color: "red", fontSize: "14px" }}>
                   Select a branch.
                 </p>
-              )}
+              )} */}
               <p className="FormLabel">Username</p>
               <input
                 type="text"
@@ -500,9 +413,9 @@ export default function Register() {
                   <button
                     type="submit"
                     className="btnsignup"
-                    onClick={handleRegister}
+                    onClick={(e) => handleRegister(e)}
                     disabled={normLoading}
-                    // onClick={() => console.log("branch id is: ", formData.branchId)}
+                    // onClick={() => console.log("pindiot ako eh ")}
                   >
                     Sign Up
                   </button>
@@ -554,7 +467,7 @@ export default function Register() {
         </div>
       </div>
 
-      <TermsModal
+      {/* <TermsModal
         show={showTermsModal}
         onHide={() => setShowTermsModal(false)}
         title="Terms and Conditions"
@@ -594,7 +507,7 @@ export default function Register() {
             future revisions to these terms.
           </strong>
         </p>
-      </TermsModal>
+      </TermsModal> */}
     </>
   );
 }
