@@ -77,8 +77,8 @@ const ContentManagement = () => {
   const handleTitleBlur = (id) => {
     setContents(
       contents.map((content) =>
-        content.id === id ? { ...content, title: editingTitleValue } : content
-      )
+        content.id === id ? { ...content, title: editingTitleValue } : content,
+      ),
     );
     setEditingTitleId(null);
   };
@@ -201,18 +201,11 @@ const ContentManagement = () => {
 
                 <div className="card-actions">
                   <button
-                    className="btn btn-edit"
+                    className="btn btn-secondary "
                     onClick={(e) => handleEditClick(content.id, e)}
                   >
                     <span className="btn-icon">✏️</span>
                     Edit
-                  </button>
-                  <button
-                    className="btn btn-request"
-                    onClick={(e) => handleRequestChanges(content.title, e)}
-                  >
-                    <span className="btn-icon">💬</span>
-                    Request
                   </button>
                   <button
                     className="btn btn-delete"

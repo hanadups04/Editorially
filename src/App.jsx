@@ -19,6 +19,7 @@ import TaskList from "./pages/admin/TaskList.jsx";
 import Calendar from "./pages/admin/Calendar.jsx";
 import Login from "./pages/login_register/login.jsx";
 import Register from "./pages/login_register/register.jsx";
+import Redirector from "./AppRedirector.jsx";
 
 const ProtectedRoute = ({ requiredAccessLvl, children }) => {
   const [userAccessLvl, setUserAccessLvl] = useState(null);
@@ -53,7 +54,7 @@ const ProtectedRoute = ({ requiredAccessLvl, children }) => {
 
         if (error || !data) {
           console.error("User not found or error fetching:", error);
-          navigate(`/${currentSlug}`);
+          navigate("/AboutUs");
           return;
         }
 
@@ -63,6 +64,7 @@ const ProtectedRoute = ({ requiredAccessLvl, children }) => {
         setUserAccessLvl(accessLevel);
       } catch (err) {
         console.error("Error during fetch:", err.message);
+        navigate("/AboutUs");
       } finally {
         setIsAccessLvlFetched(true);
         setIsLoading(false);
@@ -116,15 +118,16 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/Project" element={<ProjectPage />} />
-          <Route path="/Dashboard" element={<Dashboard />} />
-          <Route path="/Members" element={<Members />} />
-          <Route path="/ContentManagement" element={<ContentManagement />} />
-          <Route path="/Projects" element={<TaskList />} />
-          <Route path="/Calendar" element={<Calendar />} />
-          <Route path="/Login" element={<Login />} />
-          <Route path="/Register" element={<Register />} />
+          <Route path="/" element={<Redirector />} />
+          {/* user searches editorially.app, calls redirector, checks for account, if none, throws user to landing page, if present, throws user to appropriate page */}
+          <Route path="/aboutus" element={<LandingPage />} />
+          <Route path="/tasks" element={<ProjectPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/members" element={<Members />} />
+          <Route path="/contentManagement" element={<ContentManagement />} />
+          <Route path="/projects" element={<TaskList />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
           {/* <Route
             path="/RegisterBranch"

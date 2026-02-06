@@ -104,7 +104,7 @@ const TaskList = () => {
   });
 
   const handleProjectClick = (projectId) => {
-    navigate("/project");
+    navigate("/tasks");
   };
 
   const handleApplyFilters = (newFilters) => {
@@ -117,7 +117,7 @@ const TaskList = () => {
   };
 
   const activeFiltersCount = Object.values(filters).filter(
-    (value) => value !== "all"
+    (value) => value !== "all",
   ).length;
 
   return (

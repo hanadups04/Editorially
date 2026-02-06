@@ -75,7 +75,7 @@ export default function Login() {
           "fetch user accesslevel called: ",
           currentUser.data.user.id
         );
-        // await fetchUserAccessLvl(currentUser.data.user.id);
+        await fetchUserAccessLvl(currentUser.data.user.id);
       } else {
         setErrorLogin(true);
         setErrorMessage(currentUser.error);
@@ -136,7 +136,7 @@ export default function Login() {
           break;
       }
     } else {
-      console.error("User document not found");
+      console.error("User row not found");
       navigate(`/Login`);
     }
   };

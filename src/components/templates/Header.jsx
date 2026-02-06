@@ -5,7 +5,7 @@ const Header = ({ onToggleSidebar }) => {
   return (
     <header className="header">
       <div className="header-left">
-        {/* <button
+        <button
           className="btn-icon"
           onClick={onToggleSidebar}
           aria-label="Toggle sidebar"
@@ -21,7 +21,7 @@ const Header = ({ onToggleSidebar }) => {
             <line x1="3" y1="6" x2="21" y2="6"></line>
             <line x1="3" y1="18" x2="21" y2="18"></line>
           </svg>
-        </button> */}
+        </button>
         <div className="logo">
           <svg
             xmlns="http://www.w3.org/2000/svg"
