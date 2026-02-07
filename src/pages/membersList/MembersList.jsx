@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FilterModal } from "../../components/members/FilterModal";
+import { AddMemberModal } from "../../components/members/AddMembersModal";
 import "./MembersList.css";
 
 // Mock data - replace with actual API call
@@ -39,6 +40,7 @@ const mockMembers = [
 
 const MembersList = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState({ section: "", role: "" });
 
@@ -109,6 +111,12 @@ const MembersList = () => {
               <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
             </svg>
             Filter
+          </button>
+          <button
+            className="filter-button"
+            onClick={() => setIsAddMemberOpen(true)}
+          >
+            Add Member
           </button>
         </div>
 
@@ -199,6 +207,10 @@ const MembersList = () => {
         onOpenChange={setIsFilterOpen}
         filters={filters}
         onApplyFilters={setFilters}
+      />
+      <AddMemberModal
+        open={isAddMemberOpen}
+        onOpenChange={setIsAddMemberOpen}
       />
     </div>
   );

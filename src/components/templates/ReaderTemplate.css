@@ -1,0 +1,35 @@
+.ReaderPageTemplate-Parent {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-template-rows: auto 1fr auto; 
+  /* gap: 8px; */
+  grid-template-areas:
+    "ReaderPageTemplate-Navbar"
+    "ReaderPageTemplate-Body"
+    "ReaderPageTemplate-Footer";
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+.ReaderPageTemplate-Parent .ReaderPageTemplate-Navbar {
+  grid-area: ReaderPageTemplate-Navbar;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  /* background-color: yellow; */
+}
+
+.ReaderPageTemplate-Parent .ReaderPageTemplate-Body {
+  grid-area: ReaderPageTemplate-Body;
+  margin-top: 125px ;
+  /* background-color: rgb(41, 31, 19); */
+}
+
+.ReaderPageTemplate-Parent .ReaderPageTemplate-Footer {
+  grid-area: ReaderPageTemplate-Footer;
+  background: linear-gradient(to bottom, #020b40, #000000);
+}
+
+
