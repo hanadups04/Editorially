@@ -80,47 +80,47 @@ const MembersList = () => {
             </p>
           </div>
 
-        {/* Search and Filter Bar */}
-        <div className="search-filter-bar">
-          <div className="search-input-wrapper">
-            <svg
-              className="search-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
+          {/* Search and Filter Bar */}
+          <div className="search-filter-bar">
+            <div className="search-input-wrapper">
+              <svg
+                className="search-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search by username or email..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"
+              />
+            </div>
+            <button
+              className="filter-button"
+              onClick={() => setIsFilterOpen(true)}
             >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search by username or email..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
-            />
+              <svg
+                className="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+              </svg>
+              Filter
+            </button>
+            <button
+              className="filter-button"
+              onClick={() => setIsAddMemberOpen(true)}
+            >
+              Add Member
+            </button>
           </div>
-          <button
-            className="filter-button"
-            onClick={() => setIsFilterOpen(true)}
-          >
-            <svg
-              className="icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-            >
-              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-            </svg>
-            Filter
-          </button>
-          <button
-            className="filter-button"
-            onClick={() => setIsAddMemberOpen(true)}
-          >
-            Add Member
-          </button>
-        </div>
 
           {/* Active Filters */}
           {(filters.section || filters.role) && (
@@ -210,19 +210,11 @@ const MembersList = () => {
           filters={filters}
           onApplyFilters={setFilters}
         />
+        <AddMemberModal
+          open={isAddMemberOpen}
+          onOpenChange={setIsAddMemberOpen}
+        />
       </div>
-
-      <FilterModal
-        open={isFilterOpen}
-        onOpenChange={setIsFilterOpen}
-        filters={filters}
-        onApplyFilters={setFilters}
-      />
-      <AddMemberModal
-        open={isAddMemberOpen}
-        onOpenChange={setIsAddMemberOpen}
-      />
-    </div>
     </Layout>
   );
 };
