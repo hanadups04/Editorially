@@ -219,6 +219,27 @@
   border-top: 1px solid #e5e5e5;
 }
 
+/* .btn {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e5e5e5;
+  background-color: #FFFFFF;
+  color: #171717;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+} */
+
+/* .btn:hover {
+  background-color: #f5f5f5;
+} */
+
 .btn-icon {
   font-size: 1rem;
 }

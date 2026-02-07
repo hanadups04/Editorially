@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FilterModal } from "../../components/members/FilterModal";
+import { AddMemberModal } from "../../components/members/AddMembersModal";
 import "./MembersList.css";
 import Layout from "../../components/templates/AdminTemplate";
 
@@ -40,6 +41,7 @@ const mockMembers = [
 
 const MembersList = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState({ section: "", role: "" });
 
@@ -78,41 +80,47 @@ const MembersList = () => {
             </p>
           </div>
 
-          {/* Search and Filter Bar */}
-          <div className="search-filter-bar">
-            <div className="search-input-wrapper">
-              <svg
-                className="search-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.35-4.35" />
-              </svg>
-              <input
-                type="text"
-                placeholder="Search by username or email..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="search-input"
-              />
-            </div>
-            <button
-              className="filter-button"
-              onClick={() => setIsFilterOpen(true)}
+        {/* Search and Filter Bar */}
+        <div className="search-filter-bar">
+          <div className="search-input-wrapper">
+            <svg
+              className="search-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
             >
-              <svg
-                className="icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-              >
-                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-              </svg>
-              Filter
-            </button>
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search by username or email..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
           </div>
+          <button
+            className="filter-button"
+            onClick={() => setIsFilterOpen(true)}
+          >
+            <svg
+              className="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+            </svg>
+            Filter
+          </button>
+          <button
+            className="filter-button"
+            onClick={() => setIsAddMemberOpen(true)}
+          >
+            Add Member
+          </button>
+        </div>
 
           {/* Active Filters */}
           {(filters.section || filters.role) && (
@@ -203,6 +211,18 @@ const MembersList = () => {
           onApplyFilters={setFilters}
         />
       </div>
+
+      <FilterModal
+        open={isFilterOpen}
+        onOpenChange={setIsFilterOpen}
+        filters={filters}
+        onApplyFilters={setFilters}
+      />
+      <AddMemberModal
+        open={isAddMemberOpen}
+        onOpenChange={setIsAddMemberOpen}
+      />
+    </div>
     </Layout>
   );
 };

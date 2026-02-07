@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { SearchX } from "lucide-react";
 import "./ContentManagement.css";
 
-const ContentManagement = () => {
+export default function ContentManagement() {
   const [contents, setContents] = useState([
     {
       id: "1",
@@ -276,6 +276,4 @@ const ContentManagement = () => {
       )}
     </div>
   );
-};
-
-export default ContentManagement;
+}
