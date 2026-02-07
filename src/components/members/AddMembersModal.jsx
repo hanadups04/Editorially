@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./AddMemberModal.css";
+import "./AddMembersModal.css";
 
 const sections = ["Technology", "Design", "Marketing", "Sales", "Operations"];
 const roles = ["admin", "editor", "member"];
