@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./TaskCard.css";
 
-const TaskCard = ({ task, onToggleComplete, onUploadClick }) => {
+const TaskCard = ({ task, onToggleComplete, onUploadClick, onEditClick }) => {
+  const navigate = useNavigate();
   const [isCompleted, setIsCompleted] = useState(task.status === "Completed");
   const getInitials = (name) => {
     return name
@@ -105,19 +107,40 @@ const TaskCard = ({ task, onToggleComplete, onUploadClick }) => {
   const handleActionClick = () => {
     if (task.role.toLowerCase() === "photographer" && onUploadClick) {
       onUploadClick();
+    } else {
+      // Navigate to document page with task info
+      navigate(
+        `/document?taskId=${task.id}&role=${encodeURIComponent(task.role)}&assignee=${encodeURIComponent(task.assignee.name)}`,
+      );
     }
   };
 
   return (
     <div className="task-card">
+      <button
+        className="task-edit-btn"
+        onClick={() => onEditClick && onEditClick(task)}
+        title="Edit Task"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+      </button>
       <div className="task-header">
         <span className={`task-role ${task.role.toLowerCase()}`}>
           {task.role}
         </span>
         <span
-          className={`task-status ${task.status
-            .toLowerCase()
-            .replace(" ", "-")}`}
+          className={`task-status ${task.status.toLowerCase().replace(" ", "-")}`}
         >
           {task.status}
         </span>
@@ -186,20 +209,6 @@ const TaskCard = ({ task, onToggleComplete, onUploadClick }) => {
         <button className="btn btn-primary" onClick={handleActionClick}>
           {action.icon}
           {action.label}
-        </button>
-        <button className="btn btn-secondary">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-          </svg>
-          Comment
         </button>
       </div>
     </div>
