@@ -1,73 +1,101 @@
-import React, { useState, useEffect } from "react";
-import { Button, Layout, theme } from "antd";
+import React from "react";
+import { useLocation, Link } from "react-router-dom";
 import "./Sidebar.css";
-// import Logo from "./Logo.js";
-import Menulist from "./Menulist.jsx";
-import { CaretLeftOutlined, CaretRightOutlined } from "@ant-design/icons";
 
-const { Header, Sider } = Layout;
-export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(() => {
-    const stored = localStorage.getItem("UserPreference");
-    return stored ? JSON.parse(stored).collapsed : false;
-  });
+const Sidebar = ({ isCollapsed, isOpen }) => {
+  const location = useLocation();
 
-  const [activeAccordionKey, setActiveAccordionKey] = useState(() => {
-    const stored = localStorage.getItem("UserPreference");
-    if (!stored) return null;
+  const navItems = [
+    {
+      path: "/dashboard",
+      label: "Dashboard",
+      icon: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          className="nav-item-icon"
+        >
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+      ),
+    },
+    {
+      path: "/projects",
+      label: "Projects",
+      icon: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          className="nav-item-icon"
+        >
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </svg>
+      ),
+    },
+    {
+      path: "/members",
+      label: "Team",
+      icon: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          className="nav-item-icon"
+        >
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      ),
+    },
+  ];
 
-    const parsed = JSON.parse(stored).activeAccordionKey;
+  const isActive = (path) => {
+    if (path === "/projects") {
+      return (
+        location.pathname.startsWith("/projects") ||
+        location.pathname.startsWith("/tasks")
+      );
+    }
 
-    if (parsed === "0") return "ProjectsNCms";
-    if (parsed === "1") return "MembersNApplicants";
-    return parsed ?? null;
-  });
-
-  useEffect(() => {
-    const userPreference = {
-      collapsed,
-      activeAccordionKey,
-    };
-    localStorage.setItem("UserPreference", JSON.stringify(userPreference));
-  }, [collapsed, activeAccordionKey]);
+    return location.pathname === path;
+  };
 
   return (
-    <>
-      <Layout className="Sidebar-Parent">
-        <Sider
-          collapsed={collapsed}
-          collapsible
-          theme={"dark"}
-          trigger={null}
-          className="Sidebar-Child"
-        >
-          {/* <Logo /> */}
-          <div className="MenuBarCont">
-            {" "}
-            <Menulist
-              collapsed={collapsed}
-              activeAccordionKey={activeAccordionKey}
-              setActiveAccordionKey={setActiveAccordionKey}
-            />
-          </div>
-          <Button
-            type="text"
-            className="toggle"
-            onClick={() => setCollapsed(!collapsed)}
-            icon={
-              collapsed ? (
-                <CaretRightOutlined
-                  style={{ color: "white", fontSize: "20px" }}
-                />
-              ) : (
-                <CaretLeftOutlined
-                  style={{ color: "white", fontSize: "20px" }}
-                />
-              )
-            }
-          />
-        </Sider>
-      </Layout>
-    </>
+    <aside
+      className={`sidebar ${isCollapsed ? "collapsed" : ""} ${isOpen ? "open" : ""}`}
+    >
+      <div className="sidebar-header">
+        {!isCollapsed && <h2>Navigation</h2>}
+      </div>
+      <nav className="sidebar-nav">
+        {navItems.map((item) => (
+          <Link
+            key={item.path}
+            to={item.path}
+            className={`nav-item ${isActive(item.path) ? "active" : ""}`}
+          >
+            {item.icon}
+            {!isCollapsed && (
+              <span className="nav-item-text">{item.label}</span>
+            )}
+          </Link>
+        ))}
+      </nav>
+    </aside>
   );
-}
+};
+
+export default Sidebar;

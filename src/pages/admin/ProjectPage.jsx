@@ -5,16 +5,21 @@ import ProjectInfo from "../../components/project/ProjectInfo";
 import ProgressTracker from "../../components/project/ProgressTracker";
 import TaskCard from "../../components/project/TaskCard";
 import AddTaskModal from "../../components/project/AddTaskModal";
+import EditProjectModal from "../../components/project/EditProjectModal";
 import UploadImagesModal from "../../components/project/UploadImagesModa";
+import EditTaskModal from "../../components/project/EditTaskModal";
 import "./ProjectPage.css";
 
 const ProjectPage = () => {
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isEditProjectModalOpen, setIsEditProjectModalOpen] = useState(false);
+  const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
   const [tasks, setTasks] = useState([]);
 
   // Sample project data
-  const project = {
+  const [project, setProject] = useState({
     title: "Spring 2025 Feature: Campus Sustainability Initiative",
     description:
       "A comprehensive feature article covering the university's new sustainability programs and student-led environmental initiatives.",
@@ -22,7 +27,7 @@ const ProjectPage = () => {
     issue: "Vol. 45, Issue 3",
     category: "Feature Article",
     status: "In Progress",
-  };
+  });
 
   // Workflow steps
   const workflowSteps = [
@@ -135,14 +140,32 @@ const ProjectPage = () => {
       prev.map((task) =>
         task.id === taskId
           ? { ...task, status: isCompleted ? "Completed" : "In Progress" }
-          : task
-      )
+          : task,
+      ),
     );
+  };
+
+  const handleEditProject = (updatedProject) => {
+    setProject(updatedProject);
+  };
+
+  const handleEditTask = (updatedTask) => {
+    setTasks((prev) =>
+      prev.map((task) => (task.id === updatedTask.id ? updatedTask : task)),
+    );
+  };
+
+  const handleEditTaskClick = (task) => {
+    setSelectedTask(task);
+    setIsEditTaskModalOpen(true);
   };
 
   return (
     <Layout>
-      <ProjectInfo project={project} />
+      <ProjectInfo
+        project={project}
+        onEditClick={() => setIsEditProjectModalOpen(true)}
+      />
       <ProgressTracker currentStep="in-progress" steps={workflowSteps} />
 
       <div className="tasks-section">
@@ -175,6 +198,7 @@ const ProjectPage = () => {
               task={task}
               onToggleComplete={handleToggleComplete}
               onUploadClick={() => setIsUploadModalOpen(true)}
+              onEditClick={handleEditTaskClick}
             />
           ))}
         </div>
@@ -184,6 +208,23 @@ const ProjectPage = () => {
         isOpen={isAddTaskModalOpen}
         onClose={() => setIsAddTaskModalOpen(false)}
         onSubmit={handleAddTask}
+      />
+
+      <EditProjectModal
+        isOpen={isEditProjectModalOpen}
+        onClose={() => setIsEditProjectModalOpen(false)}
+        project={project}
+        onSubmit={handleEditProject}
+      />
+
+      <EditTaskModal
+        isOpen={isEditTaskModalOpen}
+        onClose={() => {
+          setIsEditTaskModalOpen(false);
+          setSelectedTask(null);
+        }}
+        task={selectedTask}
+        onSubmit={handleEditTask}
       />
 
       <UploadImagesModal

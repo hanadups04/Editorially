@@ -50,8 +50,15 @@ export async function isAuthenticated() {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
-  if (userError) throw userError;
-  return user;
+  if (userError)
+    return {
+      code: 0,
+      error: userError,
+    };
+  return {
+    code: 1,
+    data: user,
+  };
 }
 
 // Logout

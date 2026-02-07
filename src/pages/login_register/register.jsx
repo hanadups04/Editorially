@@ -15,6 +15,7 @@ export default function Register() {
     confirmPassword: "",
   });
   const [normLoading, setNormLoading] = useState(false);
+  const [registerMessage, setRegisterMessage] = useState("");
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const [termsChecked, setTermsChecked] = useState(false);
@@ -85,148 +86,21 @@ export default function Register() {
 
       if (signInUser.code === 1) {
         console.log("registering ka na manigga");
-        // await supabase.from("users_tbl").insert({
-        //   uid: signInUser.data.user.id,
-        //   username: username,
-        //   email: email,
-        //   tenant_id: branchId || "tenant-0001",
-        //   role_id: "role-0001",
-        //   status: "active",
-        //   is_notif: true,
-        //   photoUrl:
-        //     "https://firebasestorage.googleapis.com/v0/b/nu-publication-system.firebasestorage.app/o/logo.jpg?alt=media&token=fed28218-248d-4ad9-a639-14f072f7e9b9",
-        // });
+        setNormLoading(false);
+        setRegisterMessage(
+          "Email Confirmation Sent. Please Click the provided link there to proceed with the account verification"
+        );
       } else {
         setNormLoading(false);
+        setRegisterMessage("Registration Failed due to unkown reason");
         console.log("register failed due to: ", signInUser.error);
       }
-
-      // setTimeout(() => {
-      //   setVerifyMessage(
-      //     "A verification email has been sent. Please check your inbox."
-      //   );
-      //   setNormLoading(false);
-      // }, 3000);
-
-      // pollForVerification(result.user);
     } catch (error) {
       console.error("Registration Error:", error);
+      setRegisterMessage("Registration Failed due to unkown reason");
       setNormLoading(false);
     }
   };
-
-  const pollForVerification = (user) => {
-    const checkEmailVerification = async () => {
-      await user.reload();
-      if (user.emailVerified) {
-        console.log("Email verified!");
-        clearInterval(pollingInterval); // Stop polling
-        setNormLoading(false);
-        fetchUserAccessLvl(user);
-        setVerifyMessage("Email has been verified. Redirecting you shortly");
-      } else {
-        console.log("Email not verified yet...");
-      }
-    };
-
-    const pollingInterval = setInterval(checkEmailVerification, 3000);
-    window.addEventListener("beforeunload", () =>
-      clearInterval(pollingInterval)
-    );
-  };
-
-  const fetchUserAccessLvl = async (user) => {
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (userDoc.exists()) {
-      setBranchId(userDoc.data().branchId);
-      switch (userDoc.data().permissions.accessLevel) {
-        case 6:
-          navigate("/Adviser/AdviserApprove");
-          console.log("navigating to adviser");
-          break;
-        case 5:
-          navigate("/Admin/EicHomepage");
-          console.log("navigating to eic");
-          break;
-        case 4:
-          navigate("/Admin/EicHomepage");
-          console.log("navigating to assoc or managing");
-          break;
-        case 3:
-          navigate("/Admin/EbHomepage");
-          console.log("navigating to section editor");
-          break;
-        case 2:
-          navigate("/Admin/SwHomepage");
-          console.log("navigating to section writer");
-          break;
-        case 1:
-          navigate(`/${currentSlug}`);
-          console.log("navigating to reader");
-          break;
-      }
-      await saveFcmToken();
-      localStorage.setItem(
-        "userPerms",
-        JSON.stringify(userDoc.data().permissions)
-      );
-      await handleUserLogin(user, "from login page");
-
-      // setUserBranch(userDoc.data().branchId);
-    } else {
-      console.error("User document not found");
-      navigate("/Login");
-    }
-  };
-
-  // useEffect(() => {
-  //   const run = async () => {
-  //     const inviteToken = queryParams.get("token");
-
-  //     if (inviteToken) {
-  //       setTokenData(true);
-  //       try {
-  //         const inviteRes = await fetch(
-  //           "https://us-central1-nu-publication-system.cloudfunctions.net/checkInviteToken",
-  //           {
-  //             method: "POST",
-  //             headers: { "Content-Type": "application/json" },
-  //             body: JSON.stringify({ token: inviteToken }),
-  //           }
-  //         );
-
-  //         const inviteData = await inviteRes.json();
-  //         setInviteData(inviteData);
-  //         console.log("inviteData:", inviteData);
-
-  //         if (!inviteData.valid) {
-  //           setError("Invalid or expired invite link.");
-  //           return;
-  //         }
-
-  //         // Move the if block here
-  //         if (inviteData.branchId) {
-  //           console.log("inv data is :", inviteData);
-  //           setFormData((prev) => ({
-  //             ...prev,
-  //             email: inviteData.target,
-  //             branchId: inviteData.branchId,
-  //           }));
-  //           setTokenData(false);
-  //         }
-  //       } catch (err) {
-  //         console.error("Error checking invite:", err);
-  //         setTokenData(false);
-  //         setError("Unable to verify invite.");
-  //       }
-  //     } else {
-  //       console.log("no invite token, no prefill to do");
-  //       setTokenData(false);
-  //     }
-  //   };
-
-  //   run();
-  // }, []);
 
   const [showTermsModal, setShowTermsModal] = useState(false);
 
