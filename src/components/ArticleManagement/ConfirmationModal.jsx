@@ -9,7 +9,7 @@ const ConfirmationModal = ({
   message = "Are you sure you want to proceed?",
   confirmText = "Confirm",
   cancelText = "Cancel",
-  variant = "default", // 'default', 'danger', 'warning'
+  variant = "default", // 'default', 'danger', 'warningnig'
 }) => {
   if (!isOpen) return null;
 
