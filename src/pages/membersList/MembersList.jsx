@@ -6,38 +6,7 @@ import "./MembersList.css";
 import Layout from "../../components/templates/AdminTemplate";
 
 // Mock data - replace with actual API call
-const mockMembers = [
-  {
-    id: "1",
-    username: "johndoe",
-    email: "john.doe@example.com",
-    section: "Technology",
-    branch: "Engineering",
-    role: "admin",
-    avatar: "/placeholder.svg",
-    notifications: true,
-  },
-  {
-    id: "2",
-    username: "janedoe",
-    email: "jane.doe@example.com",
-    section: "Design",
-    branch: "Creative",
-    role: "editor",
-    avatar: "/placeholder.svg",
-    notifications: true,
-  },
-  {
-    id: "3",
-    username: "bobsmith",
-    email: "bob.smith@example.com",
-    section: "Marketing",
-    branch: "Communications",
-    role: "member",
-    avatar: "/placeholder.svg",
-    notifications: false,
-  },
-];
+const mockMembers = [];
 
 const MembersList = () => {
   const [searchQuery, setSearchQuery] = useState("");

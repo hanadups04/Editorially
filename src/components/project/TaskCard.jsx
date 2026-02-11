@@ -33,7 +33,7 @@ const TaskCard = ({ task, onToggleComplete, onUploadClick, onEditClick }) => {
             <line x1="16" y1="17" x2="8" y2="17"></line>
           </svg>
         ),
-        path: "/docs",
+        path: "/document",
       },
       layout: {
         label: "Open Canvas",

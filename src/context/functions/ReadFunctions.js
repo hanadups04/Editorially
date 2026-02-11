@@ -13,7 +13,7 @@ export async function fetchAllUsers() {
 export async function getUserProfile(uid) {
   const { data, error } = await supabase
     .from("users_tbl")
-    .select("uid, role_id, tenant_id, status, roles_tbl ( access_level )")
+    .select("uid, role_id, status, roles_tbl ( access_level )")
     .eq("uid", uid)
     .maybeSingle(); // avoids 406
 
@@ -21,44 +21,25 @@ export async function getUserProfile(uid) {
   return data; // null if none
 }
 
-export async function getSlugByBranchId(tenant_id) {
+export async function getPostedArticles() {
   const { data, error } = await supabase
-    .from("tenants_tbl")
-    .select("publication_name")
-    .eq("tenant_id", tenant_id)
-    .single();
+    .from("articles_tbl")
+    .select("*")
+    .order("date_posted", { ascending: false });
 
-  if (error)
-    return {
-      code: 0,
-      error: error,
-    };
-  return {
-    code: 1,
-    data: data,
-  };
+  if (error) throw error;
+  return data;
 }
 
-export async function getBranchBySlug(branch_name) {
+export async function getSingleArticle(article_id) {
   const { data, error } = await supabase
-    .from("tenants_tbl")
+    .from("articles_tbl")
     .select("*")
-    .eq("publication_name", branch_name ?? "reader_branch")
-    .single();
+    .eq("article_id", article_id)
+    .maybeSingle();
 
-  if (error) {
-    console.log("error is: ", error);
-
-    return {
-      code: 0,
-      error: error,
-    };
-  }
-  console.log("data is: ", data);
-  return {
-    code: 1,
-    data: data,
-  };
+  if (error) throw error;
+  return data;
 }
 
 //--------------------------------------------------------------------- <=3 TITI NI DON ANDREI TANEO -------------------------------------------------------- //

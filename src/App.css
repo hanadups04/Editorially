@@ -7,6 +7,7 @@
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
+  --color-danger-hover: #d81c1c;
 
   /* Background Colors */
   --bg-primary: #ffffff;
@@ -102,6 +103,21 @@ body {
   gap: var(--spacing-sm);
   text-decoration: none;
   justify-content: center;
+}
+
+.btn-delete {
+  background-color: var(--color-danger);
+  color: var(--text-light);
+}
+
+.btn-delete:hover {
+  background-color: var(--color-danger-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-delete:disabled {
+  background-color: var(--text-tertiary);
+  cursor: not-allowed;
 }
 
 .btn-primary {

@@ -1,23 +1,11 @@
 import { supabase } from "../../supabaseClient";
 
-const AddFunctions = () => {
-
-  return {
-
-  };
-};
-
-export default AddFunctions;
-
-
-// import { supabase } from "../../supabaseClient";
-
-// export async function fetchAllUsers() {
-//   const { data, error } = await supabase
-//     .from("projects")
-//     .select("*")
-//     .order("created_at", { ascending: false });
-
-//   if (error) throw error;
-//   return data;
-// }
+export async function insertEditRequest(data) {
+  await supabase.from("edit_request_tbl").insert({
+    article_id: data.article_id,
+    owner_id: data.owner_id,
+    resolved: false,
+    content: data.content,
+    is_urgent: data.is_urgent,
+  });
+}

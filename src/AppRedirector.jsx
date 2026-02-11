@@ -4,11 +4,9 @@ import { supabase } from "./supabaseClient";
 import { useNavigate } from "react-router-dom";
 import * as ReadFunctions from "./context/functions/ReadFunctions";
 import * as auth from "./context/auth";
-import { useBranch } from "./context/BranchProvider";
 
 const AppRedirector = () => {
   const navigate = useNavigate();
-  const { setBranchId } = useBranch();
 
   const fetchUserAccessLvl = async () => {
     const user = await auth.isAuthenticated();
@@ -21,30 +19,27 @@ const AppRedirector = () => {
 
     const { data, error } = await supabase
       .from("users_tbl")
-      .select("uid, role_id, tenant_id, status, roles_tbl ( access_level )")
-      .eq("uid", user.id)
+      .select("uid, role_id, status, roles_tbl ( access_level )")
+      .eq("uid", user.data.id)
       .maybeSingle();
 
     if (data) {
-      setBranchId(data.tenant_id);
-
       if (data.status === "deleted") {
         // ask user if they want to recover their account
         alert(
-          "your account has been deleted. proceed to login to continue recovering your account"
+          "your account has been deleted. proceed to login to continue recovering your account",
         );
-        navigate("/AboutUs");
+        navigate("/aboutus");
         return;
       }
 
       if (data.status === "disabled") {
         // ask user if they want to recover their account
         alert("your account has been disabled. ask your admin for assistance");
-        navigate("/AboutUs");
+        navigate("/aboutus");
         return;
       }
 
-      const slug = await ReadFunctions.getSlugByBranchId(data.tenant_id);
       switch (data.roles_tbl.access_level) {
         case 6:
           navigate("/Adviser/AdminDashboard");
@@ -67,13 +62,13 @@ const AppRedirector = () => {
           console.log("navigating to section writer");
           break;
         case 1:
-          navigate(`/${slug}`);
+          navigate(`/aboutus`);
           console.log("navigating to reader");
           break;
       }
     } else {
       console.error("User row not found");
-      navigate(`/AboutUs`);
+      navigate(`/aboutus`);
     }
   };
 
