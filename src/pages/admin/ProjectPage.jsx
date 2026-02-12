@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import Layout from "../../components/templates/AdminTemplate";
 // import ProjectInfo from "../../components/project/ProjectInfo";
 import ProjectInfo from "../../components/project/ProjectInfo";
@@ -8,6 +9,8 @@ import AddTaskModal from "../../components/project/AddTaskModal";
 import EditProjectModal from "../../components/project/EditProjectModal";
 import UploadImagesModal from "../../components/project/UploadImagesModa";
 import EditTaskModal from "../../components/project/EditTaskModal";
+import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
+import * as UpdateFunctions from "../../context/functions/UpdateFunctions.js";
 import "./ProjectPage.css";
 
 const ProjectPage = () => {
@@ -17,6 +20,14 @@ const ProjectPage = () => {
   const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [tasks, setTasks] = useState([]);
+
+  const [searchParams] = useSearchParams();
+  const projectID =
+    searchParams.get("project_id") ?? searchParams.get("projectID");
+
+  React.useEffect(() => {
+    if (projectID) console.log(`Project ID from URL: ${projectID}`);
+  }, [projectID]);
 
   // Sample project data
   const [project, setProject] = useState({
@@ -166,6 +177,21 @@ const ProjectPage = () => {
         project={project}
         onEditClick={() => setIsEditProjectModalOpen(true)}
       />
+      <div>
+        <button
+          className="btn btn-primary"
+          onClick={() => UpdateFunctions.approveProject(projectID)}
+        >
+          APPROVE
+        </button>
+        <h2>Project ID: {projectID}</h2>
+        <button
+          className="btn btn-primary"
+          onClick={() => UpdateFunctions.rejectProject(projectID)}
+        >
+          REJECT
+        </button>
+      </div>
       <ProgressTracker currentStep="in-progress" steps={workflowSteps} />
 
       <div className="tasks-section">

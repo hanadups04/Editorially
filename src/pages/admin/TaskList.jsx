@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Layout from "../../components/templates/AdminTemplate";
 import FilterModal from "./FilterModal";
+import CreateProjectModal from "../../components/project/AddProjectModal.jsx";
+import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
 import "./TaskList.css";
 
 const TaskList = () => {
@@ -13,9 +15,11 @@ const TaskList = () => {
     deadline: "all",
   });
   const [isCreateProjModalOpen, setIsCreateProjModalOpen] = useState(false);
+  const [loading, setIsLoading] = useState(true);
+  const [projects, setAllProjects] = useState([]);
 
   // Sample projects data
-  const allProjects = [
+  const allProjectsss = [
     {
       id: 1,
       name: "Spring 2025 Feature: Campus Sustainability Initiative",
@@ -74,38 +78,79 @@ const TaskList = () => {
     },
   ];
 
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchProjects() {
+      try {
+        const data = await ReadFunctions.fetchAllProjects();
+        if (isMounted) {
+          console.log("data is: ", data);
+          setAllProjects(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    fetchProjects();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Filter and search projects
-  const filteredProjects = allProjects.filter((project) => {
-    const matchesSearch =
-      project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.section.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredProjects = projects.filter((project) => {
+    const name = (project.title ?? "").toString().toLowerCase();
+    const matchesSearch = name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
 
     const matchesStatus =
       filters.status === "all" || project.status === filters.status;
 
     let matchesDeadline = true;
     if (filters.deadline !== "all") {
-      const projectDate = new Date(project.deadline);
-      const today = new Date();
-      const diffTime = projectDate - today;
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const rawDeadline = project.deadline ?? null;
+      const projectDate = rawDeadline ? new Date(rawDeadline) : null;
 
-      if (filters.deadline === "overdue") {
-        matchesDeadline = diffDays < 0;
-      } else if (filters.deadline === "thisWeek") {
-        matchesDeadline = diffDays >= 0 && diffDays <= 7;
-      } else if (filters.deadline === "thisMonth") {
-        matchesDeadline = diffDays >= 0 && diffDays <= 30;
-      } else if (filters.deadline === "upcoming") {
-        matchesDeadline = diffDays > 30;
+      if (projectDate && !isNaN(projectDate.getTime())) {
+        const today = new Date();
+        const diffTime = projectDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (filters.deadline === "overdue") {
+          matchesDeadline = diffDays < 0;
+        } else if (filters.deadline === "thisWeek") {
+          matchesDeadline = diffDays >= 0 && diffDays <= 7;
+        } else if (filters.deadline === "thisMonth") {
+          matchesDeadline = diffDays >= 0 && diffDays <= 30;
+        } else if (filters.deadline === "upcoming") {
+          matchesDeadline = diffDays > 30;
+        }
+      } else {
+        // No valid deadline → treat as not matching time-based filters
+        matchesDeadline = false;
       }
     }
 
     return matchesSearch && matchesStatus && matchesDeadline;
   });
 
-  const handleProjectClick = (projectId) => {
-    navigate("/tasks");
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const projectID = searchParams.get("project_id");
+    if (projectID) {
+      setValue(projectID);
+      console.log(`id value is: ${projectID}`);
+    }
+  }, [searchParams]);
+
+  const handleProjectClick = (project_id) => {
+    navigate(`/tasks?project_id=${project_id}`);
   };
 
   const handleApplyFilters = (newFilters) => {
@@ -185,7 +230,7 @@ const TaskList = () => {
 
         <div className="projects-stats">
           <span className="stats-text">
-            Showing {filteredProjects.length} of {allProjects.length} projects
+            Showing {filteredProjects.length} of {projects.length} projects
           </span>
 
           <button
@@ -211,12 +256,12 @@ const TaskList = () => {
         <div className="projects-grid">
           {filteredProjects.map((project) => (
             <div
-              key={project.id}
+              key={project.project_id}
               className="project-card"
-              onClick={() => handleProjectClick(project.id)}
+              onClick={() => handleProjectClick(project.project_id)}
             >
               <div className="project-card-header">
-                <h3 className="project-title">{project.name}</h3>
+                <h3 className="project-title">{project.title}</h3>
                 <span
                   className={`task-status ${project.status
                     .toLowerCase()
@@ -265,7 +310,7 @@ const TaskList = () => {
                     >
                       <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                     </svg>
-                    <span>{project.section}</span>
+                    <span>{project.section_id}</span>
                   </div>
                 </div>
               </div>
@@ -299,6 +344,10 @@ const TaskList = () => {
         onApply={handleApplyFilters}
         currentFilters={filters}
       />
+
+      {isCreateProjModalOpen && (
+        <CreateProjectModal onClose={() => setIsCreateProjModalOpen(false)} />
+      )}
     </Layout>
   );
 };

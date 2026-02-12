@@ -1,18 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./CreateParentTaskModal.css";
-import Close from "../assets/images/close.png";
-import InfoB from "../assets/images/InfoB.png";
-import InputTemplate from "./InputTemplate.jsx";
-import ModalTemplate from "./ModalTemplate.jsx";
+// import "./Add.css";
+// import Close from "../assets/images/close.png";
+// import InfoB from "../assets/images/InfoB.png";
+// import InputTemplate from "./InputTemplate.jsx";
+// import ModalTemplate from "./ModalTemplate.jsx";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import UpdateFunctions from "../context/functions/UpdateFunctions.js";
-import AddFunctions from "../context/functions/AddFunctions.js";
-import { useAdminContext } from "../context/AdminContext.jsx";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
-import Form from "react-bootstrap/Form";
-import AlertsNConfirmsModal from "../alertsNConfirmations/AlertsNConfirmsModal.jsx";
+// import UpdateFunctions from "../context/functions/UpdateFunctions.js";
+import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
+import { supabase } from "../../supabaseClient.js";
+import { isAuthenticated } from "../../context/auth.js";
+
+import AddFunctions from "../../context/functions/AddFunctions.js";
+import { useAdminContext } from "../../context/Context.jsx";
+import { Key } from "slate-dom";
+// import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+// import Tooltip from "react-bootstrap/Tooltip";
+// import Form from "react-bootstrap/Form";
+// import AlertsNConfirmsModal from "../alertsNConfirmations/AlertsNConfirmsModal.jsx";
 
 export default function CreateParentTaskModal({
   onClose,
@@ -24,28 +29,87 @@ export default function CreateParentTaskModal({
   branchData,
   secType,
 }) {
-  const { sections, userRole } = useAdminContext();
-  const { createTopic } = AddFunctions();
+  const [sections, setSections] = useState([]);
+  const [loading, setIsLoading] = useState(true);
+  const dateModified = useRef(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchSections() {
+      try {
+        const data = await ReadFunctions.fetchAllSections();
+        if (isMounted) {
+          console.log("data is: ", data);
+          setSections(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    fetchSections();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const [formData, setFormData] = useState({
     title: "",
     details: "",
     deadline: new Date(),
-    submissionType: "",
-    // pubmatArtist: "",
-    autoCreateSubtasks: false,
-    assignedForPubmat: "",
-    assignedForWriting: "",
-    assignedForPhotography: "",
-    secForChecking: "",
-    photographySection: "",
-    // priority: "",
+    section_id: "",
   });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleDateChange = (date) => {
+    setSelectedDateTime(date);
+    setFormData((prev) => ({ ...prev, deadline: date }));
+    dateModified.current = true;
+  };
 
   const [error, setError] = useState("");
   const [selectedDateTime, setSelectedDateTime] = useState(new Date());
   const [showAlertSuccess, setShowAlertSuccess] = useState(false);
   const [showAlertError, setShowAlertError] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    console.log("formdataaaa", formData);
+
+    const { data: userData, error: userErr } = await supabase.auth.getUser();
+    if (userErr || !userData?.user) {
+      console.error("Not authenticated:", userErr);
+      return;
+    }
+
+    await supabase.from("projects_tbl").insert({
+      project_id: "project-0001",
+      owner_id: userData.user.id,
+      step_id: 1,
+      section_id: Number(formData.section_id),
+      title: formData.title,
+      deadline: selectedDateTime?.toISOString(),
+      details: formData.details,
+      status: "Proposed",
+    });
+
+    if (error) {
+      console.error(error);
+      // setShowAlertError(true);
+      return;
+    }
+
+    // setShowAlertSuccess(true);
+    onClose();
+  };
 
   return (
     <>
@@ -83,13 +147,24 @@ export default function CreateParentTaskModal({
 
             <div className="form-group">
               <label className="form-label">Deadline</label>
-              <textarea
-                name="details"
-                className="form-input"
-                value={formData.details}
-                onChange={handleChange}
-                placeholder="Add project details..."
+              <DatePicker
+                selected={selectedDateTime}
+                onChange={handleDateChange}
+                minDate={new Date()}
+                minTime={
+                  selectedDateTime &&
+                  new Date(selectedDateTime).toDateString() ===
+                    new Date().toDateString()
+                    ? new Date()
+                    : new Date(0, 0, 0, 0, 0)
+                }
+                maxTime={new Date(0, 0, 0, 23, 59)}
+                showTimeSelect
+                dateFormat="yyyy-MM-dd HH:mm:ss"
+                timeIntervals={15}
+                timeCaption="Time"
                 required
+                className="DeadlineDatePicker"
               />
             </div>
 
@@ -104,6 +179,49 @@ export default function CreateParentTaskModal({
                 required
               />
             </div>
+
+            <div className="form-group">
+              <label className="form-label">Section</label>
+              <select
+                name="section_id"
+                className="form-select"
+                value={formData.section_id}
+                onChange={handleChange}
+              >
+                {sections.map((section) => (
+                  <option key={section.section_id} value={section.section_id}>
+                    {section.section_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              className="btn btn-primary"
+            >
+              Create Project
+            </button>
+
+            <button
+              type="submit"
+              onClick={async () => {
+                const userdata = await isAuthenticated();
+                console.log("userdata is:", userdata);
+              }}
+              className="btn btn-primary"
+            >
+              Check
+            </button>
           </div>
         </div>
       </div>

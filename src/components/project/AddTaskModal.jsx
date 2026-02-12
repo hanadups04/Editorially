@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import "./AddTaskModal.css";
 
 const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
-    assignee: "",
-    taskType: "",
-    description: "",
-    priority: "Medium",
+    project_id: "",
+    assignee_id: "",
+    subtask_title: "",
+    subtask_type: "",
+    details: "",
+    // priority: "Medium",
     deadline: "",
   });
 
@@ -25,21 +28,35 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
     { value: "editing", label: "Review/Editing" },
   ];
 
+   const [searchParams] = useSearchParams();
+  const projectID =
+    searchParams.get("project_id") ?? searchParams.get("projectID");
+
+  React.useEffect(() => {
+    if (projectID) console.log(`Project ID from URL: ${projectID}`);
+  }, [projectID])
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
-    setFormData({
-      assignee: "",
-      taskType: "",
-      description: "",
-      priority: "Medium",
-      deadline: "",
+
+    await supabase.from("project_subtask_tbl").insert({
+      subtask_id: "subtask-0001",
+      project_id: { project_id },
+      subtask_title: formData.subtask_title,
+      subtask_type: formData.subtask_type,
+      assignee_id: formData.assignee_id,
+      deadline: formData.deadline,
     });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
     onClose();
   };
 
@@ -70,9 +87,9 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
             <div className="form-group">
               <label className="form-label">Assign To</label>
               <select
-                name="assignee"
+                name="assignee_id"
                 className="form-select"
-                value={formData.assignee}
+                value={formData.assignee_id}
                 onChange={handleChange}
                 required
               >
@@ -88,9 +105,9 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
             <div className="form-group">
               <label className="form-label">Task Type</label>
               <select
-                name="taskType"
+                name="subtask_type"
                 className="form-select"
-                value={formData.taskType}
+                value={formData.subtask_type}
                 onChange={handleChange}
                 required
               >
@@ -115,7 +132,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
               />
             </div>
 
-            <div className="form-group">
+            {/* <div className="form-group">
               <label className="form-label">Priority Level</label>
               <select
                 name="priority"
@@ -127,7 +144,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
                 <option value="Medium">Medium</option>
                 <option value="High">High</option>
               </select>
-            </div>
+            </div> */}
 
             <div className="form-group">
               <label className="form-label">Deadline</label>
@@ -150,7 +167,11 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
             >
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary">
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              className="btn btn-primary"
+            >
               Create Task
             </button>
           </div>

@@ -1,7 +1,7 @@
 import React from "react";
 import "./ProjectInfo.css";
 
-const ProjectInfo = ({ project, onEditClick }) => {
+export default function ProjectInfo({ project, onEditClick }) {
   return (
     <div className="card project-info">
       <div className="card-header">
@@ -51,6 +51,4 @@ const ProjectInfo = ({ project, onEditClick }) => {
       </div>
     </div>
   );
-};
-
-export default ProjectInfo;
+}
