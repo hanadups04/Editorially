@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./EditContentModal.css";
+import * as UpdateFunctions from "../../context/functions/UpdateFunctions";
 
 const EditContentModal = ({ isOpen, onClose, content, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -23,8 +24,10 @@ const EditContentModal = ({ isOpen, onClose, content, onSubmit }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const updateArticle = await UpdateFunctions.updateArticle(content.article_id, formData);
+    console.log("article data updated: ", updateArticle);
     onSubmit(formData);
   };
 

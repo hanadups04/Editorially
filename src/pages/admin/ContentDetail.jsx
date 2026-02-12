@@ -9,6 +9,11 @@ import * as ReadFunctions from "../../context/functions/ReadFunctions";
 import * as auth from "../../context/auth";
 import RequestChangesModal from "../../components/ArticleManagement/RequestChangesModa";
 import * as AddFunctions from "../../context/functions/AddFunctions";
+import EditRequestsModal from "../../components/ArticleManagement/RequestList";
+import * as UpdateFunctions from "../../context/functions/UpdateFunctions";
+import * as DeleteFunctions from "../../context/functions/DeleteFunctions";
+import ConfirmationModal from "../../components/ArticleManagement/ConfirmationModal";
+import { supabase } from "../../supabaseClient";
 
 const ContentDetail = () => {
   const { id } = useParams();
@@ -19,6 +24,36 @@ const ContentDetail = () => {
   const [userRole, setRole] = useState([]);
   const [userId, setId] = useState([]);
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+  const [isRequestsModalOpen, setIsRequestsModalOpen] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [showConfirmOpen, setShowConfirmOpen] = useState(false);
+
+  
+  const [editRequests, setEditRequests] = useState([]);
+
+  const handleToggleRequestResolved = async (requestIndex, nextValue) => {
+  setEditRequests((prev) =>
+    prev.map((request, index) =>
+      index === requestIndex ? { ...request, resolved: nextValue } : request
+    )
+  );
+
+  const resolved = await UpdateFunctions.markRequestAsResolved(
+    editRequests[requestIndex].edit_id,
+    nextValue
+  );
+
+  console.log("resolved data is: ", resolved);
+};
+
+const handleDelete = async () => {
+    const callDelete = await DeleteFunctions.archiveArticle(id, !content.visible);
+    // console.log("delete is: ", id, !content.visible);
+    setDeleteConfirmOpen(false);
+    console.log("archive result is: ", callDelete);
+  };
+
+  
 
   useEffect(() => {
     let isMounted = true;
@@ -52,16 +87,66 @@ const ContentDetail = () => {
       }
     }
 
+    async function fetchRequests() {
+      try {
+        const requests = await ReadFunctions.getRequestsList(id);
+        if(isMounted) {
+          console.log("request is: ", requests);
+          setEditRequests(requests);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     fetchArticles();
     fetchRole();
+    fetchRequests();
+
+
+    const subscription = supabase
+      .channel('articles-changes') // you can name it anything
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'articles_tbl' },
+        (payload) => {
+          console.log('Change received!', payload);
+          // payload.new → new row
+          // payload.old → old row (for update/delete)
+          setContent((prev) => {
+            switch (payload.eventType) {
+              case 'INSERT':
+                return [...prev, payload.new];
+              case 'UPDATE':
+                return prev.map((a) =>
+                  a.article_id === payload.new.article_id ? payload.new : a
+                );
+              case 'DELETE':
+                return prev.filter(
+                  (a) => a.article_id !== payload.old.article_id
+                );
+              default:
+                return prev;
+            }
+          });
+        }
+      )
+      .subscribe();
 
     return () => {
       isMounted = false;
+      supabase.removeChannel(subscription);
     };
   }, []);
 
-  const handleToggleFeatured = () => {
-    setContent((prev) => ({ ...prev, featured: !prev.featured }));
+  const handleToggleFeatured = async () => {
+    setContent((prev) => ({ ...prev, is_featured: !prev.is_featured }));
+    const featured = await UpdateFunctions.featureArticle(
+      content.article_id,
+      !content.is_featured
+    );
+    console.log("featured data is: ", featured);  
+
   };
 
   const handleEditSubmit = (updatedData) => {
@@ -110,7 +195,7 @@ const ContentDetail = () => {
               columnGap: "10px",
             }}
           >
-            {userRole < 3 ? (
+            {/* {userRole < 3 ? (
               <button
                 className="btn btn-primary"
                 onClick={(e) => {
@@ -122,7 +207,7 @@ const ContentDetail = () => {
                 <span className="btn-icon">🙋</span>
                 Request Changes
               </button>
-            ) : (
+            ) : ( */}
               <button
                 className="btn btn-primary"
                 onClick={() => setIsEditModalOpen(true)}
@@ -141,33 +226,39 @@ const ContentDetail = () => {
                 </svg>
                 Edit Article
               </button>
-            )}
+            {/* )} */}
 
-            <button
-              className="btn btn-secondary"
-              onClick={() => setIsEditModalOpen(true)}
-              style={{ backgroundColor: "#10b981", color: "white" }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            <button className="requests-btn" onClick={() => setIsRequestsModalOpen(true)}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
               </svg>
               Edit Requests
+              {editRequests.filter(req => req.resolved !== true).length > 0 && (
+                <span className="requests-badge">
+                  {editRequests.filter(req => req.resolved !== true).length}
+                </span>
+              )}
+
             </button>
-            <button
+            {content.visible ? (
+              <button
               className="btn btn-delete"
-              // onClick={(e) => handleDelete(content.article_id, e)}
+              onClick={(e) => setDeleteConfirmOpen(true)}
             >
-              Delete Article
+              Hide Article
             </button>
+            ) : (
+              <button
+              className="btn btn-primary"
+              onClick={(e) => setShowConfirmOpen(true)}
+            >
+              Show Article
+            </button>
+            )}
+            
           </div>
         </div>
 
@@ -178,7 +269,7 @@ const ContentDetail = () => {
 
           <div className="article-content">
             <div className="article-meta">
-              <span className="meta-section">{content.section_id}</span>
+              <span className="meta-section">{content.sections_tbl.section_name}</span>
               <span className="meta-date">
                 {new Date(content.date_posted).toLocaleDateString("en-US", {
                   year: "numeric",
@@ -192,21 +283,21 @@ const ContentDetail = () => {
 
             <div className="article-author">
               <div className="author-avatar">
-                {content.author_id
-                  .split(" ")
+                {content.users_tbl.username
+                  .split(' ')
                   .map((n) => n[0])
-                  .join("")}
+                  .join('')}
               </div>
               <div className="author-info">
-                <span className="author-name">{content.author_id}</span>
-                <span className="author-role">Staff Writer</span>
+                <span className="author-name">{content.users_tbl.username}</span>
+                <span className="author-role">{content.users_tbl.roles_tbl.role_name}</span>
               </div>
             </div>
 
-            <div className="featured-toggle">
-              <span className="toggle-label">Featured Article</span>
+            <div className="featured-toggle" style={{backgroundColor: content.is_featured ? "#2563eb" : "#64748b", color: "white"}}>
+              {content.is_featured ? "★ Article is Featured" : "☆ Mark as Featured"}
               <button
-                className={`toggle-btn ${content.featured ? "active" : ""}`}
+                className={`toggle-btn ${content.is_featured ? "active" : ""}`}
                 onClick={handleToggleFeatured}
               >
                 <span className="toggle-slider"></span>
@@ -239,6 +330,43 @@ const ContentDetail = () => {
         }}
         onSubmit={handleRequestSubmit}
         owner_id={userId}
+      />
+
+      <EditRequestsModal
+        isOpen={isRequestsModalOpen}
+        onClose={() => setIsRequestsModalOpen(false)}
+        requests={editRequests}
+        onToggleResolved={handleToggleRequestResolved}
+      />
+
+      <ConfirmationModal
+        isOpen={deleteConfirmOpen}
+        onClose={() => {
+          setDeleteConfirmOpen(false);
+        }}
+        onConfirm={() => {
+          handleDelete();
+        }}
+        title="Hide Article"
+        message="Are you sure you want to Hide this article?."
+        confirmText="Hide"
+        cancelText="Cancel"
+        variant="danger"
+      />
+
+      <ConfirmationModal
+        isOpen={showConfirmOpen}
+        onClose={() => {
+          setShowConfirmOpen(false);
+        }}
+        onConfirm={() => {
+          handleDelete();
+        }}
+        title="Show Article"
+        message="Are you sure you want to Show this article?."
+        confirmText="Show"
+        cancelText="Cancel"
+        variant="default"
       />
     </Layout>
   );

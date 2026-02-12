@@ -74,6 +74,8 @@ export default function ContentManagement() {
 
   // Confirmation modal states
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [showConfirmOpen, setShowConfirmOpen] = useState(false);
+
   const [pendingDeleteId, setPendingDeleteId] = useState(null);
   const [pendingDeleteStatus, setPendingDeleteStatus] = useState(null);
 
@@ -287,7 +289,8 @@ export default function ContentManagement() {
                           </button>
                         )}
 
-                        <button
+                        {content.visible ? (
+                          <button
                           className="btn btn-secondary"
                           onClick={(e) => {
                             e.preventDefault();
@@ -300,6 +303,23 @@ export default function ContentManagement() {
                           {/* change to eye icon for show OR hide */}
                           <span className="btn-icon">🙈</span>
                         </button>
+                        ) : (
+                          <button
+                          className="btn btn-secondary"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setShowConfirmOpen(true);
+                            setPendingDeleteId(content.article_id);
+                            setPendingDeleteStatus(!content.visible);
+                          }}
+                        >
+                          {/* change to eye icon for show OR hide */}
+                          <span className="btn-icon">🙉</span>
+                        </button>
+                        )}
+
+                        
                       </div>
                     </Link>
                   );
@@ -399,10 +419,26 @@ export default function ContentManagement() {
           handleDelete();
         }}
         title="Hide Article"
-        message="Are you sure you want to Hide this article? This action cannot be undone."
+        message="Are you sure you want to Hide this article?."
         confirmText="Hide"
         cancelText="Cancel"
         variant="danger"
+      />
+
+      <ConfirmationModal
+        isOpen={showConfirmOpen}
+        onClose={() => {
+          setShowConfirmOpen(false);
+          setPendingDeleteId(null);
+        }}
+        onConfirm={() => {
+          handleDelete();
+        }}
+        title="Show Article"
+        message="Are you sure you want to Show this article?."
+        confirmText="Show"
+        cancelText="Cancel"
+        variant="default"
       />
     </Layout>
   );
