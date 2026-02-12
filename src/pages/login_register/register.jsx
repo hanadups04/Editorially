@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import "./Register.css";
+import "./register.css";
 import ReactLoading from "react-loading";
 import * as auth from "../../context/auth";
 import { supabase } from "../../supabaseClient";

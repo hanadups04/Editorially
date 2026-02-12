@@ -1,34 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import Form from "react-bootstrap/Form";
+import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
+import { supabase } from "../../supabaseClient.js";
+import { isAuthenticated } from "../../context/auth.js";
 import "./AddTaskModal.css";
 
 const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
-  const [formData, setFormData] = useState({
-    project_id: "",
-    assignee_id: "",
-    subtask_title: "",
-    subtask_type: "",
-    details: "",
-    // priority: "Medium",
-    deadline: "",
-  });
-
-  const teamMembers = [
-    { id: 1, name: "Sarah Johnson", email: "sarah.j@university.edu" },
-    { id: 2, name: "Michael Chen", email: "michael.c@university.edu" },
-    { id: 3, name: "Emma Rodriguez", email: "emma.r@university.edu" },
-    { id: 4, name: "David Kim", email: "david.k@university.edu" },
-    { id: 5, name: "Jessica Martinez", email: "jessica.m@university.edu" },
-  ];
-
-  const taskTypes = [
-    { value: "writing", label: "Writing" },
-    { value: "photography", label: "Submit Photos" },
-    { value: "layout", label: "Layout Design" },
-    { value: "editing", label: "Review/Editing" },
-  ];
-
-   const [searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const projectID =
     searchParams.get("project_id") ?? searchParams.get("projectID");
 
@@ -36,27 +15,114 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
     if (projectID) console.log(`Project ID from URL: ${projectID}`);
   }, [projectID])
 
+  const [formData, setFormData] = useState({
+    project_id: "",
+    section_id: "",
+    assignee_id: "",
+    subtask_title: "",
+    subtask_details: "",
+    subtask_type: "",
+    // priority: "Medium",
+    subtask_deadline: "",
+  });
+
+  const [sections, setSections] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [loading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+      let isMounted = true;
+  
+      async function fetchSections() {
+        try {
+          const data = await ReadFunctions.fetchAllSections();
+          if (isMounted) {
+            console.log("data is: ", data);
+            setSections(data);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          if (isMounted) setIsLoading(false);
+        }
+      }
+  
+      fetchSections();
+      return () => {
+        isMounted = false;
+      };
+    }, []);
+
+    useEffect(() => {
+      let isMounted = true;
+  
+      async function fetchUsers() {
+        try {
+          const data = await ReadFunctions.fetchAllUsers();
+          if (isMounted) {
+            console.log("data is: ", data);
+            setAllUsers(data);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          if (isMounted) setIsLoading(false);
+        }
+      }
+  
+      fetchUsers();
+      return () => {
+        isMounted = false;
+      };
+    }, []);
+
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({ ...prev, [name]: value }));
+  // };
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, type, checked, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]:
+        type === "checkbox" || type === "switch"
+          ? checked
+          : name === "subtask_type"
+          ? parseInt(value)
+          : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await supabase.from("project_subtask_tbl").insert({
-      subtask_id: "subtask-0001",
-      project_id: { project_id },
-      subtask_title: formData.subtask_title,
+    const payload = {
+  project_id: ( projectID ),
+      assignee_id: formData.assignee_id,
+      section_id: Number(formData.section_id),
+      subtask_title: formData.subtask_title || "sample empty title",
+      subtask_details: formData.subtask_details,
       subtask_type: formData.subtask_type,
       assignee_id: formData.assignee_id,
-      deadline: formData.deadline,
+      subtask_deadline: formData.subtask_deadline,
+      is_done: false
+}
+
+console.log("Inserting subtask data:", payload);
+
+    await supabase.from("project_subtask_tbl").insert({
+      project_id: ( projectID ),
+      assignee_id: formData.assignee_id,
+      section_id: Number(formData.section_id),
+      subtask_title: formData.subtask_title || "sample empty title",
+      subtask_details: formData.subtask_details,
+      subtask_type: formData.subtask_type,
+      assignee_id: formData.assignee_id,
+      subtask_deadline: formData.subtask_deadline,
+      is_done: false
     });
 
-    if (error) {
-      console.error(error);
-      return;
-    }
     onClose();
   };
 
@@ -82,8 +148,79 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        {/* <form onSubmit={handleSubmit}> */}
           <div className="modal-body">
+            {["radio"].map((type) => (
+              <div
+                className="TaskSubmissionTypeCont"
+                key={`inline-${type}`}
+                // className="mb-3"
+              >
+                <p>Project Submission Type</p>
+                <div className="TaskSubmissionType">
+                  <Form.Check
+                    className="formType"
+                    label="Writing"
+                    name="subtask_type"
+                    type={type}
+                    id={`inline-${type}-1`}
+                    value={1}
+                    checked={formData.subtask_type === 1}
+                    onChange={handleChange}
+                    required
+                  />
+
+                  {/* <OverlayTrigger
+                    placement="left"
+                    delay={{ show: 250, hide: 400 }}
+                    overlay={renderTooltip(1)}
+                  >
+                    <img className="InfoSubType" src={InfoB} />
+                  </OverlayTrigger> */}
+                </div>
+                <div className="TaskSubmissionType">
+                  <Form.Check
+                    className="formType"
+                    label="Pubmat"
+                    name="subtask_type"
+                    type={type}
+                    id={`inline-${type}-2`}
+                    value={2}
+                    checked={formData.subtask_type === 2}
+                    onChange={handleChange}
+                  />
+
+                  {/* <OverlayTrigger
+                    placement="left"
+                    delay={{ show: 250, hide: 400 }}
+                    overlay={renderTooltip(2)}
+                  >
+                    <img className="InfoSubType" src={InfoB} />
+                  </OverlayTrigger> */}
+                </div>
+              </div>
+            ))}
+          {/* </Form> */}
+    
+          <div className="form-group">
+              <label className="form-label">Section</label>
+              <select
+                name="section_id"
+                className="form-select"
+                value={formData.section_id}
+                onChange={handleChange}
+              >
+                {sections.filter((section) =>
+                                    (formData.subtask_type !== 1 || section.type !== 2) && 
+                                    (formData.subtask_type !== 2 || section.type !== 1))
+                                    .map((section) => (
+                  <option key={section.section_id} value={section.section_id}>
+                    {section.section_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="form-group">
               <label className="form-label">Assign To</label>
               <select
@@ -94,38 +231,32 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
                 required
               >
                 <option value="">Select a team member</option>
-                {teamMembers.map((member) => (
-                  <option key={member.id} value={member.name}>
-                    {member.name} ({member.email})
+                {allUsers.map((member) => (
+                  <option key={member.uid} value={member.uid}>
+                    {member.username} ({member.email})
                   </option>
                 ))}
               </select>
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Task Type</label>
-              <select
-                name="subtask_type"
-                className="form-select"
-                value={formData.subtask_type}
+             <div className="form-group">
+              <label className="form-label">Task Title</label>
+              <input
+                name="subtask_title"
+                className="form-input"
+                value={formData.subtask_title}
                 onChange={handleChange}
+                placeholder="Add a task title..."
                 required
-              >
-                <option value="">Select task type</option>
-                {taskTypes.map((type) => (
-                  <option key={type.value} value={type.value}>
-                    {type.label}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
 
             <div className="form-group">
               <label className="form-label">Task Details</label>
               <textarea
-                name="description"
+                name="subtask_details"
                 className="form-textarea"
-                value={formData.description}
+                value={formData.subtask_details}
                 onChange={handleChange}
                 placeholder="Describe what needs to be done..."
                 required
@@ -150,9 +281,9 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
               <label className="form-label">Deadline</label>
               <input
                 type="date"
-                name="deadline"
+                name="subtask_deadline"
                 className="form-input"
-                value={formData.deadline}
+                value={formData.subtask_deadline}
                 onChange={handleChange}
                 required
               />
@@ -175,7 +306,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
               Create Task
             </button>
           </div>
-        </form>
+        {/* </form> */}
       </div>
     </div>
   );

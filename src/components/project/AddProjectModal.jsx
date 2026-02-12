@@ -90,7 +90,7 @@ export default function CreateParentTaskModal({
       return;
     }
 
-    await supabase.from("projects_tbl").insert({
+    const { error } = await supabase.from("projects_tbl").insert({
       project_id: "project-0001",
       owner_id: userData.user.id,
       step_id: 1,
