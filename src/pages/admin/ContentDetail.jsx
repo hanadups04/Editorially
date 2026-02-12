@@ -28,32 +28,34 @@ const ContentDetail = () => {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [showConfirmOpen, setShowConfirmOpen] = useState(false);
 
-  
   const [editRequests, setEditRequests] = useState([]);
 
   const handleToggleRequestResolved = async (requestIndex, nextValue) => {
-  setEditRequests((prev) =>
-    prev.map((request, index) =>
-      index === requestIndex ? { ...request, resolved: nextValue } : request
-    )
-  );
+    setEditRequests((prev) =>
+      prev.map((request, index) =>
+        index === requestIndex ? { ...request, resolved: nextValue } : request,
+      ),
+    );
 
-  const resolved = await UpdateFunctions.markRequestAsResolved(
-    editRequests[requestIndex].edit_id,
-    nextValue
-  );
+    const resolved = await UpdateFunctions.markRequestAsResolved(
+      editRequests[requestIndex].edit_id,
+      nextValue,
+    );
 
-  console.log("resolved data is: ", resolved);
-};
+    console.log("resolved data is: ", resolved);
+  };
 
-const handleDelete = async () => {
-    const callDelete = await DeleteFunctions.archiveArticle(id, !content.visible);
+  const handleDelete = async () => {
+    setContent((prev) => ({ ...prev, visible: !content.visible }));
+
+    const callDelete = await DeleteFunctions.archiveArticle(
+      id,
+      !content.visible,
+    );
     // console.log("delete is: ", id, !content.visible);
     setDeleteConfirmOpen(false);
     console.log("archive result is: ", callDelete);
   };
-
-  
 
   useEffect(() => {
     let isMounted = true;
@@ -90,7 +92,7 @@ const handleDelete = async () => {
     async function fetchRequests() {
       try {
         const requests = await ReadFunctions.getRequestsList(id);
-        if(isMounted) {
+        if (isMounted) {
           console.log("request is: ", requests);
           setEditRequests(requests);
         }
@@ -103,33 +105,20 @@ const handleDelete = async () => {
     fetchRole();
     fetchRequests();
 
-
     const subscription = supabase
-      .channel('articles-changes') // you can name it anything
+      .channel("articles-changes")
       .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'articles_tbl' },
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "articles_tbl",
+          filter: `article_id=eq.${id}`, // only this article
+        },
         (payload) => {
-          console.log('Change received!', payload);
-          // payload.new → new row
-          // payload.old → old row (for update/delete)
-          setContent((prev) => {
-            switch (payload.eventType) {
-              case 'INSERT':
-                return [...prev, payload.new];
-              case 'UPDATE':
-                return prev.map((a) =>
-                  a.article_id === payload.new.article_id ? payload.new : a
-                );
-              case 'DELETE':
-                return prev.filter(
-                  (a) => a.article_id !== payload.old.article_id
-                );
-              default:
-                return prev;
-            }
-          });
-        }
+          console.log("Article change received!", payload);
+          setContent((prev) => ({ ...prev, ...payload.new }));
+        },
       )
       .subscribe();
 
@@ -143,10 +132,9 @@ const handleDelete = async () => {
     setContent((prev) => ({ ...prev, is_featured: !prev.is_featured }));
     const featured = await UpdateFunctions.featureArticle(
       content.article_id,
-      !content.is_featured
+      !content.is_featured,
     );
-    console.log("featured data is: ", featured);  
-
+    console.log("featured data is: ", featured);
   };
 
   const handleEditSubmit = (updatedData) => {
@@ -195,7 +183,7 @@ const handleDelete = async () => {
               columnGap: "10px",
             }}
           >
-            {/* {userRole < 3 ? (
+            {userRole < 3 ? (
               <button
                 className="btn btn-primary"
                 onClick={(e) => {
@@ -207,7 +195,7 @@ const handleDelete = async () => {
                 <span className="btn-icon">🙋</span>
                 Request Changes
               </button>
-            ) : ( */}
+            ) : (
               <button
                 className="btn btn-primary"
                 onClick={() => setIsEditModalOpen(true)}
@@ -226,39 +214,49 @@ const handleDelete = async () => {
                 </svg>
                 Edit Article
               </button>
-            {/* )} */}
+            )}
 
-            <button className="requests-btn" onClick={() => setIsRequestsModalOpen(true)}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <button
+              className="requests-btn"
+              onClick={() => setIsRequestsModalOpen(true)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                 <polyline points="14 2 14 8 20 8"></polyline>
                 <line x1="16" y1="13" x2="8" y2="13"></line>
                 <line x1="16" y1="17" x2="8" y2="17"></line>
               </svg>
               Edit Requests
-              {editRequests.filter(req => req.resolved !== true).length > 0 && (
+              {editRequests.filter((req) => req.resolved !== true).length >
+                0 && (
                 <span className="requests-badge">
-                  {editRequests.filter(req => req.resolved !== true).length}
+                  {editRequests.filter((req) => req.resolved !== true).length}
                 </span>
               )}
-
             </button>
             {content.visible ? (
               <button
-              className="btn btn-delete"
-              onClick={(e) => setDeleteConfirmOpen(true)}
-            >
-              Hide Article
-            </button>
+                className="btn btn-delete"
+                onClick={(e) => setDeleteConfirmOpen(true)}
+              >
+                Hide Article
+              </button>
             ) : (
               <button
-              className="btn btn-primary"
-              onClick={(e) => setShowConfirmOpen(true)}
-            >
-              Show Article
-            </button>
+                className="btn btn-primary"
+                onClick={(e) => setShowConfirmOpen(true)}
+              >
+                Show Article
+              </button>
             )}
-            
           </div>
         </div>
 
@@ -269,7 +267,10 @@ const handleDelete = async () => {
 
           <div className="article-content">
             <div className="article-meta">
-              <span className="meta-section">{content.sections_tbl.section_name}</span>
+              <span className="meta-section">
+                {content.sections_tbl.section_name}
+              </span>
+              |
               <span className="meta-date">
                 {new Date(content.date_posted).toLocaleDateString("en-US", {
                   year: "numeric",
@@ -284,18 +285,30 @@ const handleDelete = async () => {
             <div className="article-author">
               <div className="author-avatar">
                 {content.users_tbl.username
-                  .split(' ')
+                  .split(" ")
                   .map((n) => n[0])
-                  .join('')}
+                  .join("")}
               </div>
               <div className="author-info">
-                <span className="author-name">{content.users_tbl.username}</span>
-                <span className="author-role">{content.users_tbl.roles_tbl.role_name}</span>
+                <span className="author-name">
+                  {content.users_tbl.username}
+                </span>
+                <span className="author-role">
+                  {content.users_tbl.roles_tbl.role_name}
+                </span>
               </div>
             </div>
 
-            <div className="featured-toggle" style={{backgroundColor: content.is_featured ? "#2563eb" : "#64748b", color: "white"}}>
-              {content.is_featured ? "★ Article is Featured" : "☆ Mark as Featured"}
+            <div
+              className="featured-toggle"
+              style={{
+                backgroundColor: content.is_featured ? "#2563eb" : "#64748b",
+                color: "white",
+              }}
+            >
+              {content.is_featured
+                ? "★ Article is Featured"
+                : "☆ Mark as Featured"}
               <button
                 className={`toggle-btn ${content.is_featured ? "active" : ""}`}
                 onClick={handleToggleFeatured}

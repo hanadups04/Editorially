@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./EditContentModal.css";
 import * as UpdateFunctions from "../../context/functions/UpdateFunctions";
+import * as AddFunctions from "../../context/functions/AddFunctions";
 
 const EditContentModal = ({ isOpen, onClose, content, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -26,17 +27,22 @@ const EditContentModal = ({ isOpen, onClose, content, onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const updateArticle = await UpdateFunctions.updateArticle(content.article_id, formData);
+    const updateArticle = await UpdateFunctions.updateArticle(
+      content.article_id,
+      formData,
+    );
     console.log("article data updated: ", updateArticle);
     onSubmit(formData);
   };
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
       // In a real app, upload to server and get URL
-      const imageUrl = URL.createObjectURL(file);
-      setFormData((prev) => ({ ...prev, images: imageUrl }));
+      const fileUpload = await AddFunctions.uploadThumbnail(file);
+      console.log("file uplaoded: ", fileUpload);
+      // const imageUrl = URL.createObjectURL(file);
+      setFormData((prev) => ({ ...prev, images: fileUpload }));
     }
   };
 
@@ -102,14 +108,6 @@ const EditContentModal = ({ isOpen, onClose, content, onSubmit }) => {
                   </div>
                 )}
                 <div className="upload-controls">
-                  <input
-                    type="url"
-                    name="images"
-                    className="form-input"
-                    value={formData.images}
-                    onChange={handleChange}
-                    placeholder="Enter image URL or upload"
-                  />
                   <label className="upload-btn">
                     <input
                       type="file"

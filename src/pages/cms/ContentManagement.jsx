@@ -11,6 +11,7 @@ import * as auth from "../../context/auth";
 import * as AddFunctions from "../../context/functions/AddFunctions";
 import ConfirmationModal from "../../components/ArticleManagement/ConfirmationModal";
 import RequestChangesModal from "../../components/ArticleManagement/RequestChangesModa";
+import { supabase } from "../../supabaseClient";
 
 export default function ContentManagement() {
   const [loading, setIsLoading] = useState(true);
@@ -52,8 +53,24 @@ export default function ContentManagement() {
 
     fetchArticles();
     fetchRole();
+
+    const subscription = supabase
+      .channel("articles-updates") // you can name it anything
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "articles_tbl" },
+        async (payload) => {
+          console.log("Change received!", payload);
+          // payload.new → new row
+          // payload.old → old row (for update/delete)
+          await fetchArticles();
+        },
+      )
+      .subscribe();
+
     return () => {
       isMounted = false;
+      supabase.removeChannel(subscription);
     };
   }, []);
 
@@ -94,6 +111,15 @@ export default function ContentManagement() {
   };
 
   const handleDelete = async () => {
+    // setContent((prev) => ({ ...prev, visible: !content.visible }));
+    setContents((prev) =>
+      prev.map((item) =>
+        item.article_id === pendingDeleteId
+          ? { ...item, status: pendingDeleteStatus }
+          : item,
+      ),
+    );
+
     const callDelete = await DeleteFunctions.archiveArticle(
       pendingDeleteId,
       pendingDeleteStatus,
@@ -147,7 +173,8 @@ export default function ContentManagement() {
         .includes(searchQuery.toLowerCase());
       // content.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesSection =
-        filterSection === "all" || content.section_id === filterSection;
+        filterSection === "all" ||
+        content.sections_tbl.section_name === filterSection;
       return matchesSearch && matchesSection;
     })
     .sort((a, b) => {
@@ -158,7 +185,10 @@ export default function ContentManagement() {
       }
     });
 
-  const sections = ["all", ...new Set(contents.map((c) => c.section_id))];
+  const sections = [
+    "all",
+    ...new Set(contents.map((c) => c.sections_tbl.section_name)),
+  ];
 
   return (
     <Layout>
@@ -247,7 +277,7 @@ export default function ContentManagement() {
                           </h2>
                         )}
                         <p className="card-section">
-                          Section: {content.section_id}
+                          Section: {content.sections_tbl.section_name}
                         </p>
                         {/* <p className="card-excerpt">{content.excerpt}</p> */}
                         <p className="card-date">
@@ -291,35 +321,33 @@ export default function ContentManagement() {
 
                         {content.visible ? (
                           <button
-                          className="btn btn-secondary"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setDeleteConfirmOpen(true);
-                            setPendingDeleteId(content.article_id);
-                            setPendingDeleteStatus(!content.visible);
-                          }}
-                        >
-                          {/* change to eye icon for show OR hide */}
-                          <span className="btn-icon">🙈</span>
-                        </button>
+                            className="btn btn-secondary"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setDeleteConfirmOpen(true);
+                              setPendingDeleteId(content.article_id);
+                              setPendingDeleteStatus(!content.visible);
+                            }}
+                          >
+                            {/* change to eye icon for show OR hide */}
+                            <span className="btn-icon">🙈</span>
+                          </button>
                         ) : (
                           <button
-                          className="btn btn-secondary"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setShowConfirmOpen(true);
-                            setPendingDeleteId(content.article_id);
-                            setPendingDeleteStatus(!content.visible);
-                          }}
-                        >
-                          {/* change to eye icon for show OR hide */}
-                          <span className="btn-icon">🙉</span>
-                        </button>
+                            className="btn btn-secondary"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setShowConfirmOpen(true);
+                              setPendingDeleteId(content.article_id);
+                              setPendingDeleteStatus(!content.visible);
+                            }}
+                          >
+                            {/* change to eye icon for show OR hide */}
+                            <span className="btn-icon">🙉</span>
+                          </button>
                         )}
-
-                        
                       </div>
                     </Link>
                   );
