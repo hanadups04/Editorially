@@ -15,10 +15,10 @@ const EditProjectModal = ({ isOpen, onClose, project, onSubmit }) => {
     if (project) {
       setFormData({
         title: project.title || "",
-        description: project.description || "",
-        publicationDate: project.publicationDate || "",
+        details: project.details || "",
+        deadline: project.deadline || "",
         issue: project.issue || "",
-        category: project.category || "",
+        section_id: project.section_id || "",
         status: project.status || "",
       });
     }
@@ -88,9 +88,9 @@ const EditProjectModal = ({ isOpen, onClose, project, onSubmit }) => {
             <div className="form-group">
               <label className="form-label">Description</label>
               <textarea
-                name="description"
+                name="details"
                 className="form-textarea"
-                value={formData.description}
+                value={formData.details}
                 onChange={handleChange}
                 required
               />
@@ -101,9 +101,9 @@ const EditProjectModal = ({ isOpen, onClose, project, onSubmit }) => {
                 <label className="form-label">Publication Date</label>
                 <input
                   type="text"
-                  name="publicationDate"
+                  name="deadline"
                   className="form-input"
-                  value={formData.publicationDate}
+                  value={formData.deadline}
                   onChange={handleChange}
                   placeholder="e.g., March 15, 2025"
                 />
@@ -126,9 +126,9 @@ const EditProjectModal = ({ isOpen, onClose, project, onSubmit }) => {
               <div className="form-group">
                 <label className="form-label">Category</label>
                 <select
-                  name="category"
+                  name="section_id"
                   className="form-select"
-                  value={formData.category}
+                  value={formData.section_id}
                   onChange={handleChange}
                   required
                 >

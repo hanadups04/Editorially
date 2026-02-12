@@ -38,16 +38,28 @@ export async function fetchAllProjects() {
   return data;
 }
 
-export async function fetchSingleProjects(project_id) {
+export async function fetchSingleProject(project_id) {
   const { data, error} = await supabase
     .from("projects_tbl")
     .select("*")
     .eq("project_id", project_id)
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchSingleUser(uid){
+  const { data, error} = await supabase
+    .from("users_tbl")
+    .select("*")
+    .eq("uid", uid)
     
 
   if (error) throw error;
   return data;
 }
+
 
 
 //--------------------------------------------------------------------- <=3 TITI NI DON ANDREI TANEO -------------------------------------------------------- //

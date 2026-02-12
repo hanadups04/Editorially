@@ -1,12 +1,20 @@
 import React from "react";
 import "./ProjectInfo.css";
 
-export default function ProjectInfo({ project, onEditClick }) {
+export default function ProjectInfo({
+  project,
+  title,
+  description,
+  deadline,
+  section,
+  status,
+  onEditClick,
+}) {
   return (
     <div className="card project-info">
       <div className="card-header">
         <div className="card-header-top">
-          <h1 className="card-title">{project.title}</h1>
+          <h1 className="card-title">{title}</h1>
           <button className="btn btn-secondary btn-sm" onClick={onEditClick}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -23,29 +31,25 @@ export default function ProjectInfo({ project, onEditClick }) {
             Edit Project
           </button>
         </div>
-        <p className="card-subtitle">{project.description}</p>
+        <p className="card-subtitle">{description}</p>
       </div>
       <div className="info-grid">
         <div className="info-item">
           <span className="info-label">Publication Date</span>
-          <span className="info-value">{project.publicationDate}</span>
+          <span className="info-value">{deadline}</span>
         </div>
         <div className="info-item">
           <span className="info-label">Issue</span>
-          <span className="info-value">{project.issue}</span>
+          <span className="info-value"></span>
         </div>
         <div className="info-item">
-          <span className="info-label">Category</span>
-          <span className="info-value">{project.category}</span>
+          <span className="info-label">Section</span>
+          <span className="info-value">{section}</span>
         </div>
         <div className="info-item">
           <span className="info-label">Status</span>
           <span className="info-value">
-            <span
-              className={`task-status ${project.status.toLowerCase().replace(" ", "-")}`}
-            >
-              {project.status}
-            </span>
+            <span className={"task-status"}>{status}</span>
           </span>
         </div>
       </div>

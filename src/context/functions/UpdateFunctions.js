@@ -26,4 +26,29 @@ export async function rejectProject(project_id) {
   return true;
 }
 
+export async function updateProject(project_id, formData){
+  const { data, error} = await supabase
+    .from("projects_tbl")
+    .update({title: formData.title, deadline: formData.deadline, details: formData.details})
+    .eq("project_id", project_id)
+    
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateTask(subtask_id, formData){
+  const { data, error} = await supabase
+    .from("subtasks_tbl")
+    .update({subtask_title: formData.subtask_title, subtask_deadline: formData.subtask_deadline, 
+      subtask_details: formData.subtask_details, assignee_id: formData.assignee_id, subtask_type: formData.subtask_title})
+    .eq("subtask_id", subtask_id)
+    
+
+  if (error) throw error;
+  return data;
+}
+
+
+
 

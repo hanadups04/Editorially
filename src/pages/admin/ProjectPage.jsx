@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Layout from "../../components/templates/AdminTemplate";
 // import ProjectInfo from "../../components/project/ProjectInfo";
@@ -29,16 +29,42 @@ const ProjectPage = () => {
     if (projectID) console.log(`Project ID from URL: ${projectID}`);
   }, [projectID]);
 
+  const [project, setProject] = useState({});
+  const [loading, setIsLoading] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchSpecificProject() {
+      try {
+        const data = await ReadFunctions.fetchSingleProject(projectID);
+        if (isMounted) {
+          console.log("ass is: ", data);
+          setProject(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    fetchSpecificProject();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Sample project data
-  const [project, setProject] = useState({
-    title: "Spring 2025 Feature: Campus Sustainability Initiative",
-    description:
-      "A comprehensive feature article covering the university's new sustainability programs and student-led environmental initiatives.",
-    publicationDate: "March 15, 2025",
-    issue: "Vol. 45, Issue 3",
-    category: "Feature Article",
-    status: "In Progress",
-  });
+  // const [project, setProject] = useState({
+  //   title: "Spring 2025 Feature: Campus Sustainability Initiative",
+  //   description:
+  //     "A comprehensive feature article covering the university's new sustainability programs and student-led environmental initiatives.",
+  //   publicationDate: "March 15, 2025",
+  //   issue: "Vol. 45, Issue 3",
+  //   category: "Feature Article",
+  //   status: "In Progress",
+  // });
 
   // Workflow steps
   const workflowSteps = [
@@ -174,7 +200,12 @@ const ProjectPage = () => {
   return (
     <Layout>
       <ProjectInfo
-        project={project}
+        // project={projectID}
+        title={project.title}
+        description={project.details}
+        deadline={project.deadline}
+        section={project.section_id}
+        status={project.status}
         onEditClick={() => setIsEditProjectModalOpen(true)}
       />
       <div>
