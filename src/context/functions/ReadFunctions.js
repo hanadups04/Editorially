@@ -60,6 +60,16 @@ export async function fetchSingleUser(uid){
   return data;
 }
 
+export async function fetchAllTasks(project_id) {
+  const { data, error} = await supabase
+    .from("project_subtask_tbl")
+    .select("*, users_tbl(username, roles_tbl(role_name))")
+    .eq("project_id", project_id)
+
+  if (error) throw error;
+  return data;
+}
+
 
 
 //--------------------------------------------------------------------- <=3 TITI NI DON ANDREI TANEO -------------------------------------------------------- //

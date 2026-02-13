@@ -98,7 +98,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
     e.preventDefault();
 
     const payload = {
-  project_id: ( projectID ),
+      project_id: ( projectID ),
       assignee_id: formData.assignee_id,
       section_id: Number(formData.section_id),
       subtask_title: formData.subtask_title || "sample empty title",
