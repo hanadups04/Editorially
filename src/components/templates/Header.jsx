@@ -1,7 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Header.css";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../../supabaseClient";
+import * as auth from "../../context/auth";
+import { Users } from "lucide-react";
 
 const Header = ({ onToggleSidebar }) => {
+  const navigate = useNavigate();
+  const [userId, setUserId] = useState();
+
+  useEffect(() => {
+    async function profile() {
+      const user = await auth.isAuthenticated();
+      setUserId(user.data.id);
+      console.log("i loaded hihi");
+    }
+
+    profile();
+  }, []);
+
   return (
     <header className="header">
       <div className="header-left">
@@ -56,7 +73,11 @@ const Header = ({ onToggleSidebar }) => {
             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
           </svg>
         </button>
-        <button className="btn-icon" aria-label="User menu">
+        <button
+          className="btn-icon"
+          aria-label="User menu"
+          onClick={() => navigate(`/profile/${userId}`)}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"

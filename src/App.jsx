@@ -127,13 +127,14 @@ function App() {
           <Route path="/tasks" element={<ProjectPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/members" element={<Members />} />
-          <Route path="/members/:id" element={<MemberDetail/>}/>
+          <Route path="/members/:id" element={<MemberDetail />} />
           <Route path="/document" element={<DocumentPage />} />
           <Route path="/projects" element={<TaskList />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/content" element={<ContentManagement />} />
           <Route path="/content/:id" element={<ContentDetail />} />
+          <Route path="/profile/:id" element={<MemberDetail />} />
         </Routes>
       </Router>
     </>
