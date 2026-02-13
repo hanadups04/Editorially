@@ -23,6 +23,45 @@ export async function getUserProfile(uid) {
   return data; // null if none
 }
 
+  export async function fetchAllSections() {
+  const { data, error} = await supabase
+    .from("sections_tbl")
+    .select("*")
+
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchAllProjects() {
+  const { data, error} = await supabase
+    .from("projects_tbl")
+    .select("*")
+
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchSingleProject(project_id) {
+  const { data, error} = await supabase
+    .from("projects_tbl")
+    .select("*")
+    .eq("project_id", project_id)
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchSingleUser(uid){
+  const { data, error} = await supabase
+    .from("users_tbl")
+    .select("*")
+    .eq("uid", uid)
+    
+  if (error) throw error;
+  return data;
+}
+
 export async function getPostedArticles() {
   const { data, error } = await supabase
     .from("articles_tbl")
@@ -57,5 +96,17 @@ export async function getRequestsList(article_id) {
   if (error) return error;
   return data;
 }
+
+export async function fetchAllTasks(project_id) {
+  const { data, error} = await supabase
+    .from("project_subtask_tbl")
+    .select("*, users_tbl(username, roles_tbl(role_name))")
+    .eq("project_id", project_id)
+
+  if (error) throw error;
+  return data;
+}
+
+
 
 //--------------------------------------------------------------------- <=3 TITI NI DON ANDREI TANEO -------------------------------------------------------- //
