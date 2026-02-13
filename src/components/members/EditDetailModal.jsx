@@ -1,18 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./EditDetailModal.css";
 
 const sections = ["Technology", "Design", "Marketing", "Sales", "Operations"];
 const roles = ["admin", "editor", "member"];
 
-export const EditMemberModal = ({ open, onOpenChange, member, onUpdate }) => {
+export const EditMemberModal = ({
+  open,
+  onOpenChange,
+  member,
+  onUpdate,
+  isProfile,
+}) => {
   const [formData, setFormData] = useState({
     username: member.username,
     password: "",
     confirmPassword: "",
-    section: member.section,
-    branch: member.branch,
-    role: member.role,
+    section: member.sections_tbl.section_name,
+    role: member.roles_tbl.role_name,
   });
+
+  useEffect(() => {
+    console.log("member info is: ", member);
+  }, []);
 
   if (!open) return null;
 
@@ -46,49 +55,58 @@ export const EditMemberModal = ({ open, onOpenChange, member, onUpdate }) => {
 
         <form onSubmit={handleSubmit}>
           <div className="edit-modal-body">
-            <div className="edit-form-group">
-              <label htmlFor="username">Username</label>
-              <input
-                id="username"
-                type="text"
-                value={formData.username}
-                onChange={(e) =>
-                  setFormData({ ...formData, username: e.target.value })
-                }
-                className="edit-input"
-                required
-              />
-            </div>
+            {isProfile ? (
+              <>
+                <div className="edit-form-group">
+                  <label htmlFor="username">Username</label>
+                  <input
+                    id="username"
+                    type="text"
+                    value={formData.username}
+                    onChange={(e) =>
+                      setFormData({ ...formData, username: e.target.value })
+                    }
+                    className="edit-input"
+                    required
+                  />
+                </div>
 
-            <div className="edit-form-group">
-              <label htmlFor="password">
-                New Password (leave blank to keep current)
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-                className="edit-input"
-                placeholder="Enter new password"
-              />
-            </div>
+                <div className="edit-form-group">
+                  <label htmlFor="password">
+                    New Password (leave blank to keep current)
+                  </label>
+                  <input
+                    id="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                    className="edit-input"
+                    placeholder="Enter new password"
+                  />
+                </div>
 
-            <div className="edit-form-group">
-              <label htmlFor="confirmPassword">Confirm New Password</label>
-              <input
-                id="confirmPassword"
-                type="password"
-                value={formData.confirmPassword}
-                onChange={(e) =>
-                  setFormData({ ...formData, confirmPassword: e.target.value })
-                }
-                className="edit-input"
-                placeholder="Confirm new password"
-              />
-            </div>
+                <div className="edit-form-group">
+                  <label htmlFor="confirmPassword">Confirm New Password</label>
+                  <input
+                    id="confirmPassword"
+                    type="password"
+                    value={formData.confirmPassword}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        confirmPassword: e.target.value,
+                      })
+                    }
+                    className="edit-input"
+                    placeholder="Confirm new password"
+                  />
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
 
             <div className="edit-form-group">
               <label htmlFor="section">Section</label>
@@ -106,20 +124,6 @@ export const EditMemberModal = ({ open, onOpenChange, member, onUpdate }) => {
                   </option>
                 ))}
               </select>
-            </div>
-
-            <div className="edit-form-group">
-              <label htmlFor="branch">Branch Name</label>
-              <input
-                id="branch"
-                type="text"
-                value={formData.branch}
-                onChange={(e) =>
-                  setFormData({ ...formData, branch: e.target.value })
-                }
-                className="edit-input"
-                required
-              />
             </div>
 
             <div className="edit-form-group">

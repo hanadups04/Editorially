@@ -20,6 +20,9 @@ import Calendar from "./pages/admin/Calendar.jsx";
 import Login from "./pages/login_register/login.jsx";
 import Register from "./pages/login_register/register.jsx";
 import Redirector from "./AppRedirector.jsx";
+import DocumentPage from "./pages/admin/DocumentPage.jsx";
+import ContentDetail from "./pages/admin/ContentDetail.jsx";
+import MemberDetail from "./pages/membersList/MemberDetail.jsx";
 
 const ProtectedRoute = ({ requiredAccessLvl, children }) => {
   const [userAccessLvl, setUserAccessLvl] = useState(null);
@@ -64,7 +67,7 @@ const ProtectedRoute = ({ requiredAccessLvl, children }) => {
         setUserAccessLvl(accessLevel);
       } catch (err) {
         console.error("Error during fetch:", err.message);
-        navigate("/AboutUs");
+        navigate("/aboutus");
       } finally {
         setIsAccessLvlFetched(true);
         setIsLoading(false);
@@ -72,7 +75,7 @@ const ProtectedRoute = ({ requiredAccessLvl, children }) => {
     };
 
     getUserAndAccess();
-  }, [navigate, currentSlug]);
+  }, [navigate]);
 
   useEffect(() => {
     if (isAccessLvlFetched && !requiredAccessLvl.includes(userAccessLvl)) {
@@ -124,174 +127,14 @@ function App() {
           <Route path="/tasks" element={<ProjectPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/members" element={<Members />} />
-          <Route path="/contentManagement" element={<ContentManagement />} />
+          <Route path="/members/:id" element={<MemberDetail />} />
+          <Route path="/document" element={<DocumentPage />} />
           <Route path="/projects" element={<TaskList />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-
-          {/* <Route
-            path="/RegisterBranch"
-            element={withAccess(RegisterBranch, [1, 2, 3, 4, 5, 6])}
-          /> */}
-          {/* <Route path="/:branchSlug" element={<ThemeLayoutRouter />}>
-            <Route index element={<ThemeViewRouter view="home" />} />
-            <Route
-              path=":sectionName"
-              // element={withReaderAccess(SectionPage)}
-              element={<ThemeViewRouter view="section" />}
-            />
-            <Route
-              path="/:branchSlug/Profile"
-              element={withReaderAccess(ReaderProfile)}
-            />
-
-            <Route
-              path="/:branchSlug/SavedPosts"
-              element={withReaderAccess(SavedPostPage)}
-            />
-            <Route
-              path="ViewArticle"
-              // element={withReaderAccess(ViewArticle)}
-              element={<ThemeViewRouter view="article" />}
-            />
-
-            <Route
-              path="/:branchSlug/AboutUs"
-              element={withReaderAccess(AboutUs)}
-            />
-
-            <Route
-              path="/:branchSlug/AboutUsProfile"
-              element={withReaderAccess(AboutUsProfile)}
-            />
-            <Route
-              path="/:branchSlug/Search"
-              element={withReaderAccess(SearchPage)}
-            />
-          </Route> */}
-
-          {/* <Route
-            path="/Admin"
-            element={withAccess(AdminPageTemplate, [6, 5, 4, 3, 2])}
-          >
-            <Route path="Profile" element={<ReaderProfile />} />
-
-            <Route
-              path="AdminDashboard"
-              element={withAccess(AdminDashboard, [6, 5, 4])}
-            />
-            <Route
-              path="EicHomepage"
-              element={withAccess(EicHomepage, [6, 5, 4])}
-            />
-            <Route
-              path="UserManagement"
-              element={withAccess(UserManagement, [6, 5, 4, 3])}
-            />
-            <Route
-              path="ManageRoles"
-              element={withAccess(ManageRoles, [6, 5, 4])}
-            />
-            <Route
-              path="BranchProcess"
-              element={withAccess(BranchProcess, [6, 5, 4])}
-            />
-            <Route
-              path="EbHomepage"
-              element={withAccess(EbHomepage, [5, 4, 3])}
-            />
-            <Route
-              path="TopicNSubtasksView"
-              element={withAccess(TopicNSubtasksView, [6, 5, 4, 3, 2])}
-            />
-            <Route
-              path="CreateTaskPage"
-              element={withAccess(CreateTaskPage, [6, 5, 4, 3, 2])}
-            />
-            <Route
-              path="ContribHomepage"
-              element={withAccess(ContribHomepage, [2])}
-            />
-            <Route
-              path="SwHomepage"
-              element={withAccess(SwHomepage, [5, 4, 3, 2])}
-            />
-            <Route
-              path="applicantInfoPage"
-              element={withAccess(ApplicantInfoPage, [6, 5, 4, 3, 2])}
-            />
-            <Route
-              path="ContribHuntParent"
-              element={withAccess(ContribHuntParent, [6, 5, 4, 3])}
-            />
-            <Route
-              path="CmsPage"
-              element={withAccess(CmsPage, [5, 6, 4, 3, 2])}
-            />
-            <Route
-              path="ViewCmsArticle"
-              element={withAccess(ViewCmsArticle, [5, 6, 4, 3, 2])}
-            />
-            <Route
-              path="AdminCalendar"
-              element={withAccess(AdminCalendar, [5, 6, 4, 3, 2])}
-            />
-            <Route
-              path="HistoryPage"
-              element={withAccess(HistoryPage, [5, 6, 4, 3, 2])}
-            />
-          </Route> */}
-
-          {/* <Route
-            path="/TextEditor"
-            element={
-              <ProtectedRoute requiredAccessLvl={[6, 5, 4, 3, 2]}>
-                <TextEditor />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/PubEditor"
-            element={
-              <ProtectedRoute requiredAccessLvl={[6, 5, 4, 3, 2]}>
-                <PubEditor />
-              </ProtectedRoute>
-            }
-          /> */}
-
-          {/* <Route
-            path="/SAdmin" // everything accesslevel inside to be set to 5
-            element={withAccess(SuperAdminTemplate, [4, 5])}
-          >
-            <Route
-              path="SADashboard"
-              element={withAccess(SADashboard, [4, 5])}
-            />
-            <Route
-              path="SAMembers"
-              element={withAccess(SAMemberList, [4, 5])}
-            />
-            <Route
-              path="SABranches"
-              element={withAccess(SABranchLists, [4, 5])}
-            />
-            <Route
-              path="SAApplicants"
-              element={withAccess(SABranchApplicants, [4, 5])}
-            />
-            <Route
-              path="SADeactivatedPublications"
-              element={withAccess(SADeactivatedBranchList, [4, 5])}
-            />
-
-            <Route path="SAUserLogs" element={withAccess(SAUserLogs, [4, 5])} />
-            <Route path="SAProjLogs" element={withAccess(SAProjLogs, [4, 5])} />
-            <Route
-              path="branch/:branchId"
-              element={withAccess(SingleBranchView, [4, 5])}
-            />
-          </Route> */}
+          <Route path="/content" element={<ContentManagement />} />
+          <Route path="/content/:id" element={<ContentDetail />} />
+          <Route path="/profile/:id" element={<MemberDetail />} />
         </Routes>
       </Router>
     </>

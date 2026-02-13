@@ -1,23 +1,32 @@
 import { supabase } from "../../supabaseClient";
 
-const AddFunctions = () => {
+export async function insertEditRequest(data) {
+  await supabase.from("edit_request_tbl").insert({
+    article_id: data.article_id,
+    owner_id: data.owner_id,
+    resolved: false,
+    content: data.content,
+    is_urgent: data.is_urgent,
+  });
+}
 
-  return {
+export async function uploadThumbnail(file) {
+  const fileExt = file.name.split(".").pop();
+  const fileName = `${crypto.randomUUID()}.${fileExt}`;
+  const filePath = `article-thumbnails/${fileName}`;
 
-  };
-};
+  const { data, error } = await supabase.storage
+    .from("Editorially-media-storage")
+    .upload(filePath, file);
 
-export default AddFunctions;
+  if (error) {
+    console.error("Upload failed:", error);
+    return null;
+  }
 
+  const { data: publicUrlData } = supabase.storage
+    .from("Editorially-media-storage")
+    .getPublicUrl(filePath);
 
-// import { supabase } from "../../supabaseClient";
-
-// export async function fetchAllUsers() {
-//   const { data, error } = await supabase
-//     .from("projects")
-//     .select("*")
-//     .order("created_at", { ascending: false });
-
-//   if (error) throw error;
-//   return data;
-// }
+  return publicUrlData.publicUrl;
+}

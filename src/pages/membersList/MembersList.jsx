@@ -1,51 +1,60 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FilterModal } from "../../components/members/FilterModal";
 import { AddMemberModal } from "../../components/members/AddMembersModal";
 import "./MembersList.css";
 import Layout from "../../components/templates/AdminTemplate";
-
-// Mock data - replace with actual API call
-const mockMembers = [
-  {
-    id: "1",
-    username: "johndoe",
-    email: "john.doe@example.com",
-    section: "Technology",
-    branch: "Engineering",
-    role: "admin",
-    avatar: "/placeholder.svg",
-    notifications: true,
-  },
-  {
-    id: "2",
-    username: "janedoe",
-    email: "jane.doe@example.com",
-    section: "Design",
-    branch: "Creative",
-    role: "editor",
-    avatar: "/placeholder.svg",
-    notifications: true,
-  },
-  {
-    id: "3",
-    username: "bobsmith",
-    email: "bob.smith@example.com",
-    section: "Marketing",
-    branch: "Communications",
-    role: "member",
-    avatar: "/placeholder.svg",
-    notifications: false,
-  },
-];
+import * as ReadFunctions from "../../context/functions/ReadFunctions";
+import { supabase } from "../../supabaseClient";
 
 const MembersList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState({ section: "", role: "" });
+  const [loading, setIsLoading] = useState(true);
+  const [members, setMembers] = useState([]);
 
-  const filteredMembers = mockMembers.filter((member) => {
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchMembers() {
+      try {
+        const data = await ReadFunctions.fetchAllUsers();
+        if (isMounted) {
+          console.log("users is: ", data);
+          setMembers(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    fetchMembers();
+
+    const subscription = supabase
+      .channel("members-updates") // you can name it anything
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "users_tbl" },
+        async (payload) => {
+          console.log("Change received!", payload);
+          // payload.new → new row
+          // payload.old → old row (for update/delete)
+          await fetchMembers();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      isMounted = false;
+      supabase.removeChannel(subscription);
+    };
+  }, []);
+
+  const filteredMembers = members.filter((member) => {
     const matchesSearch =
       member.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.email.toLowerCase().includes(searchQuery.toLowerCase());
@@ -140,68 +149,82 @@ const MembersList = () => {
             </div>
           )}
 
-          {/* Members Grid */}
-          <div className="members-grid">
-            {filteredMembers.map((member) => (
-              <Link
-                key={member.id}
-                to={`/members/${member.id}`}
-                className="member-card-link"
+          <div>
+            {loading ? (
+              <div
+                className="content-detail"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
-                <div className="member-card">
-                  <div className="member-card-header">
-                    <div className="member-info-row">
-                      <div className="member-avatar">
-                        {member.username.slice(0, 2).toUpperCase()}
-                      </div>
-                      <div className="member-text-info">
-                        <h3 className="member-username">{member.username}</h3>
-                        <p className="member-email">{member.email}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="member-card-content">
-                    <div className="member-detail-row">
-                      <span className="detail-label">Section:</span>
-                      <span className="detail-value">{member.section}</span>
-                    </div>
-                    <div className="member-detail-row">
-                      <span className="detail-label">Branch:</span>
-                      <span className="detail-value">{member.branch}</span>
-                    </div>
-                    <div className="member-detail-row">
-                      <span className="detail-label">Role:</span>
-                      <span
-                        className={`role-badge ${
-                          member.role === "admin" ? "admin" : ""
-                        }`}
-                      >
-                        {member.role}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+                Loading...
+              </div>
+            ) : (
+              <div>
+                {/* Members Grid */}
+                <div className="members-grid">
+                  {filteredMembers.map((member) => (
+                    <Link
+                      key={member.uid}
+                      to={`/members/${member.uid}`}
+                      className="member-card-link"
+                    >
+                      <div className="member-card">
+                        <div className="member-card-header">
+                          <div className="member-info-row">
+                            <div className="member-avatar">
+                              {member.username.slice(0, 2).toUpperCase()}
+                            </div>
+                            <div className="member-text-info">
+                              <h3 className="member-username">
+                                {member.username}
+                              </h3>
+                              <p className="member-email">{member.email}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="member-card-content">
+                          <div className="member-detail-row">
+                            <span className="detail-label">Section:</span>
+                            <span className="detail-value">
+                              {member.sections_tbl.section_name}
+                            </span>
+                          </div>
 
-          {filteredMembers.length === 0 && (
-            <div className="no-members">
-              <svg
-                className="no-members-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
-              <h3>No members found</h3>
-              <p>Try adjusting your search or filters</p>
-            </div>
-          )}
+                          <div className="member-detail-row">
+                            <span className="detail-label">Role:</span>
+                            <span className={`role-badge admin`}>
+                              {member.roles_tbl.role_name}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+
+                {filteredMembers.length === 0 && (
+                  <div className="no-members">
+                    <svg
+                      className="no-members-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                    >
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    <h3>No members found</h3>
+                    <p>Try adjusting your search or filters</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         <FilterModal

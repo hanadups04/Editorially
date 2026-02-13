@@ -167,9 +167,9 @@
 .Login-FormContent .btnLogin {
   width: 100%;
   padding: 8px 20px;
-  color: var(--text-color1);
+  color: var(--text-light);
   background-color: var(--text-color);
-  /* background: linear-gradient(to right, #020b40, #242f70); */
+  background: linear-gradient(to right, #020b40, #242f70);
   font-weight: 600;
   border: none;
   border-radius: 10px;
