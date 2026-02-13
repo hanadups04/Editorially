@@ -22,6 +22,7 @@ import Register from "./pages/login_register/register.jsx";
 import Redirector from "./AppRedirector.jsx";
 import DocumentPage from "./pages/admin/DocumentPage.jsx";
 import ContentDetail from "./pages/admin/ContentDetail.jsx";
+import MemberDetail from "./pages/membersList/MemberDetail.jsx";
 
 const ProtectedRoute = ({ requiredAccessLvl, children }) => {
   const [userAccessLvl, setUserAccessLvl] = useState(null);
@@ -66,7 +67,7 @@ const ProtectedRoute = ({ requiredAccessLvl, children }) => {
         setUserAccessLvl(accessLevel);
       } catch (err) {
         console.error("Error during fetch:", err.message);
-        navigate("/AboutUs");
+        navigate("/aboutus");
       } finally {
         setIsAccessLvlFetched(true);
         setIsLoading(false);
@@ -74,7 +75,7 @@ const ProtectedRoute = ({ requiredAccessLvl, children }) => {
     };
 
     getUserAndAccess();
-  }, [navigate, currentSlug]);
+  }, [navigate]);
 
   useEffect(() => {
     if (isAccessLvlFetched && !requiredAccessLvl.includes(userAccessLvl)) {
@@ -126,6 +127,7 @@ function App() {
           <Route path="/tasks" element={<ProjectPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/members" element={<Members />} />
+          <Route path="/members/:id" element={<MemberDetail/>}/>
           <Route path="/document" element={<DocumentPage />} />
           <Route path="/projects" element={<TaskList />} />
           <Route path="/login" element={<Login />} />

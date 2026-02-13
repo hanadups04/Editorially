@@ -2,8 +2,8 @@ import { supabase } from "../../supabaseClient";
 
 export async function fetchAllUsers() {
   const { data, error } = await supabase
-    .from("projects")
-    .select("*")
+    .from("users_tbl")
+    .select("*, roles_tbl( role_name ), sections_tbl( section_name )")
     .order("created_at", { ascending: false });
 
   if (error) return error;
@@ -14,7 +14,7 @@ export async function fetchAllUsers() {
 export async function getUserProfile(uid) {
   const { data, error } = await supabase
     .from("users_tbl")
-    .select("uid, role_id, status, roles_tbl ( access_level )")
+    .select("*, roles_tbl ( role_name, access_level ), sections_tbl ( section_name )")
     .eq("uid", uid)
     .maybeSingle(); // avoids 406
 

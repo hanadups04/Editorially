@@ -1,34 +1,71 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { EditMemberModal } from "../../components/members/EditDetailModal";
 import "./MemberDetail.css";
-
-// Mock data - replace with actual API call
-const getMemberById = (id) => ({
-  id,
-  username: "johndoe",
-  email: "john.doe@example.com",
-  password: "••••••••",
-  section: "Technology",
-  branch: "Engineering",
-  role: "admin",
-  avatar: "/placeholder.svg",
-  notifications: true,
-});
+import * as ReadFunctions from "../../context/functions/ReadFunctions"
+import { supabase } from "../../supabaseClient";
+import Layout from "../../components/templates/AdminTemplate";
+import * as UpdateFunctions from "../../context/functions/UpdateFunctions"
 
 const MemberDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [member, setMember] = useState(getMemberById(id || "1"));
+  const [member, setMember] = useState({});
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(member.avatar);
   const fileInputRef = useRef(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleNotificationToggle = () => {
-    const newValue = !member.notifications;
-    setMember({ ...member, notifications: newValue });
-    alert(newValue ? "Notifications enabled" : "Notifications disabled");
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchProfile() {
+      try {
+        const data = await ReadFunctions.getUserProfile(id);
+        if(isMounted) {
+          console.log("profile is: ", data);
+          setMember(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if(isMounted) setLoading(false);
+      }
+    }
+
+    fetchProfile();
+
+    const subscription = supabase
+      .channel("profile-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "users_tbl",
+          filter: `uid=eq.${id}`, // only this article
+        },
+        (payload) => {
+          console.log("profile change received!", payload);
+          setMember((prev) => ({ ...prev, ...payload.new }));
+        },
+      )
+      .subscribe();
+
+    return () => {
+      isMounted = false;
+      supabase.removeChannel(subscription);
+      
+    }
+  }, [])
+
+  const handleNotificationToggle = async () => {
+    const newValue = !member.is_notif;
+    setMember({ ...member, is_notif: newValue });
+
+    const data = await UpdateFunctions.toggleNotification(id, newValue);
+    console.log("notif update: ", data);
   };
 
   const handleDelete = () => {
@@ -50,6 +87,7 @@ const MemberDetail = () => {
   };
 
   return (
+    <Layout>
     <div className="member-detail-page">
       <div className="member-detail-container">
         {/* Back Button */}
@@ -67,6 +105,10 @@ const MemberDetail = () => {
 
         {/* Profile Card */}
         <div className="profile-card">
+          {loading ? (
+            <div className="content-detail">Loading...</div>
+          ) : (     
+        <div>
           <div className="profile-header">
             <div className="profile-info">
               <div
@@ -94,9 +136,7 @@ const MemberDetail = () => {
                   {member.username}
                 </h1>
                 <span
-                  className={`role-badge-large ${
-                    member.role === "admin" ? "admin" : ""
-                  }`}
+                  className={`role-badge-large admin`}
                 >
                   {member.role}
                 </span>
@@ -112,28 +152,21 @@ const MemberDetail = () => {
                   <label className="detail-label">Email</label>
                   <p className="detail-value">{member.email}</p>
                 </div>
-                <div className="detail-item">
-                  <label className="detail-label">Password</label>
-                  <p className="detail-value">{member.password}</p>
-                </div>
+                
                 <div className="detail-item">
                   <label className="detail-label">Section</label>
-                  <p className="detail-value">{member.section}</p>
+                  <p className="detail-value">{member.sections_tbl.section_name}</p>
                 </div>
               </div>
               <div className="detail-section">
                 <div className="detail-item">
-                  <label className="detail-label">Branch Name</label>
-                  <p className="detail-value">{member.branch}</p>
-                </div>
-                <div className="detail-item">
                   <label className="detail-label">Role</label>
-                  <p className="detail-value">{member.role}</p>
+                  <p className="detail-value">{member.roles_tbl.role_name}</p>
                 </div>
                 <div className="notification-toggle">
                   <div className="toggle-label">
                     <svg
-                      className={`icon ${member.notifications ? "active" : ""}`}
+                      className={`icon ${member.is_notif ? "active" : ""}`}
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -146,7 +179,7 @@ const MemberDetail = () => {
                   <label className="switch">
                     <input
                       type="checkbox"
-                      checked={member.notifications}
+                      checked={member.is_notif}
                       onChange={handleNotificationToggle}
                     />
                     <span className="slider"></span>
@@ -190,6 +223,10 @@ const MemberDetail = () => {
               </button>
             </div>
           </div>
+
+            </div>
+          )}
+          
         </div>
       </div>
 
@@ -232,6 +269,7 @@ const MemberDetail = () => {
         </div>
       )}
     </div>
+    </Layout>
   );
 };
 

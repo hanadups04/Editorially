@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FilterModal } from "../../components/members/FilterModal";
 import { AddMemberModal } from "../../components/members/AddMembersModal";
 import "./MembersList.css";
 import Layout from "../../components/templates/AdminTemplate";
+import * as ReadFunctions from "../../context/functions/ReadFunctions"
+import { supabase } from "../../supabaseClient";
 
 // Mock data - replace with actual API call
 const mockMembers = [];
@@ -13,8 +15,49 @@ const MembersList = () => {
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState({ section: "", role: "" });
+  const [loading, setIsLoading] = useState(true);
+  const [members, setMembers] = useState([]);
 
-  const filteredMembers = mockMembers.filter((member) => {
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchMembers() {
+      try {
+        const data = await ReadFunctions.fetchAllUsers();
+        if(isMounted) {
+          console.log("users is: ", data);
+          setMembers(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if(isMounted) setIsLoading(false);
+      }
+    }
+
+    fetchMembers();
+
+    const subscription = supabase
+          .channel("members-updates") // you can name it anything
+          .on(
+            "postgres_changes",
+            { event: "*", schema: "public", table: "users_tbl" },
+            async (payload) => {
+              console.log("Change received!", payload);
+              // payload.new → new row
+              // payload.old → old row (for update/delete)
+              await fetchMembers();
+            },
+          )
+          .subscribe();
+
+    return () => {
+      isMounted = false;
+      supabase.removeChannel(subscription);
+    }
+  }, [])
+
+  const filteredMembers = members.filter((member) => {
     const matchesSearch =
       member.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.email.toLowerCase().includes(searchQuery.toLowerCase());
@@ -109,12 +152,23 @@ const MembersList = () => {
             </div>
           )}
 
-          {/* Members Grid */}
+          <div >
+            {loading ? (
+            <div 
+            className="content-detail" 
+            style={{
+              display: "flex", 
+              justifyContent: "center", 
+              alignItems: "center"}}>Loading...</div>
+          ) : (
+            <div>
+              {/* Members Grid */}
           <div className="members-grid">
+
             {filteredMembers.map((member) => (
               <Link
-                key={member.id}
-                to={`/members/${member.id}`}
+                key={member.uid}
+                to={`/members/${member.uid}`}
                 className="member-card-link"
               >
                 <div className="member-card">
@@ -132,20 +186,15 @@ const MembersList = () => {
                   <div className="member-card-content">
                     <div className="member-detail-row">
                       <span className="detail-label">Section:</span>
-                      <span className="detail-value">{member.section}</span>
+                      <span className="detail-value">{member.sections_tbl.section_name}</span>
                     </div>
-                    <div className="member-detail-row">
-                      <span className="detail-label">Branch:</span>
-                      <span className="detail-value">{member.branch}</span>
-                    </div>
+                    
                     <div className="member-detail-row">
                       <span className="detail-label">Role:</span>
                       <span
-                        className={`role-badge ${
-                          member.role === "admin" ? "admin" : ""
-                        }`}
+                        className={`role-badge admin`}
                       >
-                        {member.role}
+                        {member.roles_tbl.role_name}
                       </span>
                     </div>
                   </div>
@@ -153,6 +202,8 @@ const MembersList = () => {
               </Link>
             ))}
           </div>
+
+          
 
           {filteredMembers.length === 0 && (
             <div className="no-members">
@@ -171,6 +222,16 @@ const MembersList = () => {
               <p>Try adjusting your search or filters</p>
             </div>
           )}
+            </div>
+          )}
+
+          </div>
+
+           
+
+          
+
+          
         </div>
 
         <FilterModal

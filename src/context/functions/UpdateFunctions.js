@@ -42,3 +42,36 @@ export async function updateArticle(article_id, payload) {
     
   return data;
 }
+
+export async function toggleNotification(uid, notif) {
+  const {data, error} = await supabase
+  .from("users_tbl")
+  .update({
+    is_notif: notif
+  })
+  .eq("uid", uid)
+  .select()
+  .single();
+
+    if(error) return error;
+    
+  return data;
+}
+
+export async function updateUser(uid, data) {
+  const {data, error} = await supabase
+  .from("users_tbl")
+  .update({data})
+  .eq("uid", uid)
+  .select()
+  .single();
+
+    if(error) return error;
+    
+  return data;
+}
+
+
+
+
+

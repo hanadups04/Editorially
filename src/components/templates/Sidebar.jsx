@@ -93,6 +93,13 @@ const Sidebar = ({ isCollapsed, isOpen }) => {
       );
     }
 
+    if(path === "/members") {
+      return(
+        location.pathname.startsWith("/members") ||
+        location.pathname.startsWith("/members/:id")
+      )
+    }
+
     return location.pathname === path;
   };
 
