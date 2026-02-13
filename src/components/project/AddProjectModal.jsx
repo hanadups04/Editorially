@@ -11,7 +11,7 @@ import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
 import { supabase } from "../../supabaseClient.js";
 import { isAuthenticated } from "../../context/auth.js";
 
-import AddFunctions from "../../context/functions/AddFunctions.js";
+import * as AddFunctions from "../../context/functions/AddFunctions.js";
 import { useAdminContext } from "../../context/Context.jsx";
 import { Key } from "slate-dom";
 // import OverlayTrigger from "react-bootstrap/OverlayTrigger";
