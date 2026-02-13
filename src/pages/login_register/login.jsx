@@ -13,11 +13,8 @@ import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
 import { supabase } from "../../supabaseClient.js";
 
 export default function Login() {
-  //   const { setBranchId, currentSlug } = useBranch();
   const [recovAcc, setRecoverAccount] = useState(false);
-  // const { setUserBranch } = useAdminContext();
   const [formData, setFormData] = useState({
-    // branchId: "",
     email: "",
     password: "",
   });
@@ -61,7 +58,6 @@ export default function Login() {
             uid: currentUser.data.user.id,
             username: currentUser.data.user.user_metadata.display_name,
             email: currentUser.data.user.email,
-            // role_id: "role-0001",
             status: "active",
             is_notif: true,
             photoUrl:
@@ -69,11 +65,11 @@ export default function Login() {
           });
         }
         console.log(
-          "acccount existing, proceeding to fetch user acccesslevel "
+          "acccount existing, proceeding to fetch user acccesslevel ",
         );
         console.log(
           "fetch user accesslevel called: ",
-          currentUser.data.user.id
+          currentUser.data.user.id,
         );
         await fetchUserAccessLvl(currentUser.data.user.id);
       } else {
@@ -89,13 +85,11 @@ export default function Login() {
     // const userDoc = await getDoc(doc(db, "users", userId));
     const { data, error } = await supabase
       .from("users_tbl")
-      .select("uid, role_id, tenant_id, status, roles_tbl ( access_level )")
+      .select("uid, role_id, status, roles_tbl ( access_level )")
       .eq("uid", userId)
       .single();
 
     if (data) {
-      //   setBranchId(data.tenant_id);
-
       if (data.status === "deleted") {
         // ask user if they want to recover their account
         setRecoverAccount(true);
@@ -108,7 +102,6 @@ export default function Login() {
         return;
       }
 
-      const slug = await ReadFunctions.getSlugByBranchId(data.tenant_id);
       switch (data.roles_tbl.access_level) {
         case 6:
           navigate("/Adviser/AdminDashboard");
@@ -131,13 +124,13 @@ export default function Login() {
           console.log("navigating to section writer");
           break;
         case 1:
-          navigate(`/${slug}`);
+          // navigate(`/${slug}`);
           console.log("navigating to reader");
           break;
       }
     } else {
       console.error("User row not found");
-      navigate(`/Login`);
+      navigate(`/login`);
     }
   };
   const [openForgotPassModal, setOpenForgotPassModal] = useState(false);
@@ -322,11 +315,7 @@ export default function Login() {
                     width={60}
                   />
                 ) : (
-                  <button
-                    type="submit"
-                    className="btnLogin primaryButton"
-                    disabled={loading}
-                  >
+                  <button type="submit" className="btnLogin" disabled={loading}>
                     Log In
                   </button>
                 )}
