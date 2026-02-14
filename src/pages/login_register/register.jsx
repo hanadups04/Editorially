@@ -11,7 +11,6 @@ export default function Register() {
     email: "",
     password: "",
     username: "",
-    branchId: "",
     confirmPassword: "",
   });
   const [normLoading, setNormLoading] = useState(false);
@@ -43,10 +42,9 @@ export default function Register() {
     setError("");
     setNormLoading(true);
 
-    const { email, password, confirmPassword, username, photoUrl, branchId } =
-      formData;
+    const { email, password, confirmPassword, username, photoUrl } = formData;
 
-    // if (!email || !password || !username || !branchId) {
+    // if (!email || !password || !username) {
     //   setNormLoading(false);
     //   setError("Please Fill out all the required inputs.");
     //   return;
@@ -88,7 +86,7 @@ export default function Register() {
         console.log("registering ka na manigga");
         setNormLoading(false);
         setRegisterMessage(
-          "Email Confirmation Sent. Please Click the provided link there to proceed with the account verification"
+          "Email Confirmation Sent. Please Click the provided link there to proceed with the account verification",
         );
       } else {
         setNormLoading(false);
@@ -145,18 +143,6 @@ export default function Register() {
             />
           ) : (
             <div className="Register-FormContent">
-              <p className="FormLabel">Your Branch</p>
-              {/* <NUbranch
-                selectedBranch={formData.branchId}
-                onChange={(branchId) =>
-                  setFormData((prev) => ({ ...prev, branchId }))
-                }
-              /> */}
-              {/* {submitted && !formData.branchId && (
-                <p style={{ color: "red", fontSize: "14px" }}>
-                  Select a branch.
-                </p>
-              )} */}
               <p className="FormLabel">Username</p>
               <input
                 type="text"
@@ -286,9 +272,14 @@ export default function Register() {
                 ) : (
                   <button
                     type="submit"
-                    className="btnsignup"
+                    className="active-button"
                     onClick={(e) => handleRegister(e)}
                     disabled={normLoading}
+                    style={{
+                      marginBottom: "10px",
+                      fontWeight: "bold",
+                      backgroundColor: "#020b40",
+                    }}
                     // onClick={() => console.log("pindiot ako eh ")}
                   >
                     Sign Up

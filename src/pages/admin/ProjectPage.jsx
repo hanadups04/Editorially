@@ -55,34 +55,28 @@ const ProjectPage = () => {
     };
   }, []);
 
-
   useEffect(() => {
     let isMounted = true;
 
     async function fetchTasks() {
-      try{
-
+      try {
         const data = await ReadFunctions.fetchAllTasks(projectID);
-        if(isMounted) {
-
+        if (isMounted) {
           console.log("subtask is", data);
           setSubtasks(data);
-        } 
-      }catch (error) {
+        }
+      } catch (error) {
         console.error(error);
       } finally {
         if (isMounted) setIsLoading(false);
       }
-
     }
 
     fetchTasks();
     return () => {
       isMounted = false;
     };
-  },[]);
-
-
+  }, []);
 
   // Workflow steps
   const workflowSteps = [
@@ -204,8 +198,8 @@ const ProjectPage = () => {
     setProject(updatedProject);
     setProject((prev) => ({
       ...prev,
-      ...updatedProject
-    }))
+      ...updatedProject,
+    }));
   };
 
   const handleEditTask = (updatedTask) => {
@@ -278,6 +272,7 @@ const ProjectPage = () => {
               onToggleComplete={handleToggleComplete}
               onUploadClick={() => setIsUploadModalOpen(true)}
               onEditClick={handleEditTaskClick}
+              task={subtask.subtask_type}
             />
           ))}
         </div>

@@ -2,9 +2,17 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./TaskCard.css";
 
-const TaskCard = ({ subtask, onToggleComplete, onUploadClick, onEditClick }) => {
+const TaskCard = ({
+  subtask,
+  onToggleComplete,
+  onUploadClick,
+  onEditClick,
+  task,
+}) => {
   const navigate = useNavigate();
-  const [isCompleted, setIsCompleted] = useState(subtask.status === "Completed");
+  const [isCompleted, setIsCompleted] = useState(
+    subtask.status === "Completed",
+  );
   const getInitials = (name) => {
     return name
       .split(" ")
@@ -12,92 +20,54 @@ const TaskCard = ({ subtask, onToggleComplete, onUploadClick, onEditClick }) => 
       .join("")
       .toUpperCase();
   };
-  
+
   console.log("jaisjaijsias", subtask);
 
-  // const getActionButton = (role) => {
-  //   const actions = {
-  //     writer: {
-  //       label: "Open Document",
-  //       icon: (
-  //         <svg
-  //           xmlns="http://www.w3.org/2000/svg"
-  //           width="16"
-  //           height="16"
-  //           viewBox="0 0 24 24"
-  //           fill="none"
-  //           stroke="currentColor"
-  //           strokeWidth="2"
-  //         >
-  //           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-  //           <polyline points="14 2 14 8 20 8"></polyline>
-  //           <line x1="16" y1="13" x2="8" y2="13"></line>
-  //           <line x1="16" y1="17" x2="8" y2="17"></line>
-  //         </svg>
-  //       ),
-  //       path: "/docs",
-  //     },
-  //     layout: {
-  //       label: "Open Canvas",
-  //       icon: (
-  //         <svg
-  //           xmlns="http://www.w3.org/2000/svg"
-  //           width="16"
-  //           height="16"
-  //           viewBox="0 0 24 24"
-  //           fill="none"
-  //           stroke="currentColor"
-  //           strokeWidth="2"
-  //         >
-  //           <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-  //           <circle cx="8.5" cy="8.5" r="1.5"></circle>
-  //           <polyline points="21 15 16 10 5 21"></polyline>
-  //         </svg>
-  //       ),
-  //       path: "/canvas",
-  //     },
-  //     editor: {
-  //       label: "Review Content",
-  //       icon: (
-  //         <svg
-  //           xmlns="http://www.w3.org/2000/svg"
-  //           width="16"
-  //           height="16"
-  //           viewBox="0 0 24 24"
-  //           fill="none"
-  //           stroke="currentColor"
-  //           strokeWidth="2"
-  //         >
-  //           <polyline points="9 11 12 14 22 4"></polyline>
-  //           <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-  //         </svg>
-  //       ),
-  //       path: "/review",
-  //     },
-  //     photographer: {
-  //       label: "Upload Images",
-  //       icon: (
-  //         <svg
-  //           xmlns="http://www.w3.org/2000/svg"
-  //           width="16"
-  //           height="16"
-  //           viewBox="0 0 24 24"
-  //           fill="none"
-  //           stroke="currentColor"
-  //           strokeWidth="2"
-  //         >
-  //           <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-  //           <circle cx="12" cy="13" r="4"></circle>
-  //         </svg>
-  //       ),
-  //       path: "/gallery",
-  //     },
-  //   };
+  const getActionButton = (type) => {
+    const actions = {
+      1: {
+        label: "Open Document",
+        icon: (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+        ),
+        path: "/docs",
+      },
+      2: {
+        label: "Upload Images",
+        icon: (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+            <circle cx="12" cy="13" r="4"></circle>
+          </svg>
+        ),
+      },
+    };
 
-  //   return actions[role.toLowerCase()] || actions.writer;
-  // };
+    return actions[type] || actions[1];
+  };
 
-  // const action = getActionButton(subtask.role_name);
+  const action = getActionButton(task);
 
   const handleToggleComplete = () => {
     setIsCompleted(!isCompleted);
@@ -106,16 +76,16 @@ const TaskCard = ({ subtask, onToggleComplete, onUploadClick, onEditClick }) => 
     }
   };
 
-  // const handleActionClick = () => {
-  //   if (subtask.role_name.toLowerCase() === "photographer" && onUploadClick) {
-  //     onUploadClick();
-  //   } else {
-  //     // Navigate to document page with task info
-  //     navigate(
-  //       `/document?taskId=${subtask.subtask_id}&role=${encodeURIComponent(subtask.role_name)}&assignee=${encodeURIComponent(task.assignee.name)}`,
-  //     );
-  //   }
-  // };
+  const handleActionClick = () => {
+    if (task === 2 && onUploadClick) {
+      onUploadClick();
+    } else {
+      // Navigate to document page with task info
+      navigate(
+        `/document?taskId=${subtask.subtask_id}&role=${encodeURIComponent(task)}`,
+      );
+    }
+  };
 
   return (
     <div className="task-card">
@@ -138,9 +108,10 @@ const TaskCard = ({ subtask, onToggleComplete, onUploadClick, onEditClick }) => 
         </svg>
       </button>
       <div className="task-header">
-        <span 
-        // className={`task-role ${subtask.role.toLowerCase()}`}
-        className="task-role">
+        <span
+          // className={`task-role ${subtask.role.toLowerCase()}`}
+          className="task-role"
+        >
           {subtask.users_tbl.roles_tbl.role_name}
         </span>
         <span
@@ -152,7 +123,9 @@ const TaskCard = ({ subtask, onToggleComplete, onUploadClick, onEditClick }) => 
       </div>
 
       <div className="task-assignee">
-        <div className="assignee-avatar">{getInitials(subtask.users_tbl.username)}</div>
+        <div className="assignee-avatar">
+          {getInitials(subtask.users_tbl.username)}
+        </div>
         <div className="assignee-info">
           <div className="assignee-name">{subtask.users_tbl.username}</div>
           <div className="assignee-email">{subtask.users_tbl.email}</div>
@@ -211,10 +184,10 @@ const TaskCard = ({ subtask, onToggleComplete, onUploadClick, onEditClick }) => 
       </label>
 
       <div className="task-actions">
-        {/* <button className="btn btn-primary" onClick={handleActionClick}>
+        <button className="btn btn-primary" onClick={handleActionClick}>
           {action.icon}
           {action.label}
-        </button> */}
+        </button>
       </div>
     </div>
   );
