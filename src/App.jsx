@@ -29,60 +29,6 @@ const ProtectedRoute = ({ requiredAccessLvl, children }) => {
   const navigate = useNavigate();
   const [isAccessLvlFetched, setIsAccessLvlFetched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  // const { branchId, currentSlug } = useBranch();
-
-  useEffect(() => {
-    const getUserAndAccess = async () => {
-      setIsLoading(true);
-
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
-
-      if (userError || !user) {
-        navigate(`/${currentSlug}`);
-        return;
-      }
-
-      setUser(user);
-
-      try {
-        // Fetch access level from your users table
-        const { data, error } = await supabase
-          .from("users_tbl")
-          .select("uid, role_id, roles_tbl ( access_level )") // if stored as JSON
-          .eq("uid", user.id)
-          .single();
-
-        if (error || !data) {
-          console.error("User not found or error fetching:", error);
-          navigate("/AboutUs");
-          return;
-        }
-
-        // If permissions is stored as plain column, use: select("access_level")
-        const accessLevel = data?.accessLevel;
-
-        setUserAccessLvl(accessLevel);
-      } catch (err) {
-        console.error("Error during fetch:", err.message);
-        navigate("/aboutus");
-      } finally {
-        setIsAccessLvlFetched(true);
-        setIsLoading(false);
-      }
-    };
-
-    getUserAndAccess();
-  }, [navigate]);
-
-  useEffect(() => {
-    if (isAccessLvlFetched && !requiredAccessLvl.includes(userAccessLvl)) {
-      console.log(currentSlug, "currnetSlug");
-      navigate(`/${currentSlug}`);
-    }
-  }, [isAccessLvlFetched, userAccessLvl, requiredAccessLvl, navigate]);
 
   if (isLoading || !isAccessLvlFetched) {
     return (
@@ -124,6 +70,9 @@ function App() {
           <Route path="/" element={<Redirector />} />
           {/* user searches editorially.app, calls redirector, checks for account, if none, throws user to landing page, if present, throws user to appropriate page */}
           <Route path="/aboutus" element={<LandingPage />} />
+          {/* <Route path="/Readers" element={<LandingPage />} /> */}
+          {/* <Route path="/Readers/:id" element={<LandingPage />} /> */}
+          {/* <Route path="/Search" element={<LandingPage />} /> */}
           <Route path="/tasks" element={<ProjectPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/members" element={<Members />} />
