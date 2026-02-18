@@ -2,7 +2,9 @@ import React from "react";
 import "./ProgressTracker.css";
 
 const ProgressTracker = ({ currentStep, steps }) => {
-  const currentStepIndex = steps.findIndex((step) => step.id === currentStep);
+  const currentStepIndex = steps.findIndex(
+    (step) => step.step_id === currentStep,
+  );
   const progressPercentage = ((currentStepIndex + 1) / steps.length) * 100;
 
   return (
@@ -24,7 +26,7 @@ const ProgressTracker = ({ currentStep, steps }) => {
 
           return (
             <div
-              key={step.id}
+              key={step.step_id}
               className={`progress-step ${isCompleted ? "completed" : ""} ${
                 isActive ? "active" : ""
               }`}

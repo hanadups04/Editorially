@@ -1,74 +1,128 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
+import * as UpdateFunctions from "../../context/functions/UpdateFunctions.js";
+import Form from "react-bootstrap/Form";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import "./EditTaskModal.css";
 
-const EditTaskModal = ({ isOpen, onClose, task, onSubmit }) => {
+const EditTaskModal = ({ isOpen, onClose, subtask, onSubmit }) => {
+  const [sections, setSections] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [loading, setIsLoading] = useState(true);
+
   const [formData, setFormData] = useState({
-    role: "",
-    assigneeName: "",
-    assigneeEmail: "",
-    description: "",
-    status: "",
-    deadline: "",
-    priority: "",
+    subtask_type: "",
+    section_id: "",
+    assignee_id: "",
+    subtask_title: "",
+    subtask_details: "",
+    subtask_deadline: "",
   });
 
   useEffect(() => {
-    if (task) {
+    if (subtask) {
       setFormData({
-        role: task.role || "",
-        assigneeName: task.assignee?.name || "",
-        assigneeEmail: task.assignee?.email || "",
-        description: task.description || "",
-        status: task.status || "",
-        deadline: task.deadline || "",
-        priority: task.priority || "",
+        subtask_type: subtask.subtask_type ? Number(subtask.subtask_type) : "",
+        section_id: subtask.section_id || "",
+        assignee_id: subtask.assignee_id || "",
+        subtask_title: subtask.subtask_title || "",
+        subtask_details: subtask.subtask_details || "",
+        subtask_deadline: subtask.subtask_deadline
+          ? new Date(subtask.subtask_deadline)
+          : null,
+        // priority: task.priority || "",
       });
     }
-  }, [task]);
+  }, [subtask]);
 
-  const roles = ["Writer", "Layout", "Photographer", "Editor"];
-  const statuses = ["Pending", "In Progress", "Review", "Completed"];
-  const priorities = ["Low", "Medium", "High"];
+  useEffect(() => {
+    let isMounted = true;
 
-  const teamMembers = [
-    { id: 1, name: "Sarah Johnson", email: "sarah.j@university.edu" },
-    { id: 2, name: "Michael Chen", email: "michael.c@university.edu" },
-    { id: 3, name: "Emma Rodriguez", email: "emma.r@university.edu" },
-    { id: 4, name: "David Kim", email: "david.k@university.edu" },
-    { id: 5, name: "Jessica Martinez", email: "jessica.m@university.edu" },
-  ];
+    async function fetchSections() {
+      try {
+        const data = await ReadFunctions.fetchAllSections();
+        if (isMounted) {
+          console.log("data is: ", data);
+          setSections(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    fetchSections();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchUsers() {
+      try {
+        const data = await ReadFunctions.fetchAllUsers();
+        if (isMounted) {
+          console.log("data is: ", data);
+          setAllUsers(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    fetchUsers();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === "assignee") {
-      const member = teamMembers.find((m) => m.name === value);
-      if (member) {
-        setFormData((prev) => ({
-          ...prev,
-          assigneeName: member.name,
-          assigneeEmail: member.email,
-        }));
-      }
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    const { name, type, checked, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]:
+        type === "checkbox" || type === "switch"
+          ? checked
+          : name === "subtask_type"
+            ? parseInt(value)
+            : value,
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleDateChange = (date) => {
+    setSelectedDateTime(date);
+    setFormData((prev) => ({ ...prev, subtask_deadline: date }));
+    dateModified.current = true;
+  };
+
+  const [selectedDateTime, setSelectedDateTime] = useState(new Date());
+  const dateModified = useRef(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({
-      ...task,
-      role: formData.role,
-      assignee: {
-        name: formData.assigneeName,
-        email: formData.assigneeEmail,
-      },
-      description: formData.description,
-      status: formData.status,
-      deadline: formData.deadline,
-      priority: formData.priority,
-    });
+
+    const payload = {
+      subtask_type: formData.subtask_type,
+      section_id: Number(formData.section_id),
+      assignee_id: formData.assignee_id,
+      subtask_title: formData.subtask_title || "sample empty title",
+      subtask_details: formData.subtask_details,
+      subtask_deadline: selectedDateTime?.toISOString(),
+    };
+
+    console.log("Updating subtask data:", subtask.subtask_id, payload);
+    const subtask_id = subtask.subtask_id;
+
+    onSubmit(subtask_id, payload);
+
+    await UpdateFunctions.updateTask(subtask_id, payload);
+
     onClose();
   };
 
@@ -97,118 +151,165 @@ const EditTaskModal = ({ isOpen, onClose, task, onSubmit }) => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="modal-body">
-            <div className="form-row">
-              <div className="form-group">
-                <label className="form-label">Role</label>
-                <select
-                  name="role"
-                  className="form-select"
-                  value={formData.role}
-                  onChange={handleChange}
-                  required
+        {/* <form onSubmit={handleSubmit}> */}
+        <div className="modal-body">
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">Project Submission Type</label>
+              {["radio"].map((type) => (
+                <div
+                  className="TaskSubmissionTypeCont"
+                  key={`inline-${type}`}
+                  // className="mb-3"
                 >
-                  {roles.map((role) => (
-                    <option key={role} value={role}>
-                      {role}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                  <p>Project Submission Type</p>
+                  <div className="TaskSubmissionType">
+                    <Form.Check
+                      className="formType"
+                      label="Writing"
+                      name="subtask_type"
+                      type={type}
+                      id={`inline-${type}-1`}
+                      value={1}
+                      checked={formData.subtask_type === 1}
+                      onChange={handleChange}
+                      required
+                    />
 
-              <div className="form-group">
-                <label className="form-label">Status</label>
-                <select
-                  name="status"
-                  className="form-select"
-                  value={formData.status}
-                  onChange={handleChange}
-                  required
-                >
-                  {statuses.map((status) => (
-                    <option key={status} value={status}>
-                      {status}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                    {/* <OverlayTrigger
+                    placement="left"
+                    delay={{ show: 250, hide: 400 }}
+                    overlay={renderTooltip(1)}
+                  >
+                    <img className="InfoSubType" src={InfoB} />
+                  </OverlayTrigger> */}
+                  </div>
+                  <div className="TaskSubmissionType">
+                    <Form.Check
+                      className="formType"
+                      label="Pubmat"
+                      name="subtask_type"
+                      type={type}
+                      id={`inline-${type}-2`}
+                      value={2}
+                      checked={formData.subtask_type === 2}
+                      onChange={handleChange}
+                    />
+
+                    {/* <OverlayTrigger
+                    placement="left"
+                    delay={{ show: 250, hide: 400 }}
+                    overlay={renderTooltip(2)}
+                  >
+                    <img className="InfoSubType" src={InfoB} />
+                  </OverlayTrigger> */}
+                  </div>
+                </div>
+              ))}
             </div>
 
             <div className="form-group">
-              <label className="form-label">Assign To</label>
+              <label className="form-label">Section</label>
               <select
-                name="assignee"
+                name="section_id"
                 className="form-select"
-                value={formData.assigneeName}
+                value={formData.section_id}
                 onChange={handleChange}
-                required
               >
-                {teamMembers.map((member) => (
-                  <option key={member.id} value={member.name}>
-                    {member.name} ({member.email})
-                  </option>
-                ))}
+                {sections
+                  .filter(
+                    (section) =>
+                      (formData.subtask_type !== 1 || section.type !== 2) &&
+                      (formData.subtask_type !== 2 || section.type !== 1),
+                  )
+                  .map((section) => (
+                    <option key={section.section_id} value={section.section_id}>
+                      {section.section_name}
+                    </option>
+                  ))}
               </select>
             </div>
+          </div>
 
+          <div className="form-group">
+            <label className="form-label">Assign To</label>
+            <select
+              name="assignee_id"
+              className="form-select"
+              value={formData.assignee_id}
+              onChange={handleChange}
+              required
+            >
+              {allUsers.map((member) => (
+                <option key={member.uid} value={member.uid}>
+                  {member.username} ({member.email})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Task Title</label>
+            <input
+              name="subtask_title"
+              className="form-input"
+              value={formData.subtask_title}
+              onChange={handleChange}
+              placeholder="Add a task title..."
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Task Details</label>
+            <textarea
+              name="subtask_details"
+              className="form-textarea"
+              value={formData.subtask_details}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-row">
             <div className="form-group">
-              <label className="form-label">Task Description</label>
-              <textarea
-                name="description"
-                className="form-textarea"
-                value={formData.description}
-                onChange={handleChange}
+              <label className="form-label">Deadline</label>
+              <DatePicker
+                selected={formData.subtask_deadline}
+                onChange={handleDateChange}
+                minDate={new Date()}
+                minTime={
+                  formData.subtask_deadline &&
+                  new Date(selectedDateTime).toDateString() ===
+                    new Date().toDateString()
+                    ? new Date()
+                    : new Date(0, 0, 0, 0, 0)
+                }
+                maxTime={new Date(0, 0, 0, 23, 59)}
+                showTimeSelect
+                dateFormat="yyyy-MM-dd HH:mm:ss"
+                timeIntervals={15}
+                timeCaption="Time"
                 required
+                className="DeadlineDatePicker"
               />
             </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label className="form-label">Priority</label>
-                <select
-                  name="priority"
-                  className="form-select"
-                  value={formData.priority}
-                  onChange={handleChange}
-                  required
-                >
-                  {priorities.map((priority) => (
-                    <option key={priority} value={priority}>
-                      {priority}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Deadline</label>
-                <input
-                  type="text"
-                  name="deadline"
-                  className="form-input"
-                  value={formData.deadline}
-                  onChange={handleChange}
-                  placeholder="e.g., March 10, 2025"
-                  required
-                />
-              </div>
-            </div>
           </div>
+        </div>
 
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={onClose}
-            >
-              Cancel
-            </button>
-            <button type="submit" className="btn btn-primary">
-              Save Changes
-            </button>
-          </div>
-        </form>
+        <div className="modal-footer">
+          <button type="button" className="btn btn-secondary" onClick={onClose}>
+            Cancel
+          </button>
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            className="btn btn-primary"
+          >
+            Save Changes
+          </button>
+        </div>
+        {/* </form> */}
       </div>
     </div>
   );

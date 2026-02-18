@@ -44,7 +44,7 @@ export async function fetchAllProjects() {
 export async function fetchSingleProject(project_id) {
   const { data, error} = await supabase
     .from("projects_tbl")
-    .select("*")
+    .select("*, sections_tbl(section_name), project_steps_tbl(step_name)")
     .eq("project_id", project_id)
     .single();
 

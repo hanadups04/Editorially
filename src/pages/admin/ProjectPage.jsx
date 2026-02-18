@@ -18,6 +18,7 @@ const ProjectPage = () => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isEditProjectModalOpen, setIsEditProjectModalOpen] = useState(false);
   const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
+  const [taskId, setTaskId] = useState("");
   const [selectedTask, setSelectedTask] = useState(null);
 
   const [searchParams] = useSearchParams();
@@ -30,7 +31,7 @@ const ProjectPage = () => {
 
   const [project, setProject] = useState({});
   const [subtasks, setSubtasks] = useState([]);
-  const [loading, setIsLoading] = useState([]);
+  const [loading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
@@ -49,124 +50,43 @@ const ProjectPage = () => {
       }
     }
 
+    async function fetchTasks() {
+      try {
+        const data = await ReadFunctions.fetchAllTasks(projectID);
+        if (isMounted) {
+          console.log("subtask is", data);
+          setSubtasks(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    fetchTasks();
     fetchSpecificProject();
     return () => {
       isMounted = false;
     };
   }, []);
 
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function fetchTasks() {
-      try{
-
-        const data = await ReadFunctions.fetchAllTasks(projectID);
-        if(isMounted) {
-
-          console.log("subtask is", data);
-          setSubtasks(data);
-        } 
-      }catch (error) {
-        console.error(error);
-      } finally {
-        if (isMounted) setIsLoading(false);
-      }
-
-    }
-
-    fetchTasks();
-    return () => {
-      isMounted = false;
-    };
-  },[]);
-
-
-
   // Workflow steps
   const workflowSteps = [
-    { id: "submitted", label: "Submitted" },
-    { id: "approved", label: "Approved" },
-    { id: "assigned", label: "Assigned" },
-    { id: "in-progress", label: "In Progress" },
-    { id: "review", label: "Review" },
-    { id: "completed", label: "Completed" },
+    { step_id: "1", label: "Proposed" },
+    { step_id: "2", label: "Pending Approval" },
+    { step_id: "3", label: "Approved - Pending Assignment" },
+    { step_id: "4", label: "In Progress" },
+    { step_id: "5", label: "Submitted for Review" },
+    { step_id: "6", label: "Revisions Required" },
+    { step_id: "7", label: "Approved for Posting" },
+    { step_id: "8", label: "Published" },
   ];
 
   // Initialize tasks on first render
   React.useEffect(() => {
     // setTasks(initialTasks);
   }, []);
-
-  // Sample tasks with different assignees
-  // const initialTasks = [
-  //   {
-  //     id: 1,
-  //     role: "Writer",
-  //     assignee: {
-  //       name: "Sarah Johnson",
-  //       email: "sarah.j@university.edu",
-  //     },
-  //     description:
-  //       "Research and write the main feature article about campus sustainability initiatives. Include interviews with at least 5 key stakeholders.",
-  //     status: "In Progress",
-  //     deadline: "March 10, 2025",
-  //     priority: "High",
-  //   },
-  //   {
-  //     id: 2,
-  //     role: "Layout",
-  //     assignee: {
-  //       name: "Michael Chen",
-  //       email: "michael.c@university.edu",
-  //     },
-  //     description:
-  //       "Design the layout for the 2-page spread. Incorporate infographics showing sustainability statistics and student survey results.",
-  //     status: "Pending",
-  //     deadline: "March 12, 2025",
-  //     priority: "High",
-  //   },
-  //   {
-  //     id: 3,
-  //     role: "Photographer",
-  //     assignee: {
-  //       name: "Emma Rodriguez",
-  //       email: "emma.r@university.edu",
-  //     },
-  //     description:
-  //       "Capture photos of the new solar panels, recycling stations, and student volunteers. Need at least 15 high-quality images.",
-  //     status: "In Progress",
-  //     deadline: "March 8, 2025",
-  //     priority: "High",
-  //   },
-  //   {
-  //     id: 4,
-  //     role: "Editor",
-  //     assignee: {
-  //       name: "David Kim",
-  //       email: "david.k@university.edu",
-  //     },
-  //     description:
-  //       "Review and edit the article for grammar, style, and AP format compliance. Provide feedback to the writer.",
-  //     status: "Pending",
-  //     deadline: "March 11, 2025",
-  //     priority: "Medium",
-  //   },
-  //   {
-  //     id: 5,
-  //     role: "Writer",
-  //     assignee: {
-  //       name: "Jessica Martinez",
-  //       email: "jessica.m@university.edu",
-  //     },
-  //     description:
-  //       "Write sidebar piece on student perspectives and personal sustainability stories. Target 500 words.",
-  //     status: "In Progress",
-  //     deadline: "March 9, 2025",
-  //     priority: "Medium",
-  //   },
-  // ];
 
   const handleAddTask = (newTask) => {
     const task = {
@@ -204,20 +124,33 @@ const ProjectPage = () => {
     setProject(updatedProject);
     setProject((prev) => ({
       ...prev,
-      ...updatedProject
-    }))
+      ...updatedProject,
+    }));
   };
 
-  const handleEditTask = (updatedTask) => {
-    setTasks((prev) =>
-      prev.map((task) => (task.id === updatedTask.id ? updatedTask : task)),
+  const handleEditTask = (subtask_id, updatedTask) => {
+    // setSubtasks(subtask_id, updatedTask);
+    setSubtasks((prev) =>
+      Array.isArray(prev)
+        ? prev.map((st) =>
+            st.subtask_id === subtask_id ? { ...st, ...updatedTask } : st,
+          )
+        : prev,
     );
   };
 
-  const handleEditTaskClick = (task) => {
-    setSelectedTask(task);
+  const handleEditTaskClick = (subtask) => {
+    setSelectedTask(subtask);
     setIsEditTaskModalOpen(true);
   };
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="content-detail">Loading...</div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -226,26 +159,35 @@ const ProjectPage = () => {
         title={project.title}
         description={project.details}
         deadline={project.deadline}
-        section={project.section_id}
+        section={
+          Array.isArray(project?.sections_tbl)
+            ? project.sections_tbl?.[0]?.section_name
+            : (project?.sections_tbl?.section_name ?? "")
+        }
         status={project.status}
         onEditClick={() => setIsEditProjectModalOpen(true)}
       />
-      <div>
-        <button
-          className="btn btn-primary"
-          onClick={() => UpdateFunctions.approveProject(projectID)}
-        >
-          APPROVE
-        </button>
-        <h2>Project ID: {projectID}</h2>
-        <button
-          className="btn btn-primary"
-          onClick={() => UpdateFunctions.rejectProject(projectID)}
-        >
-          REJECT
-        </button>
-      </div>
-      <ProgressTracker currentStep="in-progress" steps={workflowSteps} />
+      {project.step_id === 2 && (
+        <div className="Project-ApproveRejectBtnsCont">
+          <h4 className="BtnsTitle">Approve this Proposed Article? </h4>
+          <div className="Project-ApproveRejectBtns">
+            <button
+              className="btn btn-primary"
+              onClick={() => UpdateFunctions.approveProject(projectID)}
+            >
+              APPROVE
+            </button>
+            <button
+              className="btn btn-delete"
+              onClick={() => UpdateFunctions.rejectProject(projectID)}
+            >
+              REJECT
+            </button>
+          </div>
+        </div>
+      )}
+
+      <ProgressTracker currentStep={project.step_id} steps={workflowSteps} />
 
       <div className="tasks-section">
         <div className="section-header">
@@ -271,15 +213,20 @@ const ProjectPage = () => {
         </div>
 
         <div className="tasks-grid">
-          {subtasks.map((subtask) => (
-            <TaskCard
-              key={subtask.subtask_id}
-              subtask={subtask}
-              onToggleComplete={handleToggleComplete}
-              onUploadClick={() => setIsUploadModalOpen(true)}
-              onEditClick={handleEditTaskClick}
-            />
-          ))}
+          {Array.isArray(subtasks) &&
+            subtasks.map((subtask) => (
+              <TaskCard
+                key={subtask.subtask_id}
+                subtask={subtask}
+                type={subtask.subtask_type}
+                onToggleComplete={handleToggleComplete}
+                onUploadClick={() => {
+                  setTaskId(subtask.subtask_id);
+                  setIsUploadModalOpen(true);
+                }}
+                onEditClick={handleEditTaskClick}
+              />
+            ))}
         </div>
       </div>
 
@@ -302,13 +249,14 @@ const ProjectPage = () => {
           setIsEditTaskModalOpen(false);
           setSelectedTask(null);
         }}
-        task={selectedTask}
+        subtask={selectedTask}
         onSubmit={handleEditTask}
       />
 
       <UploadImagesModal
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
+        taskId={taskId}
       />
     </Layout>
   );

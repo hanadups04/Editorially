@@ -38,18 +38,23 @@ export async function updateProject(project_id, formData){
 }
 
 export async function updateTask(subtask_id, formData){
+  console.log("assyy", subtask_id, formData);
   const { data, error} = await supabase
-    .from("subtasks_tbl")
-    .update({subtask_title: formData.subtask_title, subtask_deadline: formData.subtask_deadline, 
-      subtask_details: formData.subtask_details, assignee_id: formData.assignee_id, subtask_type: formData.subtask_title})
+    .from("project_subtask_tbl")
+    .update({
+      subtask_type: formData.subtask_type, 
+      section_id: formData.section_id,
+      assignee_id: formData.assignee_id, 
+      subtask_title: formData.subtask_title, 
+      subtask_details: formData.subtask_details, 
+      subtask_deadline: formData.subtask_deadline, 
+      })
     .eq("subtask_id", subtask_id)
     
 
   if (error) throw error;
   return data;
 }
-
-
 
 
 export async function markRequestAsResolved(edit_id, is_resolved) {

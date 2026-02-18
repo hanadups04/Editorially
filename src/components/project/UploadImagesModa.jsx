@@ -1,8 +1,11 @@
 import React, { useState, useRef } from "react";
+import { supabase } from "../../supabaseClient.js";
+import * as AddFunctions from "../../context/functions/AddFunctions.js";
 import "./UploadImagesModal.css";
 
-const UploadImagesModal = ({ isOpen, onClose }) => {
-  const [selectedFiles, setSelectedFiles] = useState([]);
+const UploadImagesModal = ({ isOpen, onClose, taskId }) => {
+  console.log("asa", taskId);
+  const [selectedFiles, setSelectedFiles] = useState("");
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -44,36 +47,38 @@ const UploadImagesModal = ({ isOpen, onClose }) => {
     setSelectedFiles((prev) => prev.filter((f) => f.id !== id));
   };
 
-  const handleUpload = () => {
-    setUploading(true);
-    const progress = selectedFiles.map((file) => ({
-      id: file.id,
-      progress: 0,
-    }));
-    setUploadProgress(progress);
-
-    // Simulate upload progress
-    selectedFiles.forEach((file, index) => {
-      const interval = setInterval(() => {
-        setUploadProgress((prev) => {
-          const updated = [...prev];
-          if (updated[index].progress < 100) {
-            updated[index].progress += 10;
-          } else {
-            clearInterval(interval);
-          }
-          return updated;
-        });
-      }, 200);
+  const handleSubmit = async (uploadedUrls) => {
+    const payload = await supabase.from("contents_tbl").insert({
+      subtask_id: taskId,
+      category: 3,
+      content: uploadedUrls,
     });
+    console.log("data: ", payload);
+  };
 
-    // Auto close after upload completes
-    setTimeout(() => {
-      setUploading(false);
-      setUploadProgress([]);
-      setSelectedFiles([]);
-      onClose();
-    }, selectedFiles.length * 2000 + 1000);
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploading(true);
+      try {
+        const newFiles = await AddFunctions.uploadThumbnail(file);
+        console.log("file uplaoded: ", newFiles);
+
+        setSelectedFiles((prev) => [...prev, ...newFiles]);
+
+        // trigger submit AFTER upload
+        await handleSubmit(newFiles);
+
+        // optional cleanup
+        setSelectedFiles("");
+        onClose();
+      } catch (err) {
+        console.error("Upload/submit failed:", err);
+      } finally {
+        setUploading(false);
+        e.target.value = ""; // lets you re-pick the same file
+      }
+    }
   };
 
   if (!isOpen && !uploading) return null;
@@ -145,7 +150,7 @@ const UploadImagesModal = ({ isOpen, onClose }) => {
                 type="file"
                 multiple
                 accept="image/*"
-                onChange={handleFileSelect}
+                onChange={handleImageUpload}
                 style={{ display: "none" }}
               />
 
@@ -181,7 +186,7 @@ const UploadImagesModal = ({ isOpen, onClose }) => {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={handleUpload}
+                onClick={handleImageUpload}
                 disabled={selectedFiles.length === 0}
               >
                 Upload{" "}

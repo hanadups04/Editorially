@@ -35,13 +35,13 @@ export default function ProjectInfo({
       </div>
       <div className="info-grid">
         <div className="info-item">
-          <span className="info-label">Publication Date</span>
+          <span className="info-label">Deadline Date</span>
           <span className="info-value">{deadline}</span>
         </div>
-        <div className="info-item">
+        {/* <div className="info-item">
           <span className="info-label">Issue</span>
           <span className="info-value"></span>
-        </div>
+        </div> */}
         <div className="info-item">
           <span className="info-label">Section</span>
           <span className="info-value">{section}</span>

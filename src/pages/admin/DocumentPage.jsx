@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Layout from "../../components/templates/AdminTemplate";
+import { supabase } from "../../supabaseClient.js";
 import "./DocumentPage.css";
 
 const DocumentPage = () => {
@@ -11,6 +12,7 @@ const DocumentPage = () => {
   const taskAssignee = searchParams.get("assignee") || "Unknown";
 
   const [content, setContent] = useState("");
+  const [headline, setHeadline] = useState("");
   const [isCommentsModalOpen, setIsCommentsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
@@ -58,15 +60,35 @@ const DocumentPage = () => {
     setComments((prev) => [...prev, comment]);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const rows = [
+      { category: 1, content: headline },
+      { category: 2, content: content },
+    ];
+
+    for (const row of rows) {
+      const { error } = await supabase.from("contents_tbl").insert({
+        subtask_id: taskId,
+        ...row,
+      });
+
+      if (error) {
+        console.error("Insert failed:", error);
+        return;
+      }
+    }
+
+    // navigate(-1);
+  };
+
   return (
     <Layout>
       <div className="document-page">
         <div className="document-header">
           <div className="document-header-left">
-            <button
-              className="btn btn-ghost"
-              onClick={() => navigate("/tasks")}
-            >
+            <button className="btn btn-ghost" onClick={() => navigate(-1)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -110,7 +132,11 @@ const DocumentPage = () => {
               </svg>
               {isSaving ? "Saving..." : "Save Draft"}
             </button>
-            <button className="btn btn-primary" onClick={handleSubmitForReview}>
+            <button
+              className="btn btn-primary"
+              type="submit"
+              onClick={handleSubmit}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -127,9 +153,27 @@ const DocumentPage = () => {
             </button>
           </div>
         </div>
+        <div className="document-editor-container">
+          <textarea
+            name="headline"
+            className="document-editor"
+            placeholder="Add your headline here..."
+            maxLength={50}
+            value={headline}
+            onChange={(e) => setHeadline(e.target.value)}
+          />
+
+          <div className="editor-footer">
+            <span className="word-count">
+              {headline.split(/\s+/).filter((word) => word.length > 0).length}{" "}
+              words
+            </span>
+            <span className="char-count">{headline.length} characters</span>
+          </div>
+        </div>
 
         <div className="document-editor-container">
-          <div className="editor-toolbar">
+          {/* <div className="editor-toolbar">
             <div className="toolbar-group">
               <button className="toolbar-btn" title="Bold">
                 <svg
@@ -240,9 +284,10 @@ const DocumentPage = () => {
                 </svg>
               </button>
             </div>
-          </div>
+          </div> */}
 
           <textarea
+            name="content"
             className="document-editor"
             placeholder="Start writing your content here...
 
