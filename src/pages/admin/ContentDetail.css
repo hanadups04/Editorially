@@ -240,3 +240,24 @@
     justify-content: center;
   }
 }
+
+@media (max-width: 360px) {
+  .detail-header div {
+    flex-direction: column;
+    row-gap: 10px;
+  }
+}
+
+@media (max-width: 375px) {
+  .detail-header div {
+    flex-direction: column;
+    row-gap: 10px;
+  }
+}
+
+@media (max-width: 320px) {
+  .detail-header div {
+    flex-direction: column;
+    row-gap: 10px;
+  }
+}

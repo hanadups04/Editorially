@@ -14,7 +14,9 @@ export async function fetchAllUsers() {
 export async function getUserProfile(uid) {
   const { data, error } = await supabase
     .from("users_tbl")
-    .select("*, roles_tbl ( role_name, access_level ), sections_tbl ( section_name )")
+    .select(
+      "*, roles_tbl ( role_name, access_level ), sections_tbl ( section_name )",
+    )
     .eq("uid", uid)
     .maybeSingle(); // avoids 406
 
@@ -23,26 +25,29 @@ export async function getUserProfile(uid) {
   return data; // null if none
 }
 
-  export async function fetchAllSections() {
-  const { data, error} = await supabase
-    .from("sections_tbl")
-    .select("*")
+export async function fetchAllSections() {
+  const { data, error } = await supabase.from("sections_tbl").select("*");
+
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchAllRoles() {
+  const { data, error } = await supabase.from("roles_tbl").select("*");
 
   if (error) throw error;
   return data;
 }
 
 export async function fetchAllProjects() {
-  const { data, error} = await supabase
-    .from("projects_tbl")
-    .select("*")
+  const { data, error } = await supabase.from("projects_tbl").select("*");
 
   if (error) throw error;
   return data;
 }
 
 export async function fetchSingleProject(project_id) {
-  const { data, error} = await supabase
+  const { data, error } = await supabase
     .from("projects_tbl")
     .select("*")
     .eq("project_id", project_id)
@@ -52,12 +57,12 @@ export async function fetchSingleProject(project_id) {
   return data;
 }
 
-export async function fetchSingleUser(uid){
-  const { data, error} = await supabase
+export async function fetchSingleUser(uid) {
+  const { data, error } = await supabase
     .from("users_tbl")
     .select("*")
-    .eq("uid", uid)
-    
+    .eq("uid", uid);
+
   if (error) throw error;
   return data;
 }
@@ -98,15 +103,13 @@ export async function getRequestsList(article_id) {
 }
 
 export async function fetchAllTasks(project_id) {
-  const { data, error} = await supabase
+  const { data, error } = await supabase
     .from("project_subtask_tbl")
     .select("*, users_tbl(username, roles_tbl(role_name))")
-    .eq("project_id", project_id)
+    .eq("project_id", project_id);
 
   if (error) throw error;
   return data;
 }
-
-
 
 //--------------------------------------------------------------------- <=3 TITI NI DON ANDREI TANEO -------------------------------------------------------- //

@@ -6,6 +6,7 @@ import "./MembersList.css";
 import Layout from "../../components/templates/AdminTemplate";
 import * as ReadFunctions from "../../context/functions/ReadFunctions";
 import { supabase } from "../../supabaseClient";
+import * as auth from "../../context/auth";
 
 const MembersList = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,6 +15,7 @@ const MembersList = () => {
   const [filters, setFilters] = useState({ section: "", role: "" });
   const [loading, setIsLoading] = useState(true);
   const [members, setMembers] = useState([]);
+  const [userRole, setRole] = useState([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -32,7 +34,22 @@ const MembersList = () => {
       }
     }
 
+    async function fetchRole() {
+      try {
+        const user = await auth.isAuthenticated();
+        console.log("user is", user.data.id);
+        const data = await ReadFunctions.getUserProfile(user.data.id);
+        if (isMounted) {
+          console.log("userdata is: ", data);
+          setRole(data.roles_tbl.access_level);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     fetchMembers();
+    fetchRole();
 
     const subscription = supabase
       .channel("members-updates") // you can name it anything
@@ -123,12 +140,14 @@ const MembersList = () => {
               </svg>
               Filter
             </button>
-            <button
-              className="filter-button"
-              onClick={() => setIsAddMemberOpen(true)}
-            >
-              Add Member
-            </button>
+            {userRole === 5 && (
+              <button
+                className="filter-button"
+                onClick={() => setIsAddMemberOpen(true)}
+              >
+                Add Member
+              </button>
+            )}
           </div>
 
           {/* Active Filters */}
