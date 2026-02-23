@@ -39,6 +39,29 @@ export default function Login() {
     setSubmitted(false);
   };
 
+  useEffect(() => {
+    let isMounted = true;
+    async function checkAuthenticated() {
+      const data = await auth.isAuthenticated();
+
+      if(isMounted) {
+        if(data.data) {
+          navigate("/dashboard");
+        }
+
+
+      }
+
+      
+    }
+
+    checkAuthenticated();
+
+    return () => {
+      isMounted = false;
+    }
+  }, [])
+
   const handleSubmit = async (e) => {
     console.log("handle login called");
     e.preventDefault();
@@ -139,7 +162,7 @@ export default function Login() {
             </div> */}
             <div className="Login-FormHeader">
               <p className="BrandName">Editorially</p>
-              <p className="Signin">Log in with your credentials to continue</p>
+              <p className="Signin">Log in with your Member credentials to continue</p>
             </div>
             <div className="Login-FormContent">
               <p className="FormLabel">Email</p>
@@ -254,7 +277,7 @@ export default function Login() {
 
               <hr />
             </div>
-            <div className="CreateAccount">
+            {/* <div className="CreateAccount">
               <div className="CreateAccountBtn">
                 <label>Create an Account? </label>
                 <a
@@ -284,7 +307,7 @@ export default function Login() {
                   Continue Reading
                 </a>
               </div>
-            </div>
+            </div> */}
           </div>
         </form>
       </div>

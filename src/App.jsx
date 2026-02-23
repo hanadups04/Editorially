@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -23,46 +23,57 @@ import Redirector from "./AppRedirector.jsx";
 import DocumentPage from "./pages/admin/DocumentPage.jsx";
 import ContentDetail from "./pages/admin/ContentDetail.jsx";
 import MemberDetail from "./pages/membersList/MemberDetail.jsx";
+import * as auth from "./context/auth.js"
+import ReactLoading from "react-loading";
 
 const ProtectedRoute = ({ requiredAccessLvl, children }) => {
-  const [userAccessLvl, setUserAccessLvl] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
   const navigate = useNavigate();
-  const [isAccessLvlFetched, setIsAccessLvlFetched] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  if (isLoading || !isAccessLvlFetched) {
+  useEffect(() => {
+    const checkAuth = async () => {
+      const {data: {session} } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+
+      if(!session) {
+        // navigate('/Readers')
+        navigate('/aboutus');
+
+      }
+    }
+
+    checkAuth();
+
+    const {data: {subscription} } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+      if(!session) {
+        navigate('/login');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+    if (isAuthenticated === null) {
     return (
-      <div>
-        {" "}
-        {isLoading ? (
-          <div className="loadProgress">
-            <img
-              src={LogoWhitebg}
-              alt="Loading..."
-              height={100}
-              width={100}
-              style={{ objectFit: "contain" }}
-              className="loading-logo"
-            />
-            <p className="loadingText">Loading, please wait...</p>
-          </div>
-        ) : (
-          <></>
-        )}
+      <div className="loadProgress">
+        <ReactLoading 
+          type="spinningBubbles"
+          color="#133e87"
+          height={60}
+          width={60}
+        />
+        <p className="loadingText">Loading, please wait...</p>
       </div>
     );
   }
+
+
 
   return children ? children : <Outlet />;
 };
 
 function App() {
-  const withAccess = (Component, levels) => (
-    <ProtectedRoute requiredAccessLvl={levels}>
-      <Component />
-    </ProtectedRoute>
-  );
-
   return (
     <>
       <Router>
@@ -73,17 +84,21 @@ function App() {
           {/* <Route path="/Readers" element={<LandingPage />} /> */}
           {/* <Route path="/Readers/:id" element={<LandingPage />} /> */}
           {/* <Route path="/Search" element={<LandingPage />} /> */}
+          <Route path="/login" element={<Login />} />
+
+
+          {/* only allow access on admin roles */}
+          <Route element={<ProtectedRoute/>}>
           <Route path="/tasks" element={<ProjectPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/members" element={<Members />} />
           <Route path="/members/:id" element={<MemberDetail />} />
           <Route path="/document" element={<DocumentPage />} />
           <Route path="/projects" element={<TaskList />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
           <Route path="/content" element={<ContentManagement />} />
           <Route path="/content/:id" element={<ContentDetail />} />
           <Route path="/profile/:id" element={<MemberDetail />} />
+          </Route>
         </Routes>
       </Router>
     </>

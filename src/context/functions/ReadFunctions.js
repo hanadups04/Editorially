@@ -112,4 +112,72 @@ export async function fetchAllTasks(project_id) {
   return data;
 }
 
+export async function getProjectsLength() {
+  const {count, error} = await supabase
+    .from("projects_tbl")
+    .select("*", {count: "exact", head: true})
+    .neq("step_id", 8);
+
+    if(error) throw error;
+    return count
+    
+}
+
+export async function getForProposal() {
+    const {count, error} = await supabase
+    .from("projects_tbl")
+    .select("*", {count: "exact", head: true})
+    .eq("step_id", 1);
+
+    if(error) throw error;
+    return count
+    
+}
+
+export async function getPosted() {
+    const {count, error} = await supabase
+    .from("articles_tbl")
+    .select("*", {count: "exact", head: true});
+
+    if(error) throw error;
+    return count
+    
+}
+
+export async function getOverdue() {
+  const {count, error} = await supabase
+    .from("projects_tbl")
+    .select("*", {count: "exact", head: true})
+    .lt("deadline", new Date().toISOString())
+    .neq("step_id", 8);
+
+    if(error) throw error;
+    return count 
+}
+
+export async function projectsByMonth() {
+  const year = new Date().getFullYear();
+
+  const { data, error } = await supabase
+    .rpc('projects_by_month', { selected_year: year });
+
+    if(error) throw error;
+    console.log(data);
+    return data 
+}
+
+export async function getProjectByStep (){
+  const { data, error } = await supabase.rpc('projects_by_step');
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  return data;
+
+  // console.log(data);
+};
+
+
 //--------------------------------------------------------------------- <=3 TITI NI DON ANDREI TANEO -------------------------------------------------------- //

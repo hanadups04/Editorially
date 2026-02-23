@@ -2,8 +2,11 @@ import { Button } from "../../components/landing/Button";
 import { ArrowRight } from "lucide-react";
 import heroImage from "../../assets/images/hero-image.jpg";
 import "./Hero.css";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="hero">
       <div className="hero-background" />
@@ -21,11 +24,20 @@ const Hero = () => {
             storytelling.
           </p>
           <div className="hero-buttons">
-            <Button className="btn btn-primary">
-              Get Started
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button className="btn btn-secondary">Learn More</Button>
+            <div onClick={() => {
+              navigate("/Readers");
+            }}>
+                <Button className="btn btn-primary">
+                  Start Reading
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </div>
+            <div onClick={() => {
+              navigate("/login");
+            }}>
+            <Button className="btn btn-secondary" >Log In as Member</Button>
+
+            </div>
           </div>
         </div>
       </div>

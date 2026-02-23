@@ -1,9 +1,12 @@
 import React from "react";
 import { useLocation, Link } from "react-router-dom";
 import "./Sidebar.css";
+import { signOut } from "../../context/auth";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ isCollapsed, isOpen }) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navItems = [
     {
@@ -103,6 +106,15 @@ const Sidebar = ({ isCollapsed, isOpen }) => {
     return location.pathname === path;
   };
 
+    const handleLogout = async () => {
+    try {
+      await signOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   return (
     <aside
       className={`sidebar ${isCollapsed ? "collapsed" : ""} ${isOpen ? "open" : ""}`}
@@ -124,6 +136,28 @@ const Sidebar = ({ isCollapsed, isOpen }) => {
           </Link>
         ))}
       </nav>
+      <div className="sidebar-footer">
+        <button 
+          onClick={handleLogout}
+          className="nav-item logout-btn"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            className="nav-item-icon"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          {!isCollapsed && (
+            <span className="nav-item-text">Logout</span>
+          )}
+        </button>
+      </div>
     </aside>
   );
 };

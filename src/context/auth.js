@@ -66,7 +66,7 @@ export async function signOut() {
   const { error } = await supabase.auth.signOut();
 
   if (error) throw error;
-  return data;
+  return;
 }
 
 export async function changePass(newPassword) {
