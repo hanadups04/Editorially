@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import "./Sidebar.css";
 import { signOut } from "../../context/auth";
 import { useNavigate } from "react-router-dom";
+import ConfirmationModal from "../ArticleManagement/ConfirmationModal";
 
 const Sidebar = ({ isCollapsed, isOpen }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [confirm, setConfirm] = useState(false);
 
   const navItems = [
     {
@@ -138,7 +140,7 @@ const Sidebar = ({ isCollapsed, isOpen }) => {
       </nav>
       <div className="sidebar-footer">
         <button 
-          onClick={handleLogout}
+          onClick={() => setConfirm(true)}
           className="nav-item logout-btn"
         >
           <svg
@@ -158,6 +160,21 @@ const Sidebar = ({ isCollapsed, isOpen }) => {
           )}
         </button>
       </div>
+
+      <ConfirmationModal
+        isOpen={confirm}
+        onClose={() => {
+          setConfirm(false);
+        }}
+        onConfirm={() => {
+          handleLogout();
+        }}
+        title="Confirm Logout"
+        message="Are you sure you want to log out?."
+        confirmText="Yes"
+        cancelText="No"
+        variant="danger"
+      />
     </aside>
   );
 };

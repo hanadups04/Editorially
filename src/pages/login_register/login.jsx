@@ -64,6 +64,7 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     console.log("handle login called");
+    setLoading(true);
     e.preventDefault();
 
     try {
@@ -73,8 +74,7 @@ export default function Login() {
         const { data: existing } = await supabase
           .from("users_tbl")
           .select("uid") // if stored as JSON
-          .eq("uid", userdata.id)
-          .maybeSingle();
+          .eq("uid", userdata.data.id);
 
         if (!existing) {
           console.log("not existing, creating a new one");
@@ -102,6 +102,8 @@ export default function Login() {
       }
     } catch (error) {
       setErrorLogin(true);
+    } finally {
+      setLoading(false);
     }
   };
 

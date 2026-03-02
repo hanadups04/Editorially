@@ -25,6 +25,7 @@ import ContentDetail from "./pages/admin/ContentDetail.jsx";
 import MemberDetail from "./pages/membersList/MemberDetail.jsx";
 import * as auth from "./context/auth.js"
 import ReactLoading from "react-loading";
+import ConstructArticle from "./pages/ConstructArticle.jsx";
 
 const ProtectedRoute = ({ requiredAccessLvl, children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -89,15 +90,16 @@ function App() {
 
           {/* only allow access on admin roles */}
           <Route element={<ProtectedRoute/>}>
-          <Route path="/tasks" element={<ProjectPage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/members" element={<Members />} />
-          <Route path="/members/:id" element={<MemberDetail />} />
-          <Route path="/document" element={<DocumentPage />} />
-          <Route path="/projects" element={<TaskList />} />
-          <Route path="/content" element={<ContentManagement />} />
-          <Route path="/content/:id" element={<ContentDetail />} />
-          <Route path="/profile/:id" element={<MemberDetail />} />
+            <Route path="/tasks" element={<ProjectPage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/members" element={<Members />} />
+            <Route path="/members/:id" element={<MemberDetail />} />
+            <Route path="/document" element={<DocumentPage />} />
+            <Route path="/projects" element={<TaskList />} />
+            <Route path="/content" element={<ContentManagement />} />
+            <Route path="/content/:id" element={<ContentDetail />} />
+            <Route path="/profile/:id" element={<MemberDetail />} />
+            <Route path="/create-article/:id" element={<ConstructArticle />} />
           </Route>
         </Routes>
       </Router>
