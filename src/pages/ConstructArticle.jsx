@@ -1,35 +1,89 @@
-import React, { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Layout from '../components/templates/AdminTemplate';
 import ConfirmationModal from '../components/ArticleManagement/ConfirmationModal';
-// import SuccessModal from '../components/content/SuccessModal';
+import SuccessModal from '../components/ArticleManagement/SuccessModa';
 import './ConstructArticle.css';
+import * as ReadFunctions from "../context/functions/ReadFunctions";
+import { createArticle } from '../context/functions/AddFunctions';
 
 const ConstructArticle = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const projectId = searchParams.get('projectId') || '1';
+  // const projectId = searchParams.get('projectId') || '1';
 
-  // Mock: simulate querying 3 separate content rows by type
-  const contentSources = [
-    { type: 'headline', value: 'Campus Sustainability Initiative Transforms University Life', submittedBy: 'Sarah Johnson', status: 'approved' },
-    { type: 'thumbnail', value: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800', submittedBy: 'Emma Rodriguez', status: 'approved' },
-    { type: 'content', value: `The university's new sustainability initiative is making waves across campus, with students and faculty alike embracing eco-friendly practices that are transforming daily life.\n\nFrom newly installed solar panels atop the science building to comprehensive recycling stations positioned throughout campus, the changes are both visible and impactful. Student volunteers have been at the forefront of these efforts, organizing weekly clean-up drives and educational workshops.\n\n"We've seen a 40% reduction in campus waste since the program launched," says Dr. Emily Chen, the program's director. "But more importantly, we've seen a cultural shift in how our community thinks about sustainability."\n\nThe initiative includes partnerships with local businesses, a new composting program for dining halls, and plans for an urban garden that will supply fresh produce to the campus cafeteria. Students involved in the project say it has given them practical experience in environmental management while making a real difference in their community.`, submittedBy: 'Sarah Johnson', status: 'approved' }
-  ];
+  const [author1, setAuthor1] = useState("");
+  const [author2, setAuthor2] = useState("");
 
-  const [headline, setHeadline] = useState(contentSources.find(s => s.type === 'headline')?.value || '');
-  const [thumbnail, setThumbnail] = useState(contentSources.find(s => s.type === 'thumbnail')?.value || '');
-  const [content, setContent] = useState(contentSources.find(s => s.type === 'content')?.value || '');
+
+  const [headline, setHeadline] = useState("");
+  const [thumbnail, setThumbnail] = useState("");
+  const [content, setContent] = useState("");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [successModal, setSuccessModal] = useState({ isOpen: false, title: '', message: '' });
+  const { id: projectId } = useParams();
+  const sectionId = searchParams.get("section_id");
+  const [loading, setLoading] = useState(true);
 
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function getData() {
+      try {
+      const data = await ReadFunctions.avengersAssemble(projectId);
+      const headline = data.find(item => item.category === 1);
+      const content = data.find(item => item.category === 2);
+      const image = data.find(item => item.category === 3);
+
+      setHeadline(headline.content);
+      setContent(content.content);
+      setThumbnail(image.content);
+      setAuthor1(headline.project_subtask_tbl.users_tbl.username)
+      setAuthor2(image.project_subtask_tbl.users_tbl.username)
+
+      console.log("hehe: ", headline.project_subtask_tbl.users_tbl.username, image.project_subtask_tbl.users_tbl.username)
+
+    
+      } catch (error) {
+        console.error(error);        
+      }finally{
+        if(isMounted) setLoading(false);
+      }
+    }
+
+    getData();
+
+    return () => {
+      isMounted = false;
+    }
+  }, [])
+  
   const handlePostArticle = () => {
     setIsConfirmOpen(true);
   };
 
-  const handleConfirmPost = () => {
+  const handleConfirmPost = async () => {
+
+    try {
+      const data = {
+      headline,
+      content,
+      images: thumbnail,
+      author_content: author1,
+      author_image: author2,
+      section_id: Number(sectionId)
+    }
+
+    console.log("article data: ", data);
+
+    await createArticle(data);
+    } catch (error) {
+      console.error("error mo'y: ", error);
+    }
     // Mock: insert into articles_tbl
-    console.log('Posting article to articles_tbl:', { headline, thumbnail, content, projectId });
+    
+
     setIsConfirmOpen(false);
     setSuccessModal({
       isOpen: true,
@@ -40,7 +94,7 @@ const ConstructArticle = () => {
 
   const handleSuccessClose = () => {
     setSuccessModal(prev => ({ ...prev, isOpen: false }));
-    navigate('/content');
+    // navigate('/content');
   };
 
   return (
@@ -60,13 +114,18 @@ const ConstructArticle = () => {
         <div className="content-sources-info">
           <h3>Content Sources</h3>
           <div className="source-items">
-            {contentSources.map((source, index) => (
-              <div key={index} className="source-item">
+            {/* {contentSources.map((source, index) => ( */}
+              <div className="source-item">
                 <span className="status-icon">✓</span>
-                <span className="source-type">{source.type.charAt(0).toUpperCase() + source.type.slice(1)}</span>
-                <span>Submitted by {source.submittedBy}</span>
+                <span className="source-type">Headline</span>
+                <span>Submitted by {author1}</span>
               </div>
-            ))}
+              <div className="source-item">
+                <span className="status-icon">✓</span>
+                <span className="source-type">Image</span>
+                <span>Submitted by {author2}</span>
+              </div>
+            {/* ))} */}
           </div>
         </div>
 
@@ -137,9 +196,9 @@ const ConstructArticle = () => {
           </div>
 
           <div className="construct-actions">
-            <button className="btn-cancel" onClick={() => navigate(-1)}>
+            {/* <button className="btn-cancel" onClick={() => navigate(-1)}>
               Cancel
-            </button>
+            </button> */}
             <button 
               className="btn btn-primary"
               onClick={handlePostArticle}
@@ -165,12 +224,12 @@ const ConstructArticle = () => {
         variant="default"
       />
 
-      {/* <SuccessModal
+      <SuccessModal
         isOpen={successModal.isOpen}
         onClose={handleSuccessClose}
         title={successModal.title}
         message={successModal.message}
-      /> */}
+      />
     </Layout>
   );
 };

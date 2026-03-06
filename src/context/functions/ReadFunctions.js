@@ -82,7 +82,7 @@ export async function getSingleArticle(article_id) {
   const { data, error } = await supabase
     .from("articles_tbl")
     .select(
-      "*, users_tbl (username, roles_tbl (role_name)), sections_tbl (section_name) ",
+      "*, sections_tbl (section_name)",
     )
     .eq("article_id", article_id)
     .maybeSingle();
@@ -178,6 +178,19 @@ export async function getProjectByStep (){
 
   // console.log(data);
 };
+
+export async function avengersAssemble(ironman_id) {
+  const {data, error} = await supabase
+    .from("contents_tbl")
+    .select("*, project_subtask_tbl ( users_tbl ( username ) )")
+    .eq("project_id", ironman_id)
+
+    if(error) {
+      throw error;
+    }
+
+    return data;
+}
 
 
 //--------------------------------------------------------------------- <=3 TITI NI DON ANDREI TANEO -------------------------------------------------------- //

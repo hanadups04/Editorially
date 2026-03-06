@@ -167,7 +167,7 @@ const ProjectPage = () => {
             </svg>
             <span>All tasks are completed and approved. Ready to construct the article.</span>
           </div>
-          <button className="btn btn-primary" onClick={() => navigate(`/create-article/${projectID}`)}>
+          <button className="btn btn-primary" onClick={() => navigate(`/create-article/${projectID}?section_id=${project.section_id}`)}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="22" y1="2" x2="11" y2="13"></line>
               <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>

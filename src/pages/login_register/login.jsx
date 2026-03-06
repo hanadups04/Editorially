@@ -171,6 +171,7 @@ export default function Login() {
               <input
                 type="email"
                 name="email"
+                readOnly={loading}
                 placeholder="Email"
                 className={`Login-Input ${
                   submitted &&
@@ -197,6 +198,7 @@ export default function Login() {
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
+                  readOnly={loading}
                   placeholder="Password"
                   className={`Password-Input ${
                     submitted &&
