@@ -35,7 +35,7 @@ export async function getUserProfile(uid) {
 export async function fetchAllProjects() {
   const { data, error} = await supabase
     .from("projects_tbl")
-    .select("*")
+    .select("*, project_steps_tbl(step_name)")
 
   if (error) throw error;
   return data;

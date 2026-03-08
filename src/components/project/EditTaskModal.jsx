@@ -109,7 +109,7 @@ const EditTaskModal = ({ isOpen, onClose, subtask, onSubmit }) => {
 
     const payload = {
       subtask_type: formData.subtask_type,
-      section_id: Number(formData.section_id),
+      // section_id: Number(formData.section_id),
       assignee_id: formData.assignee_id,
       subtask_title: formData.subtask_title || "sample empty title",
       subtask_details: formData.subtask_details,
@@ -208,7 +208,7 @@ const EditTaskModal = ({ isOpen, onClose, subtask, onSubmit }) => {
               ))}
             </div>
 
-            <div className="form-group">
+            {/* <div className="form-group">
               <label className="form-label">Section</label>
               <select
                 name="section_id"
@@ -228,7 +228,7 @@ const EditTaskModal = ({ isOpen, onClose, subtask, onSubmit }) => {
                     </option>
                   ))}
               </select>
-            </div>
+            </div> */}
           </div>
 
           <div className="form-group">

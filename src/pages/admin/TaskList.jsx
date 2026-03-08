@@ -109,7 +109,7 @@ const TaskList = () => {
       .includes(searchQuery.toLowerCase());
 
     const matchesStatus =
-      filters.status === "all" || project.status === filters.status;
+      filters.step_name === "all" || project.step_name === filters.step_name;
 
     let matchesDeadline = true;
     if (filters.deadline !== "all") {
@@ -263,11 +263,11 @@ const TaskList = () => {
               <div className="project-card-header">
                 <h3 className="project-title">{project.title}</h3>
                 <span
-                  className={`task-status ${project.status
+                  className={`task-status ${project.project_steps_tbl.step_name
                     .toLowerCase()
                     .replace(" ", "-")}`}
                 >
-                  {project.status}
+                  {project.project_steps_tbl.step_name}
                 </span>
               </div>
               <div className="project-card-body">

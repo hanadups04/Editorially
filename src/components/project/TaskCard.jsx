@@ -115,12 +115,12 @@ const TaskCard = ({
         >
           {subtask.users_tbl.roles_tbl.role_name}
         </span>
-        <span
+        {/* <span
           // className={`task-status ${subtask.status.toLowerCase().replace(" ", "-")}`}
           className="task-status"
         >
           {subtask.status}
-        </span>
+        </span> */}
       </div>
 
       <div className="task-assignee">

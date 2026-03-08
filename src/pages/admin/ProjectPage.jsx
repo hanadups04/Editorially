@@ -164,7 +164,7 @@ const ProjectPage = () => {
             ? project.sections_tbl?.[0]?.section_name
             : (project?.sections_tbl?.section_name ?? "")
         }
-        status={project.status}
+        status={project.project_steps_tbl.step_name}
         onEditClick={() => setIsEditProjectModalOpen(true)}
       />
       {project.step_id === 2 && (

@@ -53,7 +53,7 @@ const UploadImagesModal = ({ isOpen, onClose, taskId }) => {
       category: 3,
       content: uploadedUrls,
     });
-    console.log("data: ", payload);
+    console.log("data booger: ", payload);
   };
 
   const handleImageUpload = async (e) => {

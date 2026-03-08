@@ -98,7 +98,7 @@ export default function CreateParentTaskModal({
       title: formData.title,
       deadline: selectedDateTime?.toISOString(),
       details: formData.details,
-      status: "Proposed",
+      // status: "Proposed",
     });
 
     if (error) {
