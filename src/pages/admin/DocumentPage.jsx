@@ -63,10 +63,7 @@ const DocumentPage = () => {
       <div className="document-page">
         <div className="document-header">
           <div className="document-header-left">
-            <button
-              className="btn btn-ghost"
-              onClick={() => navigate("/tasks")}
-            >
+            <button className="btn btn-ghost" onClick={() => navigate(-1)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"

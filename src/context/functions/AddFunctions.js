@@ -30,3 +30,19 @@ export async function uploadThumbnail(file) {
 
   return publicUrlData.publicUrl;
 }
+
+export async function createArticle(data) {
+  const { error } = await supabase.from("articles_tbl").insert({
+    headline: data.headline,
+    content: data.content,
+    images: data.images,
+    is_featured: false,
+    author_content: data.author_content,
+    author_image: data.author_image,
+    section_id: data.section_id
+  });
+
+  if(error) {
+    console.log("error moy ay: ", error);
+  }
+}

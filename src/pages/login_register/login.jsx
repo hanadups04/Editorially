@@ -11,6 +11,7 @@ import AlertsNConfirmsModal from "../../AlertModals/AlertsNConfirmsModal.jsx";
 import { isAuthenticated, signIn } from "../../context/auth.js";
 import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
 import { supabase } from "../../supabaseClient.js";
+import * as auth from "../../context/auth.js";
 
 export default function Login() {
   const [recovAcc, setRecoverAccount] = useState(false);
@@ -38,8 +39,32 @@ export default function Login() {
     setSubmitted(false);
   };
 
+  useEffect(() => {
+    let isMounted = true;
+    async function checkAuthenticated() {
+      const data = await auth.isAuthenticated();
+
+      if(isMounted) {
+        if(data.data) {
+          navigate("/dashboard");
+        }
+
+
+      }
+
+      
+    }
+
+    checkAuthenticated();
+
+    return () => {
+      isMounted = false;
+    }
+  }, [])
+
   const handleSubmit = async (e) => {
     console.log("handle login called");
+    setLoading(true);
     e.preventDefault();
 
     try {
@@ -49,8 +74,7 @@ export default function Login() {
         const { data: existing } = await supabase
           .from("users_tbl")
           .select("uid") // if stored as JSON
-          .eq("uid", userdata.id)
-          .maybeSingle();
+          .eq("uid", userdata.data.id);
 
         if (!existing) {
           console.log("not existing, creating a new one");
@@ -78,6 +102,8 @@ export default function Login() {
       }
     } catch (error) {
       setErrorLogin(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -90,44 +116,15 @@ export default function Login() {
       .single();
 
     if (data) {
-      if (data.status === "deleted") {
-        // ask user if they want to recover their account
-        setRecoverAccount(true);
-        return;
-      }
-
-      if (data.status === "disabled") {
+      if (data.status === "inactive") {
         // ask user if they want to recover their account
         alert("your account has been disabled. ask your admin for assistance");
+        const login = await auth.signOut();
+        console.log("state is: ", login);
         return;
       }
 
-      switch (data.roles_tbl.access_level) {
-        case 6:
-          navigate("/Adviser/AdminDashboard");
-          console.log("navigating to adviser");
-          break;
-        case 5:
-          navigate("/Admin/AdminDashboard");
-          console.log("navigating to eic");
-          break;
-        case 4:
-          navigate("/Admin/AdminDashboard");
-          console.log("navigating to assoc or managing");
-          break;
-        case 3:
-          navigate("/Admin/EbHomepage");
-          console.log("navigating to section editor");
-          break;
-        case 2:
-          navigate("/Admin/SwHomepage");
-          console.log("navigating to section writer");
-          break;
-        case 1:
-          // navigate(`/${slug}`);
-          console.log("navigating to reader");
-          break;
-      }
+      navigate("/dashboard");
     } else {
       console.error("User row not found");
       navigate(`/login`);
@@ -135,24 +132,6 @@ export default function Login() {
   };
   const [openForgotPassModal, setOpenForgotPassModal] = useState(false);
   const [isContinuing, setIsContinuing] = useState(false); // added
-
-  const handleContinueReading = async (e) => {
-    e.preventDefault();
-    if (loading || isContinuing) return;
-    try {
-      setIsContinuing(true);
-      if (!auth.currentUser) {
-        const cred = await signInAnonymously(auth);
-        await ensureUserDocument(cred.user);
-      }
-      navigate("/nuntium");
-    } catch (err) {
-      console.error("Anonymous continue failed:", err);
-      navigate("/nuntium"); // still allow reading
-    } finally {
-      setIsContinuing(false);
-    }
-  };
 
   //   if (authLoading) {
   //     return (
@@ -185,36 +164,14 @@ export default function Login() {
             </div> */}
             <div className="Login-FormHeader">
               <p className="BrandName">Editorially</p>
-              <p className="Signin">Log in with your credentials to continue</p>
+              <p className="Signin">Log in with your Member credentials to continue</p>
             </div>
             <div className="Login-FormContent">
-              {/* <p className="FormLabel">Select Branch</p> */}
-              {/* <select
-                id="myDropdown"
-                className="PubmatSecDropDown"
-                name="secForChecking"
-                value={formData.branchName}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select Branch</option>
-                {sections.section &&
-                  Object.keys(sections.section).map((sec, key) => (
-                    <option key={key} value={sec}>
-                      {sec}
-                    </option>
-                  ))}
-              </select> */}
-              {/* <NUbranch
-                selectedBranch={formData.branchId}
-                onChange={(branchId) =>
-                  setFormData((prev) => ({ ...prev, branchId }))
-                }
-              /> */}
               <p className="FormLabel">Email</p>
               <input
                 type="email"
                 name="email"
+                readOnly={loading}
                 placeholder="Email"
                 className={`Login-Input ${
                   submitted &&
@@ -241,6 +198,7 @@ export default function Login() {
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
+                  readOnly={loading}
                   placeholder="Password"
                   className={`Password-Input ${
                     submitted &&
@@ -323,7 +281,7 @@ export default function Login() {
 
               <hr />
             </div>
-            <div className="CreateAccount">
+            {/* <div className="CreateAccount">
               <div className="CreateAccountBtn">
                 <label>Create an Account? </label>
                 <a
@@ -353,7 +311,7 @@ export default function Login() {
                   Continue Reading
                 </a>
               </div>
-            </div>
+            </div> */}
           </div>
         </form>
       </div>

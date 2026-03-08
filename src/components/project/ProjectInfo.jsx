@@ -39,10 +39,6 @@ export default function ProjectInfo({
           <span className="info-value">{deadline}</span>
         </div>
         <div className="info-item">
-          <span className="info-label">Issue</span>
-          <span className="info-value"></span>
-        </div>
-        <div className="info-item">
           <span className="info-label">Section</span>
           <span className="info-value">{section}</span>
         </div>

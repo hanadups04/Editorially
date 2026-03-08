@@ -13,7 +13,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
 
   React.useEffect(() => {
     if (projectID) console.log(`Project ID from URL: ${projectID}`);
-  }, [projectID])
+  }, [projectID]);
 
   const [formData, setFormData] = useState({
     project_id: "",
@@ -31,50 +31,50 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
   const [loading, setIsLoading] = useState(true);
 
   useEffect(() => {
-      let isMounted = true;
-  
-      async function fetchSections() {
-        try {
-          const data = await ReadFunctions.fetchAllSections();
-          if (isMounted) {
-            console.log("data is: ", data);
-            setSections(data);
-          }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          if (isMounted) setIsLoading(false);
-        }
-      }
-  
-      fetchSections();
-      return () => {
-        isMounted = false;
-      };
-    }, []);
+    let isMounted = true;
 
-    useEffect(() => {
-      let isMounted = true;
-  
-      async function fetchUsers() {
-        try {
-          const data = await ReadFunctions.fetchAllUsers();
-          if (isMounted) {
-            console.log("data is: ", data);
-            setAllUsers(data);
-          }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          if (isMounted) setIsLoading(false);
+    async function fetchSections() {
+      try {
+        const data = await ReadFunctions.fetchAllSections();
+        if (isMounted) {
+          console.log("data is: ", data);
+          setSections(data);
         }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (isMounted) setIsLoading(false);
       }
-  
-      fetchUsers();
-      return () => {
-        isMounted = false;
-      };
-    }, []);
+    }
+
+    fetchSections();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchUsers() {
+      try {
+        const data = await ReadFunctions.fetchAllUsers();
+        if (isMounted) {
+          console.log("data is: ", data);
+          setAllUsers(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    fetchUsers();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // const handleChange = (e) => {
   //   const { name, value } = e.target;
@@ -89,8 +89,8 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
         type === "checkbox" || type === "switch"
           ? checked
           : name === "subtask_type"
-          ? parseInt(value)
-          : value,
+            ? parseInt(value)
+            : value,
     }));
   };
 
@@ -98,29 +98,27 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
     e.preventDefault();
 
     const payload = {
-      project_id: ( projectID ),
+      project_id: projectID,
       assignee_id: formData.assignee_id,
       section_id: Number(formData.section_id),
       subtask_title: formData.subtask_title || "sample empty title",
       subtask_details: formData.subtask_details,
       subtask_type: formData.subtask_type,
-      assignee_id: formData.assignee_id,
       subtask_deadline: formData.subtask_deadline,
-      is_done: false
-}
+      is_done: false,
+    };
 
-console.log("Inserting subtask data:", payload);
+    console.log("Inserting subtask data:", payload);
 
     await supabase.from("project_subtask_tbl").insert({
-      project_id: ( projectID ),
+      project_id: projectID,
       assignee_id: formData.assignee_id,
       section_id: Number(formData.section_id),
       subtask_title: formData.subtask_title || "sample empty title",
       subtask_details: formData.subtask_details,
       subtask_type: formData.subtask_type,
-      assignee_id: formData.assignee_id,
       subtask_deadline: formData.subtask_deadline,
-      is_done: false
+      is_done: false,
     });
 
     onClose();
@@ -149,121 +147,124 @@ console.log("Inserting subtask data:", payload);
         </div>
 
         {/* <form onSubmit={handleSubmit}> */}
-          <div className="modal-body">
-            {["radio"].map((type) => (
-              <div
-                className="TaskSubmissionTypeCont"
-                key={`inline-${type}`}
-                // className="mb-3"
-              >
-                <p>Project Submission Type</p>
-                <div className="TaskSubmissionType">
-                  <Form.Check
-                    className="formType"
-                    label="Writing"
-                    name="subtask_type"
-                    type={type}
-                    id={`inline-${type}-1`}
-                    value={1}
-                    checked={formData.subtask_type === 1}
-                    onChange={handleChange}
-                    required
-                  />
+        <div className="modal-body">
+          {["radio"].map((type) => (
+            <div
+              className="TaskSubmissionTypeCont"
+              key={`inline-${type}`}
+              // className="mb-3"
+            >
+              <p>Project Submission Type</p>
+              <div className="TaskSubmissionType">
+                <Form.Check
+                  className="formType"
+                  label="Writing"
+                  name="subtask_type"
+                  type={type}
+                  id={`inline-${type}-1`}
+                  value={1}
+                  checked={formData.subtask_type === 1}
+                  onChange={handleChange}
+                  required
+                />
 
-                  {/* <OverlayTrigger
+                {/* <OverlayTrigger
                     placement="left"
                     delay={{ show: 250, hide: 400 }}
                     overlay={renderTooltip(1)}
                   >
                     <img className="InfoSubType" src={InfoB} />
                   </OverlayTrigger> */}
-                </div>
-                <div className="TaskSubmissionType">
-                  <Form.Check
-                    className="formType"
-                    label="Pubmat"
-                    name="subtask_type"
-                    type={type}
-                    id={`inline-${type}-2`}
-                    value={2}
-                    checked={formData.subtask_type === 2}
-                    onChange={handleChange}
-                  />
+              </div>
+              <div className="TaskSubmissionType">
+                <Form.Check
+                  className="formType"
+                  label="Pubmat"
+                  name="subtask_type"
+                  type={type}
+                  id={`inline-${type}-2`}
+                  value={2}
+                  checked={formData.subtask_type === 2}
+                  onChange={handleChange}
+                />
 
-                  {/* <OverlayTrigger
+                {/* <OverlayTrigger
                     placement="left"
                     delay={{ show: 250, hide: 400 }}
                     overlay={renderTooltip(2)}
                   >
                     <img className="InfoSubType" src={InfoB} />
                   </OverlayTrigger> */}
-                </div>
               </div>
-            ))}
+            </div>
+          ))}
           {/* </Form> */}
-    
+
           <div className="form-group">
-              <label className="form-label">Section</label>
-              <select
-                name="section_id"
-                className="form-select"
-                value={formData.section_id}
-                onChange={handleChange}
-              >
-                {sections.filter((section) =>
-                                    (formData.subtask_type !== 1 || section.type !== 2) && 
-                                    (formData.subtask_type !== 2 || section.type !== 1))
-                                    .map((section) => (
+            <label className="form-label">Section</label>
+            <select
+              name="section_id"
+              className="form-select"
+              value={formData.section_id}
+              onChange={handleChange}
+            >
+              {sections
+                .filter(
+                  (section) =>
+                    (formData.subtask_type !== 1 || section.type !== 2) &&
+                    (formData.subtask_type !== 2 || section.type !== 1),
+                )
+                .map((section) => (
                   <option key={section.section_id} value={section.section_id}>
                     {section.section_name}
                   </option>
                 ))}
-              </select>
-            </div>
+            </select>
+          </div>
 
-            <div className="form-group">
-              <label className="form-label">Assign To</label>
-              <select
-                name="assignee_id"
-                className="form-select"
-                value={formData.assignee_id}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select a team member</option>
-                {allUsers.map((member) => (
-                  <option key={member.uid} value={member.uid}>
-                    {member.username} ({member.email})
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="form-group">
+            <label className="form-label">Assign To</label>
+            <select
+              name="assignee_id"
+              className="form-select"
+              value={formData.assignee_id}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select a team member</option>
+              {allUsers.map((member) => (
+                <option key={member.uid} value={member.uid}>
+                  {member.username} ({member.email})
+                </option>
+              ))}
+            </select>
+          </div>
 
-             <div className="form-group">
-              <label className="form-label">Task Title</label>
-              <input
-                name="subtask_title"
-                className="form-input"
-                value={formData.subtask_title}
-                onChange={handleChange}
-                placeholder="Add a task title..."
-                required
-              />
-            </div>
+          <div className="form-group">
+            <label className="form-label">Task Title</label>
+            <input
+              name="subtask_title"
+              className="form-input"
+              value={formData.subtask_title}
+              onChange={handleChange}
+              placeholder="Add a task title..."
+              required
+            />
+          </div>
 
-            <div className="form-group">
-              <label className="form-label">Task Details</label>
-              <textarea
-                name="subtask_details"
-                className="form-textarea"
-                value={formData.subtask_details}
-                onChange={handleChange}
-                placeholder="Describe what needs to be done..."
-                required
-              />
-            </div>
+          <div className="form-group">
+            <label className="form-label">Task Details</label>
+            <textarea
+              name="subtask_details"
+              className="form-textarea"
+              value={formData.subtask_details}
+              onChange={handleChange}
+              placeholder="Describe what needs to be done..."
+              required
+            />
+          </div>
 
-            {/* <div className="form-group">
+          {/* <div className="form-group">
               <label className="form-label">Priority Level</label>
               <select
                 name="priority"
@@ -277,35 +278,31 @@ console.log("Inserting subtask data:", payload);
               </select>
             </div> */}
 
-            <div className="form-group">
-              <label className="form-label">Deadline</label>
-              <input
-                type="date"
-                name="subtask_deadline"
-                className="form-input"
-                value={formData.subtask_deadline}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <div className="form-group">
+            <label className="form-label">Deadline</label>
+            <input
+              type="date"
+              name="subtask_deadline"
+              className="form-input"
+              value={formData.subtask_deadline}
+              onChange={handleChange}
+              required
+            />
           </div>
+        </div>
 
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={onClose}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              onClick={handleSubmit}
-              className="btn btn-primary"
-            >
-              Create Task
-            </button>
-          </div>
+        <div className="modal-footer">
+          <button type="button" className="btn btn-secondary" onClick={onClose}>
+            Cancel
+          </button>
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            className="btn btn-primary"
+          >
+            Create Task
+          </button>
+        </div>
         {/* </form> */}
       </div>
     </div>

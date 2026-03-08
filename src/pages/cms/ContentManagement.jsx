@@ -104,7 +104,6 @@ export default function ContentManagement() {
         idx === editingIndex ? { ...item, ...updatedData } : item,
       ),
     );
-    // call db for changes here too
 
     setIsEditModalOpen(false);
     setEditingIndex(null);

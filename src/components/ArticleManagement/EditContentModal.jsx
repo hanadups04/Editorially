@@ -27,6 +27,7 @@ const EditContentModal = ({ isOpen, onClose, content, onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(content.article_id, formData);
     const updateArticle = await UpdateFunctions.updateArticle(
       content.article_id,
       formData,

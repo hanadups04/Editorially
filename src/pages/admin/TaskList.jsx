@@ -5,6 +5,7 @@ import FilterModal from "./FilterModal";
 import CreateProjectModal from "../../components/project/AddProjectModal.jsx";
 import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
 import "./TaskList.css";
+import ReactLoading from "react-loading";
 
 const TaskList = () => {
   const navigate = useNavigate();
@@ -18,66 +19,6 @@ const TaskList = () => {
   const [loading, setIsLoading] = useState(true);
   const [projects, setAllProjects] = useState([]);
 
-  // Sample projects data
-  const allProjectsss = [
-    {
-      id: 1,
-      name: "Spring 2025 Feature: Campus Sustainability Initiative",
-      deadline: "March 15, 2025",
-      status: "In Progress",
-      section: "Features",
-    },
-    {
-      id: 2,
-      name: "Student Government Elections Coverage",
-      deadline: "February 28, 2025",
-      status: "Review",
-      section: "News",
-    },
-    {
-      id: 3,
-      name: "Arts & Culture: Spring Theater Production",
-      deadline: "April 5, 2025",
-      status: "Pending",
-      section: "Arts & Culture",
-    },
-    {
-      id: 4,
-      name: "Sports: Basketball Season Recap",
-      deadline: "March 20, 2025",
-      status: "In Progress",
-      section: "Sports",
-    },
-    {
-      id: 5,
-      name: "Opinion: Campus Mental Health Resources",
-      deadline: "February 25, 2025",
-      status: "Completed",
-      section: "Opinion",
-    },
-    {
-      id: 6,
-      name: "Technology: AI in Education",
-      deadline: "March 30, 2025",
-      status: "Pending",
-      section: "Technology",
-    },
-    {
-      id: 7,
-      name: "Community: Local Business Spotlight",
-      deadline: "March 12, 2025",
-      status: "In Progress",
-      section: "Community",
-    },
-    {
-      id: 8,
-      name: "Special Report: Student Housing Crisis",
-      deadline: "April 15, 2025",
-      status: "Pending",
-      section: "Special Reports",
-    },
-  ];
-
   useEffect(() => {
     let isMounted = true;
 
@@ -85,7 +26,7 @@ const TaskList = () => {
       try {
         const data = await ReadFunctions.fetchAllProjects();
         if (isMounted) {
-          console.log("data is: ", data);
+          console.log("ako ang data is: ", data);
           setAllProjects(data);
         }
       } catch (error) {
@@ -254,7 +195,19 @@ const TaskList = () => {
         </div>
 
         <div className="projects-grid">
-          {filteredProjects.map((project) => (
+          {loading ? (
+              <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+
+                     <ReactLoading
+                                type="spinningBubbles"
+                                color="#133e87"
+                                height={60}
+                                width={60}
+                              />
+              </div>
+          ) : (
+            <>
+               {filteredProjects.map((project) => (
             <div
               key={project.project_id}
               className="project-card"
@@ -263,7 +216,7 @@ const TaskList = () => {
               <div className="project-card-header">
                 <h3 className="project-title">{project.title}</h3>
                 <span
-                  className={`task-status ${project.status
+                  className={`task-status ${project.project_steps_tbl.step_name
                     .toLowerCase()
                     .replace(" ", "-")}`}
                 >
@@ -316,9 +269,9 @@ const TaskList = () => {
               </div>
             </div>
           ))}
-        </div>
 
-        {filteredProjects.length === 0 && (
+
+              {filteredProjects.length === 0 && (
           <div className="empty-state">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -336,6 +289,14 @@ const TaskList = () => {
             <p>Try adjusting your search or filters</p>
           </div>
         )}
+
+            
+            </>
+          )}
+         
+        </div>
+
+        
       </div>
 
       <FilterModal
