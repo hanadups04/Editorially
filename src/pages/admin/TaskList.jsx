@@ -6,6 +6,8 @@ import CreateProjectModal from "../../components/project/AddProjectModal.jsx";
 import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
 import "./TaskList.css";
 import ReactLoading from "react-loading";
+import SuccessModal from "../../components/ArticleManagement/SuccessModa.jsx";
+import { supabase } from "../../supabaseClient.js";
 
 const TaskList = () => {
   const navigate = useNavigate();
@@ -14,6 +16,11 @@ const TaskList = () => {
   const [filters, setFilters] = useState({
     status: "all",
     deadline: "all",
+  });
+  const [successModal, setSuccessModal] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
   });
   const [isCreateProjModalOpen, setIsCreateProjModalOpen] = useState(false);
   const [loading, setIsLoading] = useState(true);
@@ -37,8 +44,24 @@ const TaskList = () => {
     }
 
     fetchProjects();
+
+    const subscription = supabase
+      .channel("project-updates") // you can name it anything
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "projects_tbl" },
+        async (payload) => {
+          console.log("Change received!", payload);
+          // payload.new → new row
+          // payload.old → old row (for update/delete)
+          await fetchProjects();
+        },
+      )
+      .subscribe();
+
     return () => {
       isMounted = false;
+      supabase.removeChannel(subscription);
     };
   }, []);
 
@@ -89,6 +112,11 @@ const TaskList = () => {
       console.log(`id value is: ${projectID}`);
     }
   }, [searchParams]);
+
+  const handleSuccessClose = () => {
+    setSuccessModal((prev) => ({ ...prev, isOpen: false }));
+    // navigate('/content');
+  };
 
   const handleProjectClick = (project_id) => {
     navigate(`/tasks?project_id=${project_id}`);
@@ -196,107 +224,106 @@ const TaskList = () => {
 
         <div className="projects-grid">
           {loading ? (
-              <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-
-                     <ReactLoading
-                                type="spinningBubbles"
-                                color="#133e87"
-                                height={60}
-                                width={60}
-                              />
-              </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ReactLoading
+                type="spinningBubbles"
+                color="#133e87"
+                height={60}
+                width={60}
+              />
+            </div>
           ) : (
             <>
-               {filteredProjects.map((project) => (
-            <div
-              key={project.project_id}
-              className="project-card"
-              onClick={() => handleProjectClick(project.project_id)}
-            >
-              <div className="project-card-header">
-                <h3 className="project-title">{project.title}</h3>
-                <span
-                  className={`task-status ${project.project_steps_tbl.step_name
-                    .toLowerCase()
-                    .replace(" ", "-")}`}
+              {filteredProjects.map((project) => (
+                <div
+                  key={project.project_id}
+                  className="project-card"
+                  onClick={() => handleProjectClick(project.project_id)}
                 >
-                  {project.project_steps_tbl.step_name}
-                </span>
-              </div>
-              <div className="project-card-body">
-                <div className="project-info-row">
-                  <div className="project-info-item">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
+                  <div className="project-card-header">
+                    <h3 className="project-title">{project.title}</h3>
+                    <span
+                      className={`task-status ${project.project_steps_tbl.step_name
+                        .toLowerCase()
+                        .replace(" ", "-")}`}
                     >
-                      <rect
-                        x="3"
-                        y="4"
-                        width="18"
-                        height="18"
-                        rx="2"
-                        ry="2"
-                      ></rect>
-                      <line x1="16" y1="2" x2="16" y2="6"></line>
-                      <line x1="8" y1="2" x2="8" y2="6"></line>
-                      <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                    <span>{project.deadline}</span>
+                      {project.project_steps_tbl.step_name}
+                    </span>
+                  </div>
+                  <div className="project-card-body">
+                    <div className="project-info-row">
+                      <div className="project-info-item">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <rect
+                            x="3"
+                            y="4"
+                            width="18"
+                            height="18"
+                            rx="2"
+                            ry="2"
+                          ></rect>
+                          <line x1="16" y1="2" x2="16" y2="6"></line>
+                          <line x1="8" y1="2" x2="8" y2="6"></line>
+                          <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <span>{project.deadline}</span>
+                      </div>
+                    </div>
+                    <div className="project-info-row">
+                      <div className="project-info-item">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <span>{project.section_id}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className="project-info-row">
-                  <div className="project-info-item">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    <span>{project.section_id}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-
+              ))}
 
               {filteredProjects.length === 0 && (
-          <div className="empty-state">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="48"
-              height="48"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.35-4.35"></path>
-            </svg>
-            <h3>No projects found</h3>
-            <p>Try adjusting your search or filters</p>
-          </div>
-        )}
-
-            
+                <div className="empty-state">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="48"
+                    height="48"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                  </svg>
+                  <h3>No projects found</h3>
+                  <p>Try adjusting your search or filters</p>
+                </div>
+              )}
             </>
           )}
-         
         </div>
-
-        
       </div>
 
       <FilterModal
@@ -307,8 +334,18 @@ const TaskList = () => {
       />
 
       {isCreateProjModalOpen && (
-        <CreateProjectModal onClose={() => setIsCreateProjModalOpen(false)} />
+        <CreateProjectModal
+          onClose={() => setIsCreateProjModalOpen(false)}
+          isSuccess={setSuccessModal}
+        />
       )}
+
+      <SuccessModal
+        isOpen={successModal.isOpen}
+        onClose={handleSuccessClose}
+        title={successModal.title}
+        message={successModal.message}
+      />
     </Layout>
   );
 };

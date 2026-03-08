@@ -28,6 +28,7 @@ export default function CreateParentTaskModal({
   hideCancel = false,
   branchData,
   secType,
+  isSuccess,
 }) {
   const [sections, setSections] = useState([]);
   const [loading, setIsLoading] = useState(true);
@@ -90,15 +91,18 @@ export default function CreateParentTaskModal({
       return;
     }
 
+    if (Number(formData.section_id) === 0) {
+      console.log("error walang section si tanga");
+      return;
+    }
+
     const { error } = await supabase.from("projects_tbl").insert({
-      project_id: "project-0001",
       owner_id: userData.user.id,
       step_id: 1,
       section_id: Number(formData.section_id),
       title: formData.title,
       deadline: selectedDateTime?.toISOString(),
       details: formData.details,
-      // status: "Proposed",
     });
 
     if (error) {
@@ -107,7 +111,12 @@ export default function CreateParentTaskModal({
       return;
     }
 
-    // setShowAlertSuccess(true);
+    isSuccess({
+      isOpen: true,
+      title: "Project Created!",
+      message: "The project has been successfully created.",
+    });
+
     onClose();
   };
 
@@ -185,9 +194,10 @@ export default function CreateParentTaskModal({
               <select
                 name="section_id"
                 className="form-select"
-                value={formData.section_id}
+                // value={formData.section_id}
                 onChange={handleChange}
               >
+                <option value={0}>SELECT A SECTION</option>
                 {sections.map((section) => (
                   <option key={section.section_id} value={section.section_id}>
                     {section.section_name}

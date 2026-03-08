@@ -14,12 +14,18 @@ import * as UpdateFunctions from "../../context/functions/UpdateFunctions";
 import * as DeleteFunctions from "../../context/functions/DeleteFunctions";
 import ConfirmationModal from "../../components/ArticleManagement/ConfirmationModal";
 import { supabase } from "../../supabaseClient";
+import SuccessModal from "../../components/ArticleManagement/SuccessModa";
 
 const ContentDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setIsLoading] = useState(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [successModal, setSuccessModal] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+  });
   const [content, setContent] = useState({});
   const [userRole, setRole] = useState([]);
   const [userId, setId] = useState([]);
@@ -54,6 +60,11 @@ const ContentDetail = () => {
     );
     // console.log("delete is: ", id, !content.visible);
     setDeleteConfirmOpen(false);
+    setSuccessModal({
+      isOpen: true,
+      title: "Article Updated!",
+      message: "The article has been successfully updated.",
+    });
     console.log("archive result is: ", callDelete);
   };
 
@@ -140,13 +151,28 @@ const ContentDetail = () => {
   const handleEditSubmit = (updatedData) => {
     setContent((prev) => ({ ...prev, ...updatedData }));
     setIsEditModalOpen(false);
+    setSuccessModal({
+      isOpen: true,
+      title: "Article Updated!",
+      message: "The article has been successfully updated.",
+    });
   };
 
   const handleRequestSubmit = async (requestData) => {
     setIsRequestModalOpen(false);
-    const callReqeusetEdit = await AddFunctions.insertEditRequest(requestData);
+    await AddFunctions.insertEditRequest(requestData);
+    setSuccessModal({
+      isOpen: true,
+      title: "Request Submitted!",
+      message: "Your request has been submitted.",
+    });
 
     console.log("data of request edit is: ", requestData);
+  };
+
+  const handleSuccessClose = () => {
+    setSuccessModal((prev) => ({ ...prev, isOpen: false }));
+    // navigate('/content');
   };
 
   if (loading) {
@@ -290,12 +316,8 @@ const ContentDetail = () => {
                   .join("")}
               </div>
               <div className="author-info">
-                <span className="author-name">
-                  {content.author_content}
-                </span>
-                <span className="author-role">
-                 Writer
-                </span>
+                <span className="author-name">{content.author_content}</span>
+                <span className="author-role">Writer</span>
               </div>
               <div className="author-avatar">
                 {content.author_content
@@ -304,12 +326,8 @@ const ContentDetail = () => {
                   .join("")}
               </div>
               <div className="author-info">
-                <span className="author-name">
-                  {content.author_image}
-                </span>
-                <span className="author-role">
-                 Photographer
-                </span>
+                <span className="author-name">{content.author_image}</span>
+                <span className="author-role">Photographer</span>
               </div>
             </div>
 
@@ -394,6 +412,13 @@ const ContentDetail = () => {
         confirmText="Show"
         cancelText="Cancel"
         variant="default"
+      />
+
+      <SuccessModal
+        isOpen={successModal.isOpen}
+        onClose={handleSuccessClose}
+        title={successModal.title}
+        message={successModal.message}
       />
     </Layout>
   );

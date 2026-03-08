@@ -12,12 +12,18 @@ import * as AddFunctions from "../../context/functions/AddFunctions";
 import ConfirmationModal from "../../components/ArticleManagement/ConfirmationModal";
 import RequestChangesModal from "../../components/ArticleManagement/RequestChangesModa";
 import { supabase } from "../../supabaseClient";
+import SuccessModal from "../../components/ArticleManagement/SuccessModa";
 
 export default function ContentManagement() {
   const [loading, setIsLoading] = useState(true);
   const [contents, setContents] = useState([]);
   const [userRole, setRole] = useState([]);
   const [userId, setId] = useState([]);
+  const [successModal, setSuccessModal] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+  });
 
   useEffect(() => {
     let isMounted = true;
@@ -99,6 +105,12 @@ export default function ContentManagement() {
   const handleEditSubmit = (updatedData) => {
     if (editingIndex === null) return;
 
+    setSuccessModal({
+      isOpen: true,
+      title: "Edited Successfully",
+      message: "The article has been edited successfully",
+    });
+
     setContents((prev) =>
       prev.map((item, idx) =>
         idx === editingIndex ? { ...item, ...updatedData } : item,
@@ -107,6 +119,10 @@ export default function ContentManagement() {
 
     setIsEditModalOpen(false);
     setEditingIndex(null);
+  };
+
+  const handleSuccessClose = () => {
+    setSuccessModal((prev) => ({ ...prev, isOpen: false }));
   };
 
   const handleDelete = async () => {
@@ -123,6 +139,13 @@ export default function ContentManagement() {
       pendingDeleteId,
       pendingDeleteStatus,
     );
+
+    setSuccessModal({
+      isOpen: true,
+      title: "Updated Successfully",
+      message: "The article has been updated successfully",
+    });
+
     setDeleteConfirmOpen(false);
     setPendingDeleteId(null);
     setPendingDeleteStatus(null);
@@ -466,6 +489,13 @@ export default function ContentManagement() {
         confirmText="Show"
         cancelText="Cancel"
         variant="default"
+      />
+
+      <SuccessModal
+        isOpen={successModal.isOpen}
+        onClose={handleSuccessClose}
+        title={successModal.title}
+        message={successModal.message}
       />
     </Layout>
   );
