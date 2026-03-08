@@ -77,12 +77,12 @@ const TaskCard = ({
   };
 
   const handleActionClick = () => {
-    if (task === 2 && onUploadClick) {
-      onUploadClick();
+    if (subtask.subtask_type === 2 && onUploadClick) {
+      onUploadClick(subtask.subtask_id);
     } else {
       // Navigate to document page with task info
       navigate(
-        `/document?taskId=${subtask.subtask_id}&role=${encodeURIComponent(task)}`,
+        `/document?taskId=${subtask.subtask_id}&role=${encodeURIComponent(type)}`,
       );
     }
   };
@@ -114,12 +114,12 @@ const TaskCard = ({
         >
           {subtask.users_tbl.roles_tbl.role_name}
         </span>
-        <span
+        {/* <span
           // className={`task-status ${subtask.status.toLowerCase().replace(" ", "-")}`}
           className="task-status"
         >
           {subtask.status}
-        </span>
+        </span> */}
       </div>
 
       <div className="task-assignee">

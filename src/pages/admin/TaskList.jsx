@@ -50,7 +50,7 @@ const TaskList = () => {
       .includes(searchQuery.toLowerCase());
 
     const matchesStatus =
-      filters.status === "all" || project.status === filters.status;
+      filters.step_name === "all" || project.step_name === filters.step_name;
 
     let matchesDeadline = true;
     if (filters.deadline !== "all") {
@@ -220,7 +220,7 @@ const TaskList = () => {
                     .toLowerCase()
                     .replace(" ", "-")}`}
                 >
-                  {project.status}
+                  {project.project_steps_tbl.step_name}
                 </span>
               </div>
               <div className="project-card-body">

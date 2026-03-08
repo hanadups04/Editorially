@@ -19,10 +19,15 @@ const EditProjectModal = ({ isOpen, onClose, project, onSubmit }) => {
       setFormData({
         title: project.title || "",
         details: project.details || "",
-        deadline: project.deadline ? new Date(project.deadline) : null
+        deadline: project.deadline ? new Date(project.deadline) : null,
       });
-      console.log("projec data: ", project.title, project.details, project.deadline);
-      console.log("prpojectdata: ", project)
+      console.log(
+        "projec data: ",
+        project.title,
+        project.details,
+        project.deadline,
+      );
+      console.log("prpojectdata: ", project);
     }
   }, [project]);
 
@@ -47,16 +52,13 @@ const EditProjectModal = ({ isOpen, onClose, project, onSubmit }) => {
       title: formData.title,
       deadline: selectedDateTime?.toISOString(),
       details: formData.details,
-    }
+    };
 
     console.log("data for pudate: ", payload, project.project_id);
 
     onSubmit(payload);
 
-     await UpdateFunctions.updateProject(
-      project.project_id,
-      payload
-     );
+    await UpdateFunctions.updateProject(project.project_id, payload);
     onClose();
   };
 
@@ -86,32 +88,32 @@ const EditProjectModal = ({ isOpen, onClose, project, onSubmit }) => {
         </div>
 
         {/* <form onSubmit={handleSubmit}> */}
-          <div className="modal-body">
-            <div className="form-group">
-              <label className="form-label">Project Title</label>
-              <input
-                type="text"
-                name="title"
-                className="form-input"
-                value={formData.title}
-                onChange={handleChange}
-                required
-              />
-            </div>
+        <div className="modal-body">
+          <div className="form-group">
+            <label className="form-label">Project Title</label>
+            <input
+              type="text"
+              name="title"
+              className="form-input"
+              value={formData.title}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-            <div className="form-group">
-              <label className="form-label">Details</label>
-              <textarea
-                name="details"
-                className="form-textarea"
-                value={formData.details}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <div className="form-group">
+            <label className="form-label">Details</label>
+            <textarea
+              name="details"
+              className="form-textarea"
+              value={formData.details}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-            <div className="form-row">
-              {/* <div className="form-group">
+          <div className="form-row">
+            {/* <div className="form-group">
                 <label className="form-label">Deadline Date</label>
                 <input
                   type="date"
@@ -124,29 +126,29 @@ const EditProjectModal = ({ isOpen, onClose, project, onSubmit }) => {
               </div> */}
 
             <div className="form-group">
-                          <label className="form-label">Deadline</label>
-                          <DatePicker
-                            selected={formData.deadline}
-                            onChange={handleDateChange}
-                            minDate={new Date()}
-                            minTime={
-                              formData.deadline &&
-                              new Date(selectedDateTime).toDateString() ===
-                                new Date().toDateString()
-                                ? new Date()
-                                : new Date(0, 0, 0, 0, 0)
-                            }
-                            maxTime={new Date(0, 0, 0, 23, 59)}
-                            showTimeSelect
-                            dateFormat="yyyy-MM-dd HH:mm:ss"
-                            timeIntervals={15}
-                            timeCaption="Time"
-                            required
-                            className="DeadlineDatePicker"
-                          />
-                        </div>
+              <label className="form-label">Deadline</label>
+              <DatePicker
+                selected={formData.deadline}
+                onChange={handleDateChange}
+                minDate={new Date()}
+                minTime={
+                  formData.deadline &&
+                  new Date(selectedDateTime).toDateString() ===
+                    new Date().toDateString()
+                    ? new Date()
+                    : new Date(0, 0, 0, 0, 0)
+                }
+                maxTime={new Date(0, 0, 0, 23, 59)}
+                showTimeSelect
+                dateFormat="yyyy-MM-dd HH:mm:ss"
+                timeIntervals={15}
+                timeCaption="Time"
+                required
+                className="DeadlineDatePicker"
+              />
+            </div>
 
-              {/* <div className="form-group">
+            {/* <div className="form-group">
                 <label className="form-label">Issue</label>
                 <input
                   type="text"
@@ -157,10 +159,10 @@ const EditProjectModal = ({ isOpen, onClose, project, onSubmit }) => {
                   placeholder="e.g., Vol. 45, Issue 3"
                 />
               </div> */}
-            </div>
+          </div>
 
-            {/* <div className="form-row"> */}
-              {/* <div className="form-group">
+          {/* <div className="form-row"> */}
+          {/* <div className="form-group">
                 <label className="form-label">Section</label>
                 <select
                   name="section_id"
@@ -178,7 +180,7 @@ const EditProjectModal = ({ isOpen, onClose, project, onSubmit }) => {
                 </select>
               </div> */}
 
-              {/* <div className="form-group">
+          {/* <div className="form-group">
                 <label className="form-label">Status</label>
                 <select
                   name="status"
@@ -195,22 +197,22 @@ const EditProjectModal = ({ isOpen, onClose, project, onSubmit }) => {
                   ))}
                 </select>
               </div> */}
-            {/* </div> */}
-          </div>
+          {/* </div> */}
+        </div>
 
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={onClose}
-            >
-              Cancel
-            </button>
-            <button type="submit" onClick={handleSubmit} className="btn btn-primary">
-              Save Changes
-            </button>
-          </div>
-          
+        <div className="modal-footer">
+          <button type="button" className="btn btn-secondary" onClick={onClose}>
+            Cancel
+          </button>
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            className="btn btn-primary"
+          >
+            Save Changes
+          </button>
+        </div>
+
         {/* </form> */}
       </div>
     </div>

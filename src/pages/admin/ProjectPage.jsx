@@ -19,6 +19,7 @@ const ProjectPage = () => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isEditProjectModalOpen, setIsEditProjectModalOpen] = useState(false);
   const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
+  const [taskId, setTaskId] = useState("");
   const [selectedTask, setSelectedTask] = useState(null);
 
   const [searchParams] = useSearchParams();
@@ -64,12 +65,14 @@ const ProjectPage = () => {
 
   // Workflow steps
   const workflowSteps = [
-    { id: "submitted", label: "Submitted" },
-    { id: "approved", label: "Approved" },
-    { id: "assigned", label: "Assigned" },
-    { id: "in-progress", label: "In Progress" },
-    { id: "review", label: "Review" },
-    { id: "completed", label: "Completed" },
+    { step_id: "1", label: "Proposed" },
+    { step_id: "2", label: "Pending Approval" },
+    { step_id: "3", label: "Approved - Pending Assignment" },
+    { step_id: "4", label: "In Progress" },
+    { step_id: "5", label: "Submitted for Review" },
+    { step_id: "6", label: "Revisions Required" },
+    { step_id: "7", label: "Approved for Posting" },
+    { step_id: "8", label: "Published" },
   ];
 
   const handleAddTask = (newTask) => {
@@ -112,24 +115,29 @@ const ProjectPage = () => {
     }));
   };
 
-  const handleEditTask = (updatedTask) => {
+  const handleEditTask = (subtask_id, updatedTask) => {
+    // setSubtasks(subtask_id, updatedTask);
     setSubtasks((prev) =>
-      prev.map((task) => (task.id === updatedTask.id ? updatedTask : task)),
+      Array.isArray(prev)
+        ? prev.map((st) =>
+            st.subtask_id === subtask_id ? { ...st, ...updatedTask } : st,
+          )
+        : prev,
     );
   };
 
-  const handleEditTaskClick = (task) => {
-    setSelectedTask(task);
+  const handleEditTaskClick = (subtask) => {
+    setSelectedTask(subtask);
     setIsEditTaskModalOpen(true);
   };
 
-    if (loading) {
-      return (
-        <Layout>
-          <div className="content-detail">Loading...</div>
-        </Layout>
-      );
-    }
+  if (loading) {
+    return (
+      <Layout>
+        <div className="content-detail">Loading...</div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -233,13 +241,14 @@ const ProjectPage = () => {
           setIsEditTaskModalOpen(false);
           setSelectedTask(null);
         }}
-        task={selectedTask}
+        subtask={selectedTask}
         onSubmit={handleEditTask}
       />
 
       <UploadImagesModal
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
+        taskId={taskId}
       />
     </Layout>
   );

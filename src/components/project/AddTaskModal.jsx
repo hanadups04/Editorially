@@ -17,7 +17,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
 
   const [formData, setFormData] = useState({
     project_id: "",
-    section_id: "",
+    // section_id: "",
     assignee_id: "",
     subtask_title: "",
     subtask_details: "",
@@ -100,7 +100,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
     const payload = {
       project_id: projectID,
       assignee_id: formData.assignee_id,
-      section_id: Number(formData.section_id),
+      // section_id: Number(formData.section_id),
       subtask_title: formData.subtask_title || "sample empty title",
       subtask_details: formData.subtask_details,
       subtask_type: formData.subtask_type,
@@ -113,7 +113,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
     await supabase.from("project_subtask_tbl").insert({
       project_id: projectID,
       assignee_id: formData.assignee_id,
-      section_id: Number(formData.section_id),
+      // section_id: Number(formData.section_id),
       subtask_title: formData.subtask_title || "sample empty title",
       subtask_details: formData.subtask_details,
       subtask_type: formData.subtask_type,
@@ -200,7 +200,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
           ))}
           {/* </Form> */}
 
-          <div className="form-group">
+          {/* <div className="form-group">
             <label className="form-label">Section</label>
             <select
               name="section_id"
@@ -220,7 +220,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
                   </option>
                 ))}
             </select>
-          </div>
+          </div> */}
 
           <div className="form-group">
             <label className="form-label">Assign To</label>
