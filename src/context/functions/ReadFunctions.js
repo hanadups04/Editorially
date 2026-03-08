@@ -40,7 +40,9 @@ export async function fetchAllRoles() {
 }
 
 export async function fetchAllProjects() {
-  const { data, error } = await supabase.from("projects_tbl").select("*, project_steps_tbl ( step_name )");
+  const { data, error } = await supabase
+    .from("projects_tbl")
+    .select("*, project_steps_tbl ( step_name )");
 
   if (error) throw error;
   return data;

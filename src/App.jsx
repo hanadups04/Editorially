@@ -23,9 +23,10 @@ import Redirector from "./AppRedirector.jsx";
 import DocumentPage from "./pages/admin/DocumentPage.jsx";
 import ContentDetail from "./pages/admin/ContentDetail.jsx";
 import MemberDetail from "./pages/membersList/MemberDetail.jsx";
-import * as auth from "./context/auth.js"
+import * as auth from "./context/auth.js";
 import ReactLoading from "react-loading";
 import ConstructArticle from "./pages/ConstructArticle.jsx";
+import ReaderHomepage from "./pages/reader/ReaderHomepage.jsx";
 
 const ProtectedRoute = ({ requiredAccessLvl, children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -33,32 +34,35 @@ const ProtectedRoute = ({ requiredAccessLvl, children }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const {data: {session} } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
 
-      if(!session) {
+      if (!session) {
         // navigate('/Readers')
-        navigate('/aboutus');
-
+        navigate("/aboutus");
       }
-    }
+    };
 
     checkAuth();
 
-    const {data: {subscription} } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsAuthenticated(!!session);
-      if(!session) {
-        navigate('/login');
+      if (!session) {
+        navigate("/login");
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-    if (isAuthenticated === null) {
+  if (isAuthenticated === null) {
     return (
       <div className="loadProgress">
-        <ReactLoading 
+        <ReactLoading
           type="spinningBubbles"
           color="#133e87"
           height={60}
@@ -68,8 +72,6 @@ const ProtectedRoute = ({ requiredAccessLvl, children }) => {
       </div>
     );
   }
-
-
 
   return children ? children : <Outlet />;
 };
@@ -82,14 +84,13 @@ function App() {
           <Route path="/" element={<Redirector />} />
           {/* user searches editorially.app, calls redirector, checks for account, if none, throws user to landing page, if present, throws user to appropriate page */}
           <Route path="/aboutus" element={<LandingPage />} />
-          {/* <Route path="/Readers" element={<LandingPage />} /> */}
+          <Route path="/Readers" element={<ReaderHomepage />} />
           {/* <Route path="/Readers/:id" element={<LandingPage />} /> */}
           {/* <Route path="/Search" element={<LandingPage />} /> */}
           <Route path="/login" element={<Login />} />
 
-
           {/* only allow access on admin roles */}
-          <Route element={<ProtectedRoute/>}>
+          <Route element={<ProtectedRoute />}>
             <Route path="/tasks" element={<ProjectPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/members" element={<Members />} />

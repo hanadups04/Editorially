@@ -40,24 +40,24 @@ const ProjectPage = () => {
           ReadFunctions.fetchSingleProject(projectID),
           ReadFunctions.fetchAllTasks(projectID),
         ]);
-        
+
         if (isMounted) {
           console.log("project data is: ", projectData);
           console.log("subtasks are: ", tasksData);
           setProject(projectData);
           setSubtasks(tasksData);
         }
-      } catch(error) {
+      } catch (error) {
         console.error(error);
       } finally {
-        if(isMounted) {
-          setIsLoading(false);  // Now this waits for data to arrive
+        if (isMounted) {
+          setIsLoading(false); // Now this waits for data to arrive
         }
       }
     }
 
     fetchData();
-    
+
     return () => {
       isMounted = false;
     };
@@ -150,40 +150,71 @@ const ProjectPage = () => {
         status={project.project_steps_tbl?.step_name}
         onEditClick={() => setIsEditProjectModalOpen(true)}
       />
-      <div>
-        <button
-          className="btn btn-primary"
-          onClick={() => UpdateFunctions.approveProject(projectID)}
-        >
-          APPROVE
-        </button>
-        <button
-          className="btn btn-primary"
-          onClick={() => UpdateFunctions.rejectProject(projectID)}
-        >
-          REJECT
-        </button>
-      </div>
+      {project.step_id == 1 ||
+        (project.step_id == 2 && (
+          <div>
+            <button
+              className="btn btn-primary"
+              onClick={() => UpdateFunctions.approveProject(projectID)}
+            >
+              APPROVE
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={() => UpdateFunctions.rejectProject(projectID)}
+            >
+              REJECT
+            </button>
+          </div>
+        ))}
+
       <ProgressTracker currentStep="in-progress" steps={workflowSteps} />
 
-      {subtasks.length > 0 && subtasks.every(t => t.status === 'Completed') && (
-        <div className="construct-banner">
-          <div className="construct-banner-text">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-            <span>All tasks are completed and approved. Ready to construct the article.</span>
+      {subtasks.length > 0 &&
+        subtasks.every((t) => t.status === "Completed") && (
+          <div className="construct-banner">
+            <div className="construct-banner-text">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              <span>
+                All tasks are completed and approved. Ready to construct the
+                article.
+              </span>
+            </div>
+            <button
+              className="btn btn-primary"
+              onClick={() =>
+                navigate(
+                  `/create-article/${projectID}?section_id=${project.section_id}`,
+                )
+              }
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+              Construct Article
+            </button>
           </div>
-          <button className="btn btn-primary" onClick={() => navigate(`/create-article/${projectID}?section_id=${project.section_id}`)}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-            Construct Article
-          </button>
-        </div>
-      )}
+        )}
 
       <div className="tasks-section">
         <div className="section-header">

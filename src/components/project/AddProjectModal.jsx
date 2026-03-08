@@ -12,7 +12,7 @@ import { supabase } from "../../supabaseClient.js";
 import { isAuthenticated } from "../../context/auth.js";
 
 import * as AddFunctions from "../../context/functions/AddFunctions.js";
-import { useAdminContext } from "../../context/Context.jsx";
+// import { useAdminContext } from "../../context/Context.jsx";
 import { Key } from "slate-dom";
 // import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 // import Tooltip from "react-bootstrap/Tooltip";

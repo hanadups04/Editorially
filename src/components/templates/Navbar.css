@@ -1,0 +1,213 @@
+.Navbar-Parent {
+  display: flex;
+  flex-direction: column;
+  height: 125px;
+  /* pointer-events: none !important; */
+}
+
+/* .Navbar-Parent a,
+.Navbar-Parent button,
+.Navbar-Parent [role="button"],
+.Navbar-Parent input,
+.Navbar-Parent .Navbar-Bottom-Link,
+.Navbar-Parent .HorizIcon,
+.Navbar-Parent .NotifIcon,
+.Navbar-Parent .BurgerIcon,
+.Navbar-Parent .NavLogo,
+.Navbar-Parent .SearchIcon {
+  pointer-events: auto !important;
+} */
+
+.Navbar-Parent .Navbar-Top {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 55%;
+  background-color: #020b40;
+}
+
+.Navbar-Top .NavLogo {
+  width: 55px;
+  height: 55px;
+}
+
+.Navbar-Top .NavName {
+  font-size: clamp(0.75rem, 1.6rem, 1.8rem);
+  font-weight: 600;
+  color: white;
+}
+
+.Navbar-Parent .Navbar-Bottom {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 45%;
+  background-color: #d9d9d9;
+  padding: 0px 20px 0px 20px;
+}
+
+.Navbar-Bottom .Navbar-Bottom-Right {
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.Navbar-Bottom-Right .HorizIcon {
+  width: 35px;
+  height: 35px;
+  padding: 5px;
+  /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4); */
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+.Navbar-Bottom-Right .HorizIcon:hover {
+  background-color: rgba(0, 0, 0, 0.05); /* soft hover highlight */
+}
+
+.Navbar-Bottom-Right .HorizIcon:active {
+  background-color: rgba(0, 0, 0, 0.15); /* stronger pressed state */
+}
+
+.Navbar-Bottom-Right .NotifIcon {
+  width: 35px;
+  height: 35px;
+  padding: 5px;
+  background-color: #020b40;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.Navbar-Bottom-Right .NotifIcon:hover {
+  background-color: #242f70;
+}
+
+.Navbar-Bottom-Right .NotifIcon:active {
+  background-color: #0c1963;
+}
+
+.Navbar-Bottom .Navbar-Bottom-Left {
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  height: 210px;
+  overflow-x: auto;
+}
+
+.Navbar-Bottom-Search .SearchIcon {
+  width: 25px;
+  height: 25px;
+  margin-bottom: 2px;
+  margin-left: 10px;
+  /* background-color: yellow; */
+}
+
+.Navbar-Bottom-Left div .Navbar-Bottom-Link {
+  color: #020b40;
+  text-decoration: none;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  padding: 10px;
+  padding-bottom: 5px;
+  word-wrap: break-word;
+}
+
+.Navbar-Bottom-Left div .Navbar-Bottom-Link.active {
+  color: #020b40;
+  border-bottom: solid 2px #020b40;
+}
+
+.Navbar-Bottom .Navbar-Bottom-Right {
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.Navbar-Bottom .Navbar-Bottom-Right .NavDate {
+  color: #020b40;
+  text-decoration: none;
+  font-family: "Poppins", sans-serif;
+  margin: auto;
+}
+
+.Navbar-Bottom .BurgerIcon {
+  display: none;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: fit-content;
+}
+
+.BurgerIcon .NavMenu {
+  width: 35px;
+  height: 35px;
+}
+
+@media (max-width: 425px) {
+  .Navbar-Bottom-Right .NavDate {
+    font-size: clamp(0.8rem, 1rem, 1.1rem) !important;
+  }
+}
+
+@media (min-width: 1101px) and (max-width: 1300px) {
+  .Navbar-Bottom-Left div .Navbar-Bottom-Link {
+    color: #020b40;
+    text-decoration: none;
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.8rem, 0.9rem, 1.1rem) !important;
+    font-weight: 600;
+    padding: 10px;
+    padding-bottom: 5px;
+    word-wrap: break-word;
+  }
+}
+
+@media (min-width: 1301px) {
+  .Navbar-Bottom-Left div .Navbar-Bottom-Link {
+    text-decoration: none;
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.8rem, 1rem, 1.5rem) !important;
+    padding: 10px;
+    padding-bottom: px;
+    word-wrap: break-word;
+  }
+}
+
+@media (max-width: 1440px) {
+  .Navbar-Bottom .Navbar-Bottom-Left {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background-color: #d9d9d9;
+    position: absolute;
+    top: 125px;
+    right: 0;
+    padding: 20px 0;
+  }
+
+  .Navbar-Bottom .Navbar-Bottom-Left.open {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    justify-content: start;
+    align-items: start;
+    border-top: 2px solid #020b40;
+    padding-left: 30px;
+    z-index: 1001 !important;
+  }
+
+  .Navbar-Bottom .BurgerIcon {
+    display: flex;
+  }
+}

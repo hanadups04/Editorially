@@ -1,0 +1,303 @@
+.ReaderFooter-Parent {
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(to bottom, #020b40, #000000);
+  row-gap: 20px;
+  justify-content: center;
+  align-items: center; 
+}
+
+.ReaderFooter-Parent .ReaderFooter-Top {
+  width: 80%;
+  height: 40%;
+  display: flex;
+  flex-direction: row;
+  color: white;
+  column-gap: 5%;
+  /* background-color: blue; */
+}
+
+.ReaderFooter-Top .ReaderFooter-Top-Name {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  /* background-color: lightblue; */
+}
+
+.ReaderFooter-Top-Name .Logo-Name {
+  width: 100%;
+  column-gap: 10px;
+  display: flex;
+  flex-direction: row;
+}
+.ReaderFooter-Top-Name .Logo-Name img {
+  width: 40px;
+  height: 40px;
+}
+
+.ReaderFooter-Top .ReaderFooter-Top-Location {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0px;
+  /* background-color: rgb(177, 126, 59); */
+}
+
+.ReaderFooter-Top .ReaderFooter-Top-Contacts {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0px;
+  /* line-height: 8px; */
+  /* background-color: rgb(92, 133, 38); */
+}
+
+.ReaderFooter-Top-Contacts .JoinLinksCont{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  /* line-height: 8px; */
+  /* background-color: rgb(92, 133, 38); */
+  margin-top: 10px;
+}
+
+.JoinLinksCont .JoinLinksCont1{
+  width: 100%;
+  display: flex;
+  /* flex-direction: row; */
+  column-gap: 5px;
+  /* text-align: center; */
+  /* line-height: 8px; */
+  /* background-color: rgb(197, 211, 178); */
+}
+
+.JoinLinksCont1 .JoinLinks {
+  /* width: 100%; */
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+  /* padding: 8px 12px; */
+  /* justify-content: center; */
+  color: white;
+  /* font-weight: 600; */
+  font-size: 16px;
+  /* background-color: rgba(255, 242, 172, 0.9); */
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+  margin-top: 5px;
+}
+
+.JoinLinksCont1 .JoinLinksDescrip {
+  width: 100%;
+  display: flex;
+  /* align-items: center; */
+  /* justify-content: center; */
+  color: white;
+  font-weight: 400;
+  word-wrap: break-word;
+}
+
+
+.JoinLinksCont1 .JoinLinks:hover {
+  color: #81afe4;
+  /* background-color: rgba(255, 216, 109, 0.9); */
+  /* transform: translateY(-2px); */
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); */
+}
+
+.JoinLinksCont1 .JoinLinks:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+
+.ReaderFooter-Parent .ReaderFooter-Bottom {
+  width: 80%;
+  height: 40%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0px;
+  /* background-color: navy; */
+}
+
+.ReaderFooter-Parent .ReaderFooter-Bottom .p1 {
+  color: white;
+  font-weight: 600;
+}
+
+.ReaderFooter-Parent .ReaderFooter-Bottom .p2 {
+  color: white;
+}
+
+.ReaderFooter-Parent .ReaderFooter-Bottom .hr2 {
+  border: 2px solid white;
+  width: 100%;
+}
+
+
+@media (min-width: 1px) and (max-width: 425px) {
+  .ReaderFooter-Parent {
+    height: fit-content;
+    padding: 20px;
+  }
+
+  .ReaderFooter-Parent .ReaderFooter-Top {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    text-align: center;
+  }
+
+  .ReaderFooter-Top .ReaderFooter-Top-Name {
+    width: 100%;
+    text-align: center;
+  }
+
+  .ReaderFooter-Top .ReaderFooter-Top-Contacts1 {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: -7px;
+    display: flex;
+    flex-direction: column;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center;
+  }
+
+  .ReaderFooter-Top-Name .Logo-Name {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .ReaderFooter-Top .ReaderFooter-Top-Location,
+  .ReaderFooter-Top .ReaderFooter-Top-Contacts {
+    display: none;
+  }
+
+  .ReaderFooter-Parent .ReaderFooter-Bottom {
+    text-align: center;
+    height: auto;
+  }
+
+  .ReaderFooter-Parent .ReaderFooter-Bottom p {
+    line-height: 25px;
+  }
+}
+
+@media (min-width: 426px) and (max-width: 899px) {
+  .ReaderFooter-Parent {
+    width: 100%;
+    height: fit-content;
+    padding: 30px;
+  }
+
+  .ReaderFooter-Parent .ReaderFooter-Top {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    text-align: center;
+  }
+
+  .ReaderFooter-Top .ReaderFooter-Top-Name {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  .ReaderFooter-Top-Name .Logo-Name {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .ReaderFooter-Top-Name .Logo-Name h3{
+    font-size: clamp(1rem, 1.3rem, 2rem);
+  }
+
+  .ReaderFooter-Top .ReaderFooter-Top-Location,
+  .ReaderFooter-Top .ReaderFooter-Top-Contacts {
+    width: 100%;
+    margin-bottom: 8px;
+    align-items: center;
+  }
+
+  .ReaderFooter-Top .ReaderFooter-Top-Location h5,
+  .ReaderFooter-Top .ReaderFooter-Top-Contacts h5 {
+    font-size: clamp(1rem, 1.2rem, 2rem);
+
+  }
+
+  .ReaderFooter-Parent .ReaderFooter-Bottom {
+    text-align: center;
+    height: auto;
+  }
+
+  .ReaderFooter-Parent .ReaderFooter-Bottom p {
+    line-height: 25px;
+  }
+
+  .ReaderFooter-Top-Contacts .JoinLinksCont{
+  width: 55%;
+  display: flex;
+  flex-direction: row !important;
+  gap: 2px;
+  /* line-height: 8px; */
+  /* background-color: rgb(92, 133, 38); */
+  margin-top: 10px;
+}
+
+
+.JoinLinksCont1 .JoinLinks {
+  width: 100%;
+  display: flex;
+  justify-content: center !important;
+  /* font-size: clamp(1rem, 1.2rem, 2rem); */
+}
+
+.JoinLinksCont1 .JoinLinksDescrip {
+  width: 100%;
+  display: flex;
+  align-items: center !important;
+  justify-content: center !important;
+  color: white;
+  font-weight: 400;
+  word-wrap: break-word;
+}
+
+}
+
+@media (min-width: 900px) and (max-width: 1100px) {
+  .ReaderFooter-Parent {
+    width: 100%;
+    height: fit-content;
+    padding: 30px;
+  }
+
+  .ReaderFooter-Top .ReaderFooter-Top-Name {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+
+  .ReaderFooter-Top-Name .Logo-Name h3{
+    font-size: clamp(1rem, 1.3rem, 2rem);
+    justify-content: center !important;
+  }
+
+  .ReaderFooter-Top .ReaderFooter-Top-Location,
+  .ReaderFooter-Top .ReaderFooter-Top-Contacts {
+    width: 100%;
+  }
+
+  .ReaderFooter-Top .ReaderFooter-Top-Location h5,
+  .ReaderFooter-Top .ReaderFooter-Top-Contacts h5 {
+    font-size: clamp(1rem, 1.2rem, 2rem);
+    margin-bottom: 5px !important;
+  }
+
+}
