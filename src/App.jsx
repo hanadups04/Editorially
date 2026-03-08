@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -23,100 +23,58 @@ import Redirector from "./AppRedirector.jsx";
 import DocumentPage from "./pages/admin/DocumentPage.jsx";
 import ContentDetail from "./pages/admin/ContentDetail.jsx";
 import MemberDetail from "./pages/membersList/MemberDetail.jsx";
+import * as auth from "./context/auth.js"
+import ReactLoading from "react-loading";
+import ConstructArticle from "./pages/ConstructArticle.jsx";
 
 const ProtectedRoute = ({ requiredAccessLvl, children }) => {
-  const [userAccessLvl, setUserAccessLvl] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
   const navigate = useNavigate();
-  const [isAccessLvlFetched, setIsAccessLvlFetched] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  // const { branchId, currentSlug } = useBranch();
 
   useEffect(() => {
-    const getUserAndAccess = async () => {
-      setIsLoading(true);
+    const checkAuth = async () => {
+      const {data: {session} } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
 
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
+      if(!session) {
+        // navigate('/Readers')
+        navigate('/aboutus');
 
-      if (userError || !user) {
-        navigate(`/${currentSlug}`);
-        return;
       }
+    }
 
-      setUser(user);
+    checkAuth();
 
-      try {
-        // Fetch access level from your users table
-        const { data, error } = await supabase
-          .from("users_tbl")
-          .select("uid, role_id, roles_tbl ( access_level )") // if stored as JSON
-          .eq("uid", user.id)
-          .single();
-
-        if (error || !data) {
-          console.error("User not found or error fetching:", error);
-          navigate("/AboutUs");
-          return;
-        }
-
-        // If permissions is stored as plain column, use: select("access_level")
-        const accessLevel = data?.accessLevel;
-
-        setUserAccessLvl(accessLevel);
-      } catch (err) {
-        console.error("Error during fetch:", err.message);
-        navigate("/aboutus");
-      } finally {
-        setIsAccessLvlFetched(true);
-        setIsLoading(false);
+    const {data: {subscription} } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+      if(!session) {
+        navigate('/login');
       }
-    };
+    });
 
-    getUserAndAccess();
+    return () => subscription.unsubscribe();
   }, [navigate]);
 
-  useEffect(() => {
-    if (isAccessLvlFetched && !requiredAccessLvl.includes(userAccessLvl)) {
-      console.log(currentSlug, "currnetSlug");
-      navigate(`/${currentSlug}`);
-    }
-  }, [isAccessLvlFetched, userAccessLvl, requiredAccessLvl, navigate]);
-
-  if (isLoading || !isAccessLvlFetched) {
+    if (isAuthenticated === null) {
     return (
-      <div>
-        {" "}
-        {isLoading ? (
-          <div className="loadProgress">
-            <img
-              src={LogoWhitebg}
-              alt="Loading..."
-              height={100}
-              width={100}
-              style={{ objectFit: "contain" }}
-              className="loading-logo"
-            />
-            <p className="loadingText">Loading, please wait...</p>
-          </div>
-        ) : (
-          <></>
-        )}
+      <div className="loadProgress">
+        <ReactLoading 
+          type="spinningBubbles"
+          color="#133e87"
+          height={60}
+          width={60}
+        />
+        <p className="loadingText">Loading, please wait...</p>
       </div>
     );
   }
+
+
 
   return children ? children : <Outlet />;
 };
 
 function App() {
-  const withAccess = (Component, levels) => (
-    <ProtectedRoute requiredAccessLvl={levels}>
-      <Component />
-    </ProtectedRoute>
-  );
-
   return (
     <>
       <Router>
@@ -124,17 +82,25 @@ function App() {
           <Route path="/" element={<Redirector />} />
           {/* user searches editorially.app, calls redirector, checks for account, if none, throws user to landing page, if present, throws user to appropriate page */}
           <Route path="/aboutus" element={<LandingPage />} />
-          <Route path="/tasks" element={<ProjectPage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/members" element={<Members />} />
-          <Route path="/members/:id" element={<MemberDetail />} />
-          <Route path="/document" element={<DocumentPage />} />
-          <Route path="/projects" element={<TaskList />} />
+          {/* <Route path="/Readers" element={<LandingPage />} /> */}
+          {/* <Route path="/Readers/:id" element={<LandingPage />} /> */}
+          {/* <Route path="/Search" element={<LandingPage />} /> */}
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/content" element={<ContentManagement />} />
-          <Route path="/content/:id" element={<ContentDetail />} />
-          <Route path="/profile/:id" element={<MemberDetail />} />
+
+
+          {/* only allow access on admin roles */}
+          <Route element={<ProtectedRoute/>}>
+            <Route path="/tasks" element={<ProjectPage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/members" element={<Members />} />
+            <Route path="/members/:id" element={<MemberDetail />} />
+            <Route path="/document" element={<DocumentPage />} />
+            <Route path="/projects" element={<TaskList />} />
+            <Route path="/content" element={<ContentManagement />} />
+            <Route path="/content/:id" element={<ContentDetail />} />
+            <Route path="/profile/:id" element={<MemberDetail />} />
+            <Route path="/create-article/:id" element={<ConstructArticle />} />
+          </Route>
         </Routes>
       </Router>
     </>

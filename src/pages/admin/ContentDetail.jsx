@@ -284,17 +284,31 @@ const ContentDetail = () => {
 
             <div className="article-author">
               <div className="author-avatar">
-                {content.users_tbl.username
+                {content.author_content
                   .split(" ")
                   .map((n) => n[0])
                   .join("")}
               </div>
               <div className="author-info">
                 <span className="author-name">
-                  {content.users_tbl.username}
+                  {content.author_content}
                 </span>
                 <span className="author-role">
-                  {content.users_tbl.roles_tbl.role_name}
+                 Writer
+                </span>
+              </div>
+              <div className="author-avatar">
+                {content.author_content
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </div>
+              <div className="author-info">
+                <span className="author-name">
+                  {content.author_image}
+                </span>
+                <span className="author-role">
+                 Photographer
                 </span>
               </div>
             </div>

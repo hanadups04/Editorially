@@ -12,6 +12,7 @@ import EditTaskModal from "../../components/project/EditTaskModal";
 import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
 import * as UpdateFunctions from "../../context/functions/UpdateFunctions.js";
 import "./ProjectPage.css";
+import { useNavigate } from "react-router-dom";
 
 const ProjectPage = () => {
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
@@ -25,47 +26,38 @@ const ProjectPage = () => {
   const projectID =
     searchParams.get("project_id") ?? searchParams.get("projectID");
 
-  useEffect(() => {
-    if (projectID) console.log(`Project ID from URL: ${projectID}`);
-  }, [projectID]);
-
   const [project, setProject] = useState({});
   const [subtasks, setSubtasks] = useState([]);
   const [loading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let isMounted = true;
 
-    async function fetchSpecificProject() {
+    async function fetchData() {
       try {
-        const data = await ReadFunctions.fetchSingleProject(projectID);
+        const [projectData, tasksData] = await Promise.all([
+          ReadFunctions.fetchSingleProject(projectID),
+          ReadFunctions.fetchAllTasks(projectID),
+        ]);
+        
         if (isMounted) {
-          console.log("ass is: ", data);
-          setProject(data);
+          console.log("project data is: ", projectData);
+          console.log("subtasks are: ", tasksData);
+          setProject(projectData);
+          setSubtasks(tasksData);
         }
-      } catch (error) {
+      } catch(error) {
         console.error(error);
       } finally {
-        if (isMounted) setIsLoading(false);
+        if(isMounted) {
+          setIsLoading(false);  // Now this waits for data to arrive
+        }
       }
     }
 
-    async function fetchTasks() {
-      try {
-        const data = await ReadFunctions.fetchAllTasks(projectID);
-        if (isMounted) {
-          console.log("subtask is", data);
-          setSubtasks(data);
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        if (isMounted) setIsLoading(false);
-      }
-    }
-
-    fetchTasks();
-    fetchSpecificProject();
+    fetchData();
+    
     return () => {
       isMounted = false;
     };
@@ -82,11 +74,6 @@ const ProjectPage = () => {
     { step_id: "7", label: "Approved for Posting" },
     { step_id: "8", label: "Published" },
   ];
-
-  // Initialize tasks on first render
-  React.useEffect(() => {
-    // setTasks(initialTasks);
-  }, []);
 
   const handleAddTask = (newTask) => {
     const task = {
@@ -107,13 +94,13 @@ const ProjectPage = () => {
       }),
       priority: newTask.priority,
     };
-    setTasks((prev) => [...prev, task]);
+    setSubtasks((prev) => [...prev, task]);
   };
 
   const handleToggleComplete = (taskId, isCompleted) => {
-    setTasks((prev) =>
+    setSubtasks((prev) =>
       prev.map((task) =>
-        task.id === taskId
+        task.subtask_id === taskId
           ? { ...task, status: isCompleted ? "Completed" : "In Progress" }
           : task,
       ),
@@ -159,35 +146,44 @@ const ProjectPage = () => {
         title={project.title}
         description={project.details}
         deadline={project.deadline}
-        section={
-          Array.isArray(project?.sections_tbl)
-            ? project.sections_tbl?.[0]?.section_name
-            : (project?.sections_tbl?.section_name ?? "")
-        }
-        status={project.project_steps_tbl.step_name}
+        section={project.sections_tbl?.section_name}
+        status={project.project_steps_tbl?.step_name}
         onEditClick={() => setIsEditProjectModalOpen(true)}
       />
-      {project.step_id === 2 && (
-        <div className="Project-ApproveRejectBtnsCont">
-          <h4 className="BtnsTitle">Approve this Proposed Article? </h4>
-          <div className="Project-ApproveRejectBtns">
-            <button
-              className="btn btn-primary"
-              onClick={() => UpdateFunctions.approveProject(projectID)}
-            >
-              APPROVE
-            </button>
-            <button
-              className="btn btn-delete"
-              onClick={() => UpdateFunctions.rejectProject(projectID)}
-            >
-              REJECT
-            </button>
+      <div>
+        <button
+          className="btn btn-primary"
+          onClick={() => UpdateFunctions.approveProject(projectID)}
+        >
+          APPROVE
+        </button>
+        <button
+          className="btn btn-primary"
+          onClick={() => UpdateFunctions.rejectProject(projectID)}
+        >
+          REJECT
+        </button>
+      </div>
+      <ProgressTracker currentStep="in-progress" steps={workflowSteps} />
+
+      {subtasks.length > 0 && subtasks.every(t => t.status === 'Completed') && (
+        <div className="construct-banner">
+          <div className="construct-banner-text">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span>All tasks are completed and approved. Ready to construct the article.</span>
           </div>
+          <button className="btn btn-primary" onClick={() => navigate(`/create-article/${projectID}?section_id=${project.section_id}`)}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+            Construct Article
+          </button>
         </div>
       )}
-
-      <ProgressTracker currentStep={project.step_id} steps={workflowSteps} />
 
       <div className="tasks-section">
         <div className="section-header">
@@ -213,20 +209,16 @@ const ProjectPage = () => {
         </div>
 
         <div className="tasks-grid">
-          {Array.isArray(subtasks) &&
-            subtasks.map((subtask) => (
-              <TaskCard
-                key={subtask.subtask_id}
-                subtask={subtask}
-                type={subtask.subtask_type}
-                onToggleComplete={handleToggleComplete}
-                onUploadClick={() => {
-                  setTaskId(subtask.subtask_id);
-                  setIsUploadModalOpen(true);
-                }}
-                onEditClick={handleEditTaskClick}
-              />
-            ))}
+          {subtasks.map((subtask) => (
+            <TaskCard
+              key={subtask.subtask_id}
+              subtask={subtask}
+              onToggleComplete={handleToggleComplete}
+              onUploadClick={() => setIsUploadModalOpen(true)}
+              onEditClick={handleEditTaskClick}
+              task={subtask.subtask_type}
+            />
+          ))}
         </div>
       </div>
 

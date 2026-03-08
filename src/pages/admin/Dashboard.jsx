@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import "./Dashboard.css";
 // import { ChartContainer } from "@/components/ui/chart";
 import {
@@ -16,15 +16,71 @@ import {
   Cell,
 } from "recharts";
 import Layout from "../../components/templates/AdminTemplate";
+import * as ReadFunctions from "../../context/functions/ReadFunctions"
 
 const Dashboard = () => {
-  // Sample data for stats
-  const stats = [
-    { label: "Ongoing Projects", value: 12, change: "+3", trend: "up" },
-    { label: "For Proposal", value: 8, change: "+2", trend: "up" },
-    { label: "Completed", value: 45, change: "+5", trend: "up" },
-    { label: "Overdue Tasks", value: 3, change: "-2", trend: "down" },
-  ];
+  const [loading, setLoading] = useState(true);
+  const [ongoing, setOngoing] = useState(0);
+  const [proposal, setProposal] = useState(0)
+  const [completed, setCompleted] = useState(0);
+  const [overdue, setOverdue] = useState(0);
+  const [stats, setStats] = useState([]);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [months, setMonths] = useState([]);
+  const [steps, setSteps] = useState([]);
+
+
+  useEffect(() => {
+    let isMounted = true;
+    
+    async function fetchDatas() { 
+      try {
+        const projects = await ReadFunctions.getProjectsLength();
+        const proposals = await ReadFunctions.getForProposal();
+        const posted = await ReadFunctions.getPosted();
+        const over = await ReadFunctions.getOverdue();
+        const monthly = await ReadFunctions.projectsByMonth();
+        const step = await ReadFunctions.getProjectByStep();
+
+        if(isMounted) {
+        setSuccess("yehey sakses");
+        setOngoing(projects);
+        setProposal(proposals)
+        setCompleted(posted);
+        setOverdue(over);
+        setMonths(monthly);
+        setSteps(step);
+
+        console.log("eto data mo tol: ", step);
+        }
+      } catch (error) {
+        setError("Something went wrong. Please try again later");
+      } finally {
+        if(isMounted) setLoading(false);
+      }
+
+      
+      
+    }
+
+      fetchDatas();
+
+
+    return () =>  {
+      isMounted = false;
+      setError("");
+      setSuccess("");
+    }
+  }, [])
+
+  // // Sample data for stats
+  // const stats = [
+  //   { label: "Ongoing Projects", value: 12, change: "+3", trend: "up" },
+  //   { label: "For Proposal", value: 8, change: "+2", trend: "up" },
+  //   { label: "Completed", value: 45, change: "+5", trend: "up" },
+  //   { label: "Overdue Tasks", value: 3, change: "-2", trend: "down" },
+  // ];
 
   // Placeholder data for charts
   const projectsByMonth = [
@@ -34,6 +90,13 @@ const Dashboard = () => {
     { month: "Apr", projects: 18 },
     { month: "May", projects: 14 },
     { month: "Jun", projects: 16 },
+    { month: "Jul", projects: 16 },
+    { month: "Aug", projects: 16 },
+    { month: "Sept", projects: 16 },
+    { month: "Oct", projects: 16 },
+    { month: "Nov", projects: 16 },
+    { month: "Dec", projects: 16 },
+
   ];
 
   const statusDistribution = [
@@ -68,6 +131,16 @@ const Dashboard = () => {
     },
   ];
 
+    if (loading) {
+      
+    return (
+      <Layout>
+        <div className="content-detail">Loading...</div>
+      </Layout>
+    );
+  }
+
+
   return (
     <Layout>
       <div className="overview-page">
@@ -79,16 +152,40 @@ const Dashboard = () => {
         </div>
 
         <div className="stats-grid">
-          {stats.map((stat, index) => (
-            <div key={index} className="stat-card card">
-              <div className="stat-label">{stat.label}</div>
-              <div className="stat-value">{stat.value}</div>
-              <div className={`stat-change ${stat.trend}`}>
-                <span>{stat.change}</span>
-                <span className="stat-period">this month</span>
-              </div>
+          {/* {stats.map((stat, index) => ( */}
+            <div key="ongoing" className="stat-card card">
+              <div className="stat-label">Ongoing Projects</div>
+              <div className="stat-value">{ongoing}</div>
+              {/* <div className={`stat-change ${stat.trend}`}> */}
+                {/* <span>{stat.change}</span> */}
+                {/* <span className="stat-period">this month</span> */}
+              {/* </div> */}
             </div>
-          ))}
+            <div key="proposal" className="stat-card card">
+              <div className="stat-label">For Proposal</div>
+              <div className="stat-value">{proposal}</div>
+              {/* <div className={`stat-change ${stat.trend}`}> */}
+                {/* <span>{stat.change}</span> */}
+                {/* <span className="stat-period">this month</span> */}
+              {/* </div> */}
+            </div>
+            <div key="complete" className="stat-card card">
+              <div className="stat-label">Completed</div>
+              <div className="stat-value">{completed}</div>
+              {/* <div className={`stat-change ${stat.trend}`}> */}
+                {/* <span>{stat.change}</span> */}
+                {/* <span className="stat-period">this month</span> */}
+              {/* </div> */}
+            </div>
+            <div key="overdue" className="stat-card card">
+              <div className="stat-label">Overdue</div>
+              <div className="stat-value">{overdue}</div>
+              {/* <div className={`stat-change ${stat.trend}`}> */}
+                {/* <span>{stat.change}</span> */}
+                {/* <span className="stat-period">this month</span> */}
+              {/* </div> */}
+            </div>
+          {/* ))} */}
         </div>
 
         <div className="charts-grid">
@@ -99,7 +196,7 @@ const Dashboard = () => {
             </div>
             <div className="chart-container">
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={projectsByMonth}>
+                <BarChart data={months}>
                   <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                   <XAxis dataKey="month" />
                   <YAxis />
@@ -123,7 +220,7 @@ const Dashboard = () => {
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
-                    data={statusDistribution}
+                    data={steps}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
@@ -134,7 +231,7 @@ const Dashboard = () => {
                     fill="#8884d8"
                     dataKey="value"
                   >
-                    {statusDistribution.map((entry, index) => (
+                    {steps.map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={COLORS[index % COLORS.length]}
@@ -148,7 +245,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="activity-section card">
+        {/* <div className="activity-section card">
           <div className="card-header">
             <h2 className="card-title">Recent Activity</h2>
             <p className="card-subtitle">Latest updates across all projects</p>
@@ -179,7 +276,7 @@ const Dashboard = () => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
     </Layout>
   );

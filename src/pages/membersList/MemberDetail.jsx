@@ -6,6 +6,7 @@ import * as ReadFunctions from "../../context/functions/ReadFunctions";
 import { supabase } from "../../supabaseClient";
 import Layout from "../../components/templates/AdminTemplate";
 import * as UpdateFunctions from "../../context/functions/UpdateFunctions";
+import * as auth from "../../context/auth";
 
 const MemberDetail = () => {
   const { id } = useParams();
@@ -17,6 +18,7 @@ const MemberDetail = () => {
   const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
+  const [userRole, setRole] = useState([]);
 
   const isProfilePage = location.pathname.startsWith("/profile");
   const isMembersPage = location.pathname.startsWith("/members");
@@ -38,7 +40,22 @@ const MemberDetail = () => {
       }
     }
 
+    async function fetchRole() {
+      try {
+        const user = await auth.isAuthenticated();
+        console.log("user is", user.data.id);
+        const data = await ReadFunctions.getUserProfile(user.data.id);
+        if (isMounted) {
+          console.log("userdata is: ", data);
+          setRole(data.roles_tbl.access_level);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     fetchProfile();
+    fetchRole();
 
     const subscription = supabase
       .channel("profile-changes")
@@ -71,9 +88,24 @@ const MemberDetail = () => {
     console.log("notif update: ", data);
   };
 
-  const handleDelete = () => {
-    alert("Account disabled successfully");
-    navigate("/members");
+  const handleDelete = async () => {
+    try {
+      const data = await UpdateFunctions.disableUser(id, "inactive");
+      console.log(data);
+      setIsDeleteOpen(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleActivate = async () => {
+    try {
+      const data = await UpdateFunctions.disableUser(id, "active");
+      console.log(data);
+      setIsDeleteOpen(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleAvatarChange = (e) => {
@@ -94,17 +126,22 @@ const MemberDetail = () => {
       <div className="member-detail-page">
         <div className="member-detail-container">
           {/* Back Button */}
-          <button className="back-button" onClick={() => navigate("/members")}>
-            <svg
-              className="icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
+          {!isProfilePage && (
+            <button
+              className="back-button"
+              onClick={() => navigate("/members")}
             >
-              <path d="m15 18-6-6 6-6" />
-            </svg>
-            Back to Members
-          </button>
+              <svg
+                className="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="m15 18-6-6 6-6" />
+              </svg>
+              Back to Members
+            </button>
+          )}
 
           {/* Profile Card */}
           <div className="profile-card">
@@ -168,65 +205,100 @@ const MemberDetail = () => {
                           {member.roles_tbl.role_name}
                         </p>
                       </div>
-                      <div className="notification-toggle">
-                        <div className="toggle-label">
+                      {isProfilePage && (
+                        <div className="notification-toggle">
+                          <div className="toggle-label">
+                            <svg
+                              className={`icon ${member.is_notif ? "active" : ""}`}
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                            >
+                              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                            </svg>
+                            <label>Notifications</label>
+                          </div>
+                          <label className="switch">
+                            <input
+                              type="checkbox"
+                              checked={member.is_notif}
+                              onChange={handleNotificationToggle}
+                            />
+                            <span className="slider"></span>
+                          </label>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {userRole >= 4 ? (
+                    <>
+                      {/* Action Buttons */}
+                      <div className="action-buttons">
+                        <button
+                          className="edit-button"
+                          onClick={() => setIsEditOpen(true)}
+                        >
                           <svg
-                            className={`icon ${member.is_notif ? "active" : ""}`}
+                            className="icon"
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
                           >
-                            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-                            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                           </svg>
-                          <label>Notifications</label>
-                        </div>
-                        <label className="switch">
-                          <input
-                            type="checkbox"
-                            checked={member.is_notif}
-                            onChange={handleNotificationToggle}
-                          />
-                          <span className="slider"></span>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
+                          Edit Info
+                        </button>
 
-                  {/* Action Buttons */}
-                  <div className="action-buttons">
-                    <button
-                      className="edit-button"
-                      onClick={() => setIsEditOpen(true)}
-                    >
-                      <svg
-                        className="icon"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                      >
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                      </svg>
-                      Edit Info
-                    </button>
-                    <button
-                      className="delete-button"
-                      onClick={() => setIsDeleteOpen(true)}
-                    >
-                      <svg
-                        className="icon"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                      >
-                        <path d="M3 6h18" />
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                      </svg>
-                      Disable Account
-                    </button>
-                  </div>
+                        {!isProfilePage && (
+                          <>
+                            {member.status === "active" ? (
+                              <button
+                                className="delete-button"
+                                onClick={() => setIsDeleteOpen(true)}
+                              >
+                                Disable Account
+                              </button>
+                            ) : (
+                              <button
+                                className="active-button"
+                                onClick={() => setIsDeleteOpen(true)}
+                              >
+                                Activate Account
+                              </button>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {isProfilePage && (
+                        <>
+                          {/* Action Buttons */}
+                          <div className="action-buttons">
+                            <button
+                              className="edit-button"
+                              onClick={() => setIsEditOpen(true)}
+                            >
+                              <svg
+                                className="icon"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                              >
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                              </svg>
+                              Edit Info
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </>
+                  )}
                 </div>
 
                 {/* Edit Modal */}
@@ -241,38 +313,78 @@ const MemberDetail = () => {
                   isProfile={isProfilePage ? true : false}
                 />
 
-                {/* Delete Confirmation Modal */}
-                {isDeleteOpen && (
-                  <div
-                    className="modal-overlay"
-                    onClick={() => setIsDeleteOpen(false)}
-                  >
-                    <div
-                      className="modal-content alert"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <h2>Disable Account?</h2>
-                      <p className="modal-description">
-                        This will disable the account for {member.username}. The
-                        user will no longer be able to access the publication.
-                        This action can be reversed.
-                      </p>
-                      <div className="modal-actions">
-                        <button
-                          className="cancel-button"
-                          onClick={() => setIsDeleteOpen(false)}
+                {member.status === "active" ? (
+                  <>
+                    {/* Delete Confirmation Modal */}
+                    {isDeleteOpen && (
+                      <div
+                        className="modal-overlay"
+                        onClick={() => setIsDeleteOpen(false)}
+                      >
+                        <div
+                          className="modal-content alert"
+                          onClick={(e) => e.stopPropagation()}
                         >
-                          Cancel
-                        </button>
-                        <button
-                          className="confirm-button"
-                          onClick={handleDelete}
-                        >
-                          Disable Account
-                        </button>
+                          <h2>Disable Account?</h2>
+                          <p className="modal-description">
+                            This will disable the account for {member.username}.
+                            The user will no longer be able to access the
+                            publication. This action can be reversed.
+                          </p>
+                          <div className="modal-actions">
+                            <button
+                              className="cancel-button"
+                              onClick={() => setIsDeleteOpen(false)}
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              className="confirm-button"
+                              onClick={handleDelete}
+                            >
+                              Disable Account
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {/* Delete Confirmation Modal */}
+                    {isDeleteOpen && (
+                      <div
+                        className="modal-overlay"
+                        onClick={() => setIsDeleteOpen(false)}
+                      >
+                        <div
+                          className="modal-content alert"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <h2>Activate Account?</h2>
+                          <p className="modal-description">
+                            This will activate the account for {member.username}
+                            . The user will be able to access the publication
+                            again. Proceed?
+                          </p>
+                          <div className="modal-actions">
+                            <button
+                              className="cancel-button"
+                              onClick={() => setIsDeleteOpen(false)}
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              className="confirm-active"
+                              onClick={handleActivate}
+                            >
+                              Activate Account
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </>
             )}

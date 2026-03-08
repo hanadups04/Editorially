@@ -74,6 +74,25 @@
   display: none;
 }
 
+.sidebar-footer {
+  margin-top: auto;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logout-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: rgba(255, 59, 48, 0.1);
+  color: #ff3b30;
+}
+
 @media (max-width: 768px) {
   .sidebar {
     position: fixed;

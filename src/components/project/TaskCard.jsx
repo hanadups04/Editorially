@@ -7,7 +7,7 @@ const TaskCard = ({
   onToggleComplete,
   onUploadClick,
   onEditClick,
-  type,
+  task,
 }) => {
   const navigate = useNavigate();
   const [isCompleted, setIsCompleted] = useState(
@@ -43,7 +43,7 @@ const TaskCard = ({
             <line x1="16" y1="17" x2="8" y2="17"></line>
           </svg>
         ),
-        path: "/document",
+        path: "/docs",
       },
       2: {
         label: "Upload Images",
@@ -61,14 +61,13 @@ const TaskCard = ({
             <circle cx="12" cy="13" r="4"></circle>
           </svg>
         ),
-        path: "/gallery",
       },
     };
 
     return actions[type] || actions[1];
   };
 
-  const action = getActionButton(type);
+  const action = getActionButton(task);
 
   const handleToggleComplete = () => {
     setIsCompleted(!isCompleted);

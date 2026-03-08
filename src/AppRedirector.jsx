@@ -13,7 +13,7 @@ const AppRedirector = () => {
 
     if (user.code === 0) {
       console.log("no account found, going tto landing page instead");
-      navigate("/AboutUs");
+      navigate("/aboutus");
       return;
     }
 
@@ -24,48 +24,21 @@ const AppRedirector = () => {
       .maybeSingle();
 
     if (data) {
-      if (data.status === "deleted") {
-        // ask user if they want to recover their account
-        alert(
-          "your account has been deleted. proceed to login to continue recovering your account",
-        );
-        navigate("/aboutus");
-        return;
-      }
-
-      if (data.status === "disabled") {
+      if (data.status === "inactive") {
         // ask user if they want to recover their account
         alert("your account has been disabled. ask your admin for assistance");
         navigate("/aboutus");
         return;
       }
 
-      switch (data.roles_tbl.access_level) {
-        case 6:
-          navigate("/Adviser/AdminDashboard");
-          console.log("navigating to adviser");
-          break;
-        case 5:
-          navigate("/Admin/AdminDashboard");
-          console.log("navigating to eic");
-          break;
-        case 4:
-          navigate("/Admin/AdminDashboard");
-          console.log("navigating to assoc or managing");
-          break;
-        case 3:
-          navigate("/Admin/EbHomepage");
-          console.log("navigating to section editor");
-          break;
-        case 2:
-          navigate("/Admin/SwHomepage");
-          console.log("navigating to section writer");
-          break;
-        case 1:
-          navigate(`/aboutus`);
-          console.log("navigating to reader");
-          break;
+      if (
+        data.roles_tbl.access_level >= 1 &&
+        data.roles_tbl.access_level <= 5
+      ) {
+        navigate("/dashboard");
       }
+
+      //navigate to reader here
     } else {
       console.error("User row not found");
       navigate(`/aboutus`);

@@ -14,7 +14,9 @@ export async function fetchAllUsers() {
 export async function getUserProfile(uid) {
   const { data, error } = await supabase
     .from("users_tbl")
-    .select("*, roles_tbl ( role_name, access_level ), sections_tbl ( section_name )")
+    .select(
+      "*, roles_tbl ( role_name, access_level ), sections_tbl ( section_name )",
+    )
     .eq("uid", uid)
     .maybeSingle(); // avoids 406
 
@@ -23,28 +25,31 @@ export async function getUserProfile(uid) {
   return data; // null if none
 }
 
-  export async function fetchAllSections() {
-  const { data, error} = await supabase
-    .from("sections_tbl")
-    .select("*")
+export async function fetchAllSections() {
+  const { data, error } = await supabase.from("sections_tbl").select("*");
+
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchAllRoles() {
+  const { data, error } = await supabase.from("roles_tbl").select("*");
 
   if (error) throw error;
   return data;
 }
 
 export async function fetchAllProjects() {
-  const { data, error} = await supabase
-    .from("projects_tbl")
-    .select("*, project_steps_tbl(step_name)")
+  const { data, error } = await supabase.from("projects_tbl").select("*, project_steps_tbl ( step_name )");
 
   if (error) throw error;
   return data;
 }
 
 export async function fetchSingleProject(project_id) {
-  const { data, error} = await supabase
+  const { data, error } = await supabase
     .from("projects_tbl")
-    .select("*, sections_tbl(section_name), project_steps_tbl(step_name)")
+    .select("*, project_steps_tbl ( step_name ), sections_tbl ( section_name )")
     .eq("project_id", project_id)
     .single();
 
@@ -52,12 +57,12 @@ export async function fetchSingleProject(project_id) {
   return data;
 }
 
-export async function fetchSingleUser(uid){
-  const { data, error} = await supabase
+export async function fetchSingleUser(uid) {
+  const { data, error } = await supabase
     .from("users_tbl")
     .select("*")
-    .eq("uid", uid)
-    
+    .eq("uid", uid);
+
   if (error) throw error;
   return data;
 }
@@ -77,7 +82,7 @@ export async function getSingleArticle(article_id) {
   const { data, error } = await supabase
     .from("articles_tbl")
     .select(
-      "*, users_tbl (username, roles_tbl (role_name)), sections_tbl (section_name) ",
+      "*, sections_tbl (section_name)",
     )
     .eq("article_id", article_id)
     .maybeSingle();
@@ -98,15 +103,94 @@ export async function getRequestsList(article_id) {
 }
 
 export async function fetchAllTasks(project_id) {
-  const { data, error} = await supabase
+  const { data, error } = await supabase
     .from("project_subtask_tbl")
     .select("*, users_tbl(username, roles_tbl(role_name))")
-    .eq("project_id", project_id)
+    .eq("project_id", project_id);
 
   if (error) throw error;
   return data;
 }
 
+export async function getProjectsLength() {
+  const {count, error} = await supabase
+    .from("projects_tbl")
+    .select("*", {count: "exact", head: true})
+    .neq("step_id", 8);
+
+    if(error) throw error;
+    return count
+    
+}
+
+export async function getForProposal() {
+    const {count, error} = await supabase
+    .from("projects_tbl")
+    .select("*", {count: "exact", head: true})
+    .eq("step_id", 1);
+
+    if(error) throw error;
+    return count
+    
+}
+
+export async function getPosted() {
+    const {count, error} = await supabase
+    .from("articles_tbl")
+    .select("*", {count: "exact", head: true});
+
+    if(error) throw error;
+    return count
+    
+}
+
+export async function getOverdue() {
+  const {count, error} = await supabase
+    .from("projects_tbl")
+    .select("*", {count: "exact", head: true})
+    .lt("deadline", new Date().toISOString())
+    .neq("step_id", 8);
+
+    if(error) throw error;
+    return count 
+}
+
+export async function projectsByMonth() {
+  const year = new Date().getFullYear();
+
+  const { data, error } = await supabase
+    .rpc('projects_by_month', { selected_year: year });
+
+    if(error) throw error;
+    console.log(data);
+    return data 
+}
+
+export async function getProjectByStep (){
+  const { data, error } = await supabase.rpc('projects_by_step');
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  return data;
+
+  // console.log(data);
+};
+
+export async function avengersAssemble(ironman_id) {
+  const {data, error} = await supabase
+    .from("contents_tbl")
+    .select("*, project_subtask_tbl ( users_tbl ( username ) )")
+    .eq("project_id", ironman_id)
+
+    if(error) {
+      throw error;
+    }
+
+    return data;
+}
 
 
 //--------------------------------------------------------------------- <=3 TITI NI DON ANDREI TANEO -------------------------------------------------------- //

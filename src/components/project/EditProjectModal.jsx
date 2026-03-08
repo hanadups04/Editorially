@@ -7,7 +7,7 @@ import { supabase } from "../../supabaseClient.js";
 import "./EditProjectModal.css";
 
 const EditProjectModal = ({ isOpen, onClose, project, onSubmit }) => {
-  console.log("aslmsas", project);
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
