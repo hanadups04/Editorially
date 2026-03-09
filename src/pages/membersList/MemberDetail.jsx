@@ -7,6 +7,7 @@ import { supabase } from "../../supabaseClient";
 import Layout from "../../components/templates/AdminTemplate";
 import * as UpdateFunctions from "../../context/functions/UpdateFunctions";
 import * as auth from "../../context/auth";
+import SuccessModal from "../../components/ArticleManagement/SuccessModa";
 
 const MemberDetail = () => {
   const { id } = useParams();
@@ -19,6 +20,11 @@ const MemberDetail = () => {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
   const [userRole, setRole] = useState([]);
+  const [successModal, setSuccessModal] = useState({
+    isOpen: false,
+    title: '',
+    message: ''
+  });
 
   const isProfilePage = location.pathname.startsWith("/profile");
   const isMembersPage = location.pathname.startsWith("/members");
@@ -93,9 +99,19 @@ const MemberDetail = () => {
       const data = await UpdateFunctions.disableUser(id, "inactive");
       console.log(data);
       setIsDeleteOpen(false);
+      setSuccessModal({
+        isOpen: true,
+        title: "User Banned Successfully",
+        message: "User has been banned Successfully"
+      });
     } catch (error) {
       console.error(error);
     }
+  };
+
+    const handleSuccessClose = () => {
+    setSuccessModal(prev => ({ ...prev, isOpen: false }));
+    // navigate('/content');
   };
 
   const handleActivate = async () => {
@@ -103,6 +119,11 @@ const MemberDetail = () => {
       const data = await UpdateFunctions.disableUser(id, "active");
       console.log(data);
       setIsDeleteOpen(false);
+      setSuccessModal({
+        isOpen: true,
+        title: "User Unbanned Successfully",
+        message: "User has been Unbanned Successfully"
+      });
     } catch (error) {
       console.error(error);
     }
@@ -311,6 +332,7 @@ const MemberDetail = () => {
                     alert("Member information updated");
                   }}
                   isProfile={isProfilePage ? true : false}
+                  success={setSuccessModal}
                 />
 
                 {member.status === "active" ? (
@@ -391,6 +413,13 @@ const MemberDetail = () => {
           </div>
         </div>
       </div>
+
+      <SuccessModal
+          isOpen={successModal.isOpen}
+          onClose={handleSuccessClose}
+          title={successModal.title}
+          message={successModal.message}
+        />
     </Layout>
   );
 };

@@ -13,6 +13,7 @@ export const EditMemberModal = ({
   member,
   onUpdate,
   isProfile,
+  success
 }) => {
   const [formData, setFormData] = useState({
     username: member.username,
@@ -30,6 +31,8 @@ export const EditMemberModal = ({
 
   useEffect(() => {
     let mounted = true;
+
+    console.log("inside the modal is", formData)
 
     async function roles() {
       try {
@@ -83,6 +86,11 @@ export const EditMemberModal = ({
       );
 
       onUpdate(updateData);
+      success({
+        isOpen: true,
+        title: "Info Updated",
+        message: "Your user information has been updated successfully"
+      });
     } else {
       // MEMBERS: only section + role
       const updateData = {
@@ -203,7 +211,7 @@ export const EditMemberModal = ({
                         {sections.map((section) => (
                           <option
                             key={section.section_id}
-                            value={section.section_id}
+                            value={section.section_name}
                           >
                             {section.section_name}
                           </option>
@@ -222,7 +230,7 @@ export const EditMemberModal = ({
                         className="edit-select"
                       >
                         {roles.map((role) => (
-                          <option key={role.role_id} value={role.role_id}>
+                          <option key={role.role_id} value={role.role_name}>
                             {role.role_name}
                           </option>
                         ))}

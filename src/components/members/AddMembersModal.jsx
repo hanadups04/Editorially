@@ -3,7 +3,7 @@ import "./AddMembersModal.css";
 import * as ReadFunctions from "../../context/functions/ReadFunctions";
 import * as auth from "../../context/auth";
 
-export const AddMemberModal = ({ open, onOpenChange, onAdd }) => {
+export const AddMemberModal = ({ open, onOpenChange, onAdd, success }) => {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -58,6 +58,12 @@ export const AddMemberModal = ({ open, onOpenChange, onAdd }) => {
     }
 
     const createUser = await auth.createUser(formData);
+    success({
+      isOpen: true,
+      title: "User Created",
+      message: "User has been created successfully"
+    });
+
     console.log("formdata new user: ", formData);
     console.log("user created: ", createUser);
 

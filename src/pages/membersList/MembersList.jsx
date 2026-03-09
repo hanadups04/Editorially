@@ -7,6 +7,7 @@ import Layout from "../../components/templates/AdminTemplate";
 import * as ReadFunctions from "../../context/functions/ReadFunctions";
 import { supabase } from "../../supabaseClient";
 import * as auth from "../../context/auth";
+import SuccessModal from "../../components/ArticleManagement/SuccessModa";
 
 const MembersList = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,6 +17,11 @@ const MembersList = () => {
   const [loading, setIsLoading] = useState(true);
   const [members, setMembers] = useState([]);
   const [userRole, setRole] = useState([]);
+  const [successModal, setSuccessModal] = useState({
+    isOpen: false,
+    title: '',
+    message: ''
+  });
 
   useEffect(() => {
     let isMounted = true;
@@ -80,6 +86,11 @@ const MembersList = () => {
     const matchesRole = !filters.role || member.role === filters.role;
     return matchesSearch && matchesSection && matchesRole;
   });
+
+  const handleSuccessClose = () => {
+    setSuccessModal(prev => ({ ...prev, isOpen: false }));
+    // navigate('/content');
+  };
 
   return (
     <Layout>
@@ -255,6 +266,14 @@ const MembersList = () => {
         <AddMemberModal
           open={isAddMemberOpen}
           onOpenChange={setIsAddMemberOpen}
+          success={setSuccessModal}
+        />
+
+        <SuccessModal
+          isOpen={successModal.isOpen}
+          onClose={handleSuccessClose}
+          title={successModal.title}
+          message={successModal.message}
         />
       </div>
     </Layout>
