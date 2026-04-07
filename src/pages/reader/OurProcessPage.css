@@ -1,0 +1,200 @@
+/* ===========================
+   OurProcessPage CSS3 Styles
+   =========================== */
+
+.process-page {
+  min-height: 100vh;
+  background: hsl(var(--background));
+}
+
+.process-page__hero {
+  position: relative;
+  padding: 6rem 0 8rem;
+  overflow: hidden;
+}
+
+.process-page__hero-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, hsla(var(--primary), 0.05), hsla(var(--accent), 0.05), transparent);
+}
+
+:root.dark .process-page__hero-bg,
+.dark .process-page__hero-bg {
+  background: linear-gradient(135deg, hsla(var(--accent), 0.1), hsla(var(--primary), 0.08), hsla(var(--accent), 0.05));
+}
+
+.process-page__hero-content {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  text-align: center;
+  position: relative;
+  animation: fadeUp 0.6s ease-out forwards;
+}
+
+.process-page__hero-label {
+  font-size: 10px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: hsl(var(--accent));
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.process-page__hero-title {
+  font-family: var(--font-heading);
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .process-page__hero-title { font-size: 3.75rem; }
+}
+
+.process-page__hero-subtitle {
+  font-size: 1.125rem;
+  color: hsl(var(--muted-foreground));
+  font-family: var(--font-body);
+  line-height: 1.6;
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .process-page__hero-subtitle { font-size: 1.25rem; }
+}
+
+/* Steps */
+.process-page__steps {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 5rem 1.5rem;
+}
+
+.process-page__step {
+  opacity: 0;
+}
+
+.process-page__step--visible {
+  animation: fadeUp 0.6s ease-out forwards;
+}
+
+.process-page__step-inner {
+  position: relative;
+  display: flex;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .process-page__step-inner { gap: 2rem; }
+}
+
+.process-page__step-timeline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.process-page__step-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  background: hsla(var(--accent), 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: hsl(var(--accent));
+}
+
+.process-page__step-line {
+  width: 1px;
+  flex: 1;
+  background: linear-gradient(to bottom, hsla(var(--accent), 0.3), hsla(var(--border), 0.3));
+  margin-top: 0.75rem;
+}
+
+.process-page__step-content {
+  padding-bottom: 3rem;
+}
+
+.process-page__step-number {
+  font-size: 10px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: hsl(var(--accent));
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.process-page__step-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  margin-bottom: 0.75rem;
+  transition: color 0.2s;
+}
+
+@media (min-width: 768px) {
+  .process-page__step-title { font-size: 1.5rem; }
+}
+
+.process-page__step-content:hover .process-page__step-title {
+  color: hsl(var(--primary));
+}
+
+.process-page__step-desc {
+  color: hsl(var(--muted-foreground));
+  font-family: var(--font-body);
+  line-height: 1.6;
+  max-width: 32rem;
+}
+
+/* Closing */
+.process-page__closing {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 5rem 1.5rem;
+  text-align: center;
+}
+
+.process-page__closing-card {
+  padding: 3rem;
+  border-radius: 1rem;
+  background: hsl(var(--card));
+  border: 1px solid hsla(var(--border), 0.5);
+}
+
+.process-page__closing-title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .process-page__closing-title { font-size: 1.875rem; }
+}
+
+.process-page__closing-text {
+  color: hsl(var(--muted-foreground));
+  font-family: var(--font-body);
+  line-height: 1.6;
+  max-width: 32rem;
+  margin: 0 auto;
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}

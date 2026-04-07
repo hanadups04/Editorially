@@ -1,0 +1,395 @@
+/* .ReaderHomepage-Parent {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: auto 50px repeat(3, 1fr);
+  gap: 8px;
+  height: 100vh;
+}
+
+.ReaderHomepage-Parent .ReaderHomepage-Navbar {
+  grid-column: span 5 / span 5;
+  background-color: rgb(11, 73, 52);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+} */
+
+.ReaderHomepage-Parent {
+  display: flex;
+  flex-direction: column;
+}
+
+.ReaderHomepage-Parent .ReaderHomepage-Annoucement {
+  grid-column: span 5 / span 5;
+  grid-row-start: 2;
+  background: linear-gradient(to right, #020b40, #d4af37);
+  align-items: center;
+  justify-content: space-between;
+  display: flex;
+  position: fixed;
+  top: 125px;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  height: 50px;
+  column-gap: 13px;
+  color: #f5f5f5;
+  padding-left: 10px;
+  font-weight: 700;
+}
+
+.ReaderHomepage-Annoucement .ScrollingTextCont {
+  width: 98%;
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+
+/* .ScrollingTextCont .ticker-wrap {
+  width: 100%;
+  display: inline-flex;
+} */
+
+.ScrollingTextCont .ScrollingText {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  animation: scrolling-text 20s linear infinite;
+  padding-right: 50px;
+}
+
+.ScrollingText .BranchName {
+  text-transform: uppercase;
+}
+
+@keyframes scrolling-text {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+/* 
+.ticker-wrap {
+  display: flex;
+  width: 100%;
+}
+
+.ticker-wrap .SrollingText {
+  padding-left: 30px;
+  animation: ticker 15s linear infinite;
+}
+
+@keyframes ticker {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+} */
+
+.ReaderHomepage-Annoucement .BranchesList {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px !important;
+  margin-bottom: 5px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.BranchesList .p1 {
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.NotifIconG {
+  margin-right: 20px;
+  top: 50%;
+  width: 35px;
+  height: 35px;
+  padding: 5px;
+  background-color: var(--text-color);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+.NotifIconG:hover {
+  background-color: #242f70;
+}
+
+.NotifIconG:active {
+  background-color: #0c1963;
+}
+
+.ReaderHomepage-Parent .ReaderHomepage-Annoucement h6 {
+  color: white;
+}
+
+.ReaderHomepage-Parent .ReaderHomepage-BodyCont {
+  grid-column: span 5 / span 5;
+  grid-row: span 3 / span 3;
+  grid-row-start: 3;
+  margin-top: 25px;
+}
+
+.EmptySection {
+  width: 95%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: auto !important;
+  margin-top: 80px !important;
+}
+
+.EmptySection .Logo {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+}
+
+.EmptySection .EmptySection-Headline {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: auto !important;
+  line-height: 1.2;
+  margin-bottom: 50px !important;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+.EmptySection-Headline .Title {
+  color: #020b40;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.EmptySection-Headline .Descrip {
+  color: #020b40;
+  font-size: 1.5rem;
+}
+
+.ReaderHomepage-BodyCont .ReaderHomepage-Content {
+  display: grid;
+  grid-template-columns: 65% repeat(1, 1fr);
+  grid-template-rows: auto 1fr;
+  gap: 8px;
+  overflow-y: auto;
+  /* scroll-behavior: smooth; */
+  /* scrollbar-width: none;
+    -ms-overflow-style: none; */
+  background-color: #f5f5f5;
+  padding-top: 20px;
+}
+
+.ReaderHomepage-Content::-webkit-scrollbar {
+  display: none;
+}
+
+.ReaderHomepage-Content .ReaderHomepage-Featured {
+  grid-column: span 3 / span 3;
+  grid-row: 1 / 2;
+  /* background-color: rgb(97, 97, 97); */
+  margin: 30px 5px 30px 80px;
+  display: flex;
+  justify-content: end;
+  /* height: fit-content !important; */
+}
+
+.ReaderHomepage-Featured .CustomCarousel {
+  width: 50%;
+  /* margin-top: 20px; */
+}
+
+.ReaderHomepage-Content .ReaderHomepage-Trending {
+  grid-column: span 2 / span 2;
+  grid-row: 1 / 2;
+  grid-column-start: 4;
+  /* background-color: rgb(3, 71, 94); */
+  /* margin: 50px 0px 50px 10px; */
+  margin: 30px 80px 30px 5px;
+  align-items: start;
+}
+
+.ReaderHomepage-Content .ReaderHomepage-LatestInSec {
+  grid-column: span 5 / span 5;
+  grid-row: 2 / 3;
+  /* background-color: rgb(80, 35, 80); */
+  align-items: center !important;
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  margin-bottom: 50px;
+}
+
+.ReaderHomepage-LatestInSec .Recenttitle {
+  width: 75%;
+  color: #020b40;
+  font-size: 25px;
+  font-weight: 600;
+  text-align: left !important;
+}
+
+.ReaderHomepage-LatestInSec .RH-hr {
+  width: 75%;
+}
+
+/* .ReaderHomepage-Content .ReaderHomepage-Footer {
+  grid-column: span 5 / span 5;
+  grid-row: 3 / 3;
+  background: linear-gradient(to bottom, #020b40, #000000);
+} */
+
+@media (max-width: 800px) {
+  .ReaderHomepage-BodyCont .ReaderHomepage-Content {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr) !important;
+    grid-template-rows: auto auto auto !important;
+    padding-top: 0px !important;
+  }
+
+  .ReaderHomepage-Content .ReaderHomepage-Featured {
+    grid-column: span 5 / span 5;
+    grid-row-start: 1 !important;
+    grid-row-end: 1;
+    justify-content: center;
+    margin: 2rem;
+  }
+
+  .ReaderHomepage-Featured .CustomCarousel {
+    width: 100%;
+  }
+
+  .ReaderHomepage-Content .ReaderHomepage-Trending {
+    grid-column: span 5 / span 5;
+    grid-row-start: 2 !important;
+    grid-row-end: 2;
+    margin: 0px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    display: flex;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 30px;
+  }
+
+  .ReaderHomepage-Content .ReaderHomepage-LatestInSec {
+    grid-column: span 5 / span 5;
+    grid-row-start: 3 !important;
+  }
+
+  .ReaderHomepage-Content .ReaderHomepage-Footer {
+    grid-column: span 5 / span 5;
+    grid-row: 4 / 4; /* Adjusted to the fourth row */
+    background: linear-gradient(to bottom, #020b40, #000000);
+  }
+
+  .ReaderHomepage-LatestInSec .Recenttitle {
+    width: 90%;
+  }
+
+  .ReaderHomepage-LatestInSec .RH-hr {
+    width: 90%;
+  }
+}
+
+@media (min-width: 801px) and (max-width: 1100px) {
+  .ReaderHomepage-BodyCont .ReaderHomepage-Content {
+    display: grid;
+    grid-template-columns: 65% repeat(1, 1fr);
+    grid-template-rows: auto auto !important;
+    padding-top: 0px !important;
+  }
+
+  .ReaderHomepage-Content .ReaderHomepage-Featured {
+    grid-column: span 3 / span 3;
+    grid-row: 1 / 2;
+    margin: 50px 5px 50px 50px;
+    display: flex;
+    /* background-color: #d4af37; */
+  }
+
+  .ReaderHomepage-Featured .CustomCarousel {
+    width: 100% !important;
+  }
+
+  .ReaderHomepage-Content .ReaderHomepage-Trending {
+    grid-column: span 2 / span 2;
+    grid-row: 1 / 2;
+    grid-column-start: 4;
+    margin: 50px 50px 50px 10px;
+  }
+
+  .ReaderHomepage-LatestInSec .Recenttitle {
+    width: 90%;
+  }
+
+  .ReaderHomepage-LatestInSec .RH-hr {
+    width: 90%;
+  }
+}
+
+@media (min-width: 1101px) and (max-width: 1300px) {
+  .ReaderHomepage-BodyCont .ReaderHomepage-Content {
+    grid-template-columns: 65% repeat(1, 1fr);
+  }
+
+  .ReaderHomepage-Featured .CustomCarousel {
+    width: 95% !important;
+  }
+
+  .ReaderHomepage-LatestInSec .Recenttitle {
+    width: 80%;
+  }
+
+  .ReaderHomepage-LatestInSec .RH-hr {
+    width: 80%;
+  }
+}
+
+@media (min-width: 1301px) and (max-width: 1500px) {
+  .ReaderHomepage-Featured .CustomCarousel {
+    width: 90% !important;
+  }
+}
+
+@media (max-width: 425px) {
+  .ReaderHomepage-Content .ReaderHomepage-Featured {
+    height: 520px !important;
+    margin-bottom: 10px;
+    /* max-height: 500px; */
+    /* background-color: green; */
+  }
+}
+
+@media (max-width: 375px) {
+  .ReaderHomepage-Content .ReaderHomepage-Featured {
+    height: 480px !important;
+  }
+}
+
+@media (max-width: 320px) {
+  .ReaderHomepage-Content .ReaderHomepage-Featured {
+    height: 410px !important;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ReaderHomepage-Content .ReaderHomepage-Featured {
+    margin-top: 50px;
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+}

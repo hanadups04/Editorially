@@ -26,7 +26,7 @@ import MemberDetail from "./pages/membersList/MemberDetail.jsx";
 import * as auth from "./context/auth.js";
 import ReactLoading from "react-loading";
 import ConstructArticle from "./pages/ConstructArticle.jsx";
-import ReaderHomepage from "./pages/reader/ReaderHomepage.jsx";
+import ReaderHomepage from "./pages/reader/ReaderHomepage2.jsx";
 
 const ProtectedRoute = ({ requiredAccessLvl, children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
