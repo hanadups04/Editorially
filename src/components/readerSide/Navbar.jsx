@@ -2,7 +2,7 @@
    Navbar JSX + CSS3 Version (Plain JS)
    =========================== */
 import { Link, useLocation } from "react-router-dom";
-import { useDarkMode } from "@/hooks/useDarkMode";
+import { useDarkMode } from "../../context/useDarkMode";
 import { useState } from "react";
 import { Search, Sun, Moon, Menu, X } from "lucide-react";
 import "./Navbar.css";
@@ -19,7 +19,8 @@ const navLinks = [
   { label: "Our Process", to: "/our-process" },
 ];
 
-export function NavbarCSS3JSX() {
+export function NavbarCSS3() {
+  // const { useDarkMode } = useProjectContext();
   const { isDark, toggle } = useDarkMode();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);

@@ -2,12 +2,12 @@
    RecentArticles JSX + CSS3 Version (Plain JS)
    =========================== */
 import { Link } from "react-router-dom";
-import { sectionLabels } from "@/lib/mock-data";
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { ArticleCardCSS3 } from "./ArticleCard.css3";
+import { sectionLabels } from "../../context/functions/mock-data";
+import { useProjectContext } from "../../context/Context";
+import { ArticleCardCSS3 } from "./ArticleCard.jsx";
 import "./RecentArticles.css";
 
-export function RecentArticlesCSS3JSX({ articles, section }) {
+export function RecentArticlesCSS3({ articles, section }) {
   if (!section) {
     const grouped = articles.reduce((acc, a) => {
       if (!acc[a.section]) acc[a.section] = [];
@@ -38,6 +38,7 @@ export function RecentArticlesCSS3JSX({ articles, section }) {
 }
 
 function SectionBlockCSS3JSX({ section, articles, showAll = false }) {
+  const { useScrollAnimation } = useProjectContext();
   const { ref, isVisible } = useScrollAnimation(0.05);
   const label = sectionLabels[section] || section;
   const layoutIndex =

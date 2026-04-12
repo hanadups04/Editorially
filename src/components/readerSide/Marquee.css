@@ -5,8 +5,8 @@
 .marquee {
   width: 100%;
   overflow: hidden;
-  border-bottom: 1px solid hsla(var(--border), 0.5);
-  background: hsla(var(--secondary), 0.5);
+  border-bottom: 1px solid hsla(var(--border), 0.5) !important;
+  background: hsla(var(--secondary), 0.5) !important;
 }
 
 .marquee__track {

@@ -1,9 +1,9 @@
 /* ===========================
    AboutPage JSX + CSS3 Version (Plain JS)
    =========================== */
-import { NavbarCSS3 } from "@/components/css3/Navbar.css3";
-import { FooterCSS3 } from "@/components/css3/Footer.css3";
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { NavbarCSS3 } from "../../components/readerSide/Navbar.css3";
+import { FooterCSS3 } from "../../components/readerSide/Footer.css3";
+import { useProjectContext } from "../../context/Context";
 import { BookOpen, Eye } from "lucide-react";
 import "./AboutPage.css";
 
@@ -21,6 +21,7 @@ const teamMembers = [
 ];
 
 function AnimatedSection({ children, className = "" }) {
+  const { useScrollAnimation } = useProjectContext();
   const { ref, isVisible } = useScrollAnimation(0.1);
   return (
     <div

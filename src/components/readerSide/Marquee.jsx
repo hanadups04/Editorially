@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import "./Marquee.css";
 
-export function MarqueeCSS3JSX({ articles }) {
+export function MarqueeCSS3({ articles }) {
   const [paused, setPaused] = useState(false);
 
   if (articles.length === 0) return null;

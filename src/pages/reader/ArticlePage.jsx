@@ -3,10 +3,10 @@
    =========================== */
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { fetchArticleBySlug } from "@/lib/db_queries";
-import { sectionLabels } from "@/lib/mock-data";
-import { NavbarCSS3 } from "@/components/css3/Navbar.css3";
-import { FooterCSS3 } from "@/components/css3/Footer.css3";
+import { fetchArticleBySlug } from "../../context/functions/db_queries";
+import { sectionLabels } from "../../context/functions/mock-data";
+import { NavbarCSS3 } from "../../components/readerSide/Navbar.css3";
+import { FooterCSS3 } from "../../components/readerSide/Footer.css3";
 import { Loader2, ArrowLeft } from "lucide-react";
 import "./ArticlePage.css";
 

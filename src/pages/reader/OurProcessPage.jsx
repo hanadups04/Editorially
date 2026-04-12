@@ -1,9 +1,9 @@
 /* ===========================
    OurProcessPage JSX + CSS3 Version (Plain JS)
    =========================== */
-import { NavbarCSS3 } from "@/components/css3/Navbar.css3";
-import { FooterCSS3 } from "@/components/css3/Footer.css3";
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { NavbarCSS3 } from "../../components/readerSide/Navbar.css3";
+import { FooterCSS3 } from "../../components/readerSide/Footer.css3";
+import { useProjectContext } from "../../context/Context";
 import {
   Lightbulb,
   CheckCircle,
@@ -68,6 +68,7 @@ const steps = [
 ];
 
 function StepCardCSS3JSX({ step, index }) {
+  const { useScrollAnimation } = useProjectContext();
   const { ref, isVisible } = useScrollAnimation(0.15);
   const Icon = step.icon;
 

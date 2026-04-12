@@ -17,7 +17,7 @@ function Placeholder({ letter }) {
   );
 }
 
-export function FeaturedSectionCSS3JSX({ articles }) {
+export function FeaturedSectionCSS3({ articles }) {
   if (articles.length === 0) return null;
 
   const hero = articles[0];

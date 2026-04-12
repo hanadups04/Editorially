@@ -2,10 +2,11 @@
    ArticleCard JSX + CSS3 Version (Plain JS)
    =========================== */
 import { Link } from "react-router-dom";
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useProjectContext } from "../../context/Context";
 import "./ArticleCard.css";
 
-export function ArticleCardCSS3JSX({ article, variant = "default" }) {
+export function ArticleCardCSS3({ article, variant = "default" }) {
+  const { useScrollAnimation } = useProjectContext();
   const { ref, isVisible } = useScrollAnimation();
   const formattedDate = new Date(article.date).toLocaleDateString("en-US", {
     month: "long",

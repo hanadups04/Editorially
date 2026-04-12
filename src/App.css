@@ -69,16 +69,242 @@
   --font-medium: 500;
   --font-semibold: 600;
   --font-bold: 700;
+
+  /* Reader Side */
+--background: 0 0% 100%;
+  --foreground: 228 95% 13%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 228 95% 13%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 228 95% 13%;
+
+  --primary: 228 95% 13%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 225 20% 96%;
+  --secondary-foreground: 228 95% 13%;
+
+  --muted: 225 15% 94%;
+  --muted-foreground: 225 10% 45%;
+
+  --accent: 38 90% 55%;
+  --accent-foreground: 228 95% 13%;
+
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 225 15% 90%;
+  --input: 225 15% 90%;
+  --ring: 228 95% 13%;
+
+  --radius: 0.75rem;
+
+  --surface-elevated: 0 0% 100%;
+  --surface-overlay: 228 95% 13%;
+
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 240 5.3% 26.1%;
+  --sidebar-primary: 240 5.9% 10%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 240 4.8% 95.9%;
+  --sidebar-accent-foreground: 240 5.9% 10%;
+  --sidebar-border: 220 13% 91%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
 }
 
-/* Reset and Base Styles */
+.dark {
+  --background: 0 0% 4%;
+  --foreground: 0 0% 95%;
+  cursor: auto;
+  caret-color: hsl(38 90% 65%);
+
+  --card: 0 0% 7%;
+  --card-foreground: 0 0% 95%;
+
+  --popover: 0 0% 7%;
+  --popover-foreground: 0 0% 95%;
+
+  --primary: 225 60% 70%;
+  --primary-foreground: 0 0% 4%;
+
+  --secondary: 225 10% 14%;
+  --secondary-foreground: 0 0% 90%;
+
+  --muted: 225 10% 14%;
+  --muted-foreground: 225 10% 55%;
+
+  --accent: 38 85% 60%;
+  --accent-foreground: 0 0% 4%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 95%;
+
+  --border: 225 10% 18%;
+  --input: 225 10% 18%;
+  --ring: 225 60% 70%;
+
+  --surface-elevated: 0 0% 10%;
+  --surface-overlay: 0 0% 95%;
+
+  --sidebar-background: 240 5.9% 10%;
+  --sidebar-foreground: 240 4.8% 95.9%;
+  --sidebar-primary: 224.3 76.3% 48%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 240 3.7% 15.9%;
+  --sidebar-accent-foreground: 240 4.8% 95.9%;
+  --sidebar-border: 240 3.7% 15.9%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+}
+
+/* ===========================
+   Base Styles
+   =========================== */
+
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  border-color: hsl(var(--border));
 }
 
 body {
+  margin: 0;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-body);
+  caret-color: hsl(var(--foreground));
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+/* ===========================
+   Utility Classes
+   =========================== */
+
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.glass {
+  background: hsla(var(--background), 0.7);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  border: 1px solid hsla(var(--border), 0.5);
+}
+
+.glass-dark {
+  background: hsla(var(--background), 0.5);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  border: 1px solid hsla(var(--border), 0.3);
+}
+
+.text-gradient {
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, hsl(var(--primary)), hsl(var(--accent)));
+}
+
+.editorial-shadow {
+  box-shadow: 0 20px 60px -15px hsla(var(--primary), 0.1),
+              0 8px 20px -8px hsla(var(--primary), 0.08);
+}
+
+.editorial-shadow-hover {
+  box-shadow: 0 30px 80px -15px hsla(var(--primary), 0.15),
+              0 12px 30px -8px hsla(var(--primary), 0.12);
+}
+
+.section-divider {
+  position: relative;
+}
+
+.section-divider::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4rem;
+  height: 1px;
+  background: linear-gradient(to right, transparent, hsl(var(--accent)), transparent);
+}
+
+/* ===========================
+   Animations
+   =========================== */
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes fade-up {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slide-in-left {
+  0% { opacity: 0; transform: translateX(-40px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-in-right {
+  0% { opacity: 0; transform: translateX(40px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+.animate-slide-left {
+  animation: slide-in-left 0.5s ease-out forwards;
+}
+
+.animate-slide-right {
+  animation: slide-in-right 0.5s ease-out forwards;
+}
+
+
+
+/* Reset and Base Styles */
+/* * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+} */
+
+/* body {
   font-family:
     -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
     "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
@@ -87,7 +313,7 @@ body {
   color: var(--text-primary);
   background-color: var(--bg-secondary);
   line-height: 1.5;
-}
+} */
 
 /* Shared Button Styles */
 .btn {

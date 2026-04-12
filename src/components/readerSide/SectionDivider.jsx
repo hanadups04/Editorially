@@ -3,7 +3,7 @@
    =========================== */
 import "./SectionDivider.css";
 
-export function SectionDividerCSS3JSX() {
+export function SectionDividerCSS3() {
   return (
     <div className="section-divider">
       <div className="section-divider__inner">

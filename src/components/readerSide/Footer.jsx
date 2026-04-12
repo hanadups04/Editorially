@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Mail, MapPin, Phone } from "lucide-react";
 import "./Footer.css";
 
-export function FooterCSS3JSX() {
+export function FooterCSS3() {
   return (
     <footer className="footer">
       <div className="footer__container">

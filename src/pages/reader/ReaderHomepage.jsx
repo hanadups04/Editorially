@@ -2,18 +2,23 @@
    Index Page JSX + CSS3 Version (Plain JS)
    =========================== */
 import { useEffect, useState, useCallback } from "react";
-import { NavbarCSS3 } from "@/components/css3/Navbar.css3";
-import { MarqueeCSS3 } from "@/components/css3/Marquee.css3";
-import { FeaturedSectionCSS3 } from "@/components/css3/FeaturedSection.css3";
-import { RecentArticlesCSS3 } from "@/components/css3/RecentArticles.css3";
-import { SectionDividerCSS3 } from "@/components/css3/SectionDivider.css3";
-import { FooterCSS3 } from "@/components/css3/Footer.css3";
-import { fetchArticles, fetchFeaturedArticles } from "@/lib/db_queries";
-import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { NavbarCSS3 } from "../../components/readerSide/Navbar";
+import { MarqueeCSS3 } from "../../components/readerSide/Marquee";
+import { FeaturedSectionCSS3 } from "../../components/readerSide/FeaturedSection";
+import { RecentArticlesCSS3 } from "../../components/readerSide/RecentArticles";
+import { SectionDividerCSS3 } from "../../components/readerSide/SectionDivider";
+import { FooterCSS3 } from "../../components/readerSide/Footer";
+import {
+  fetchArticles,
+  fetchFeaturedArticles,
+} from "../../context/functions/db_queries";
+
+import { useProjectContext } from "../../context/Context";
 import { Loader2 } from "lucide-react";
-import "./Index.css";
+import "./ReaderHomepage";
 
 export default function IndexCSS3JSX() {
+  const { useInfiniteScroll } = useProjectContext();
   const [featured, setFeatured] = useState([]);
 
   useEffect(() => {

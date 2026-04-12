@@ -3,16 +3,17 @@
    =========================== */
 import { useParams, Link } from "react-router-dom";
 import { useCallback } from "react";
-import { fetchArticlesBySection } from "@/lib/db_queries";
-import { sectionLabels } from "@/lib/mock-data";
-import { NavbarCSS3 } from "@/components/css3/Navbar.css3";
-import { FooterCSS3 } from "@/components/css3/Footer.css3";
-import { ArticleCardCSS3 } from "@/components/css3/ArticleCard.css3";
-import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { fetchArticlesBySection } from "../../context/functions/db_queries";
+import { sectionLabels } from "../../context/functions/mock-data";
+import { NavbarCSS3 } from "../../components/readerSide/Navbar.css3";
+import { FooterCSS3 } from "../../components/readerSide/Footer.css3";
+import { ArticleCardCSS3 } from "../../components/readerSide/ArticleCard.css3";
+import { useProjectContext } from "../../context/Context";
 import { Loader2 } from "lucide-react";
 import "./SectionPage.css";
 
 export default function SectionPageCSS3JSX() {
+  const { useInfiniteScroll } = useProjectContext();
   const { section } = useParams();
   const label = sectionLabels[section || ""] || section || "";
 
