@@ -27,6 +27,11 @@ import * as auth from "./context/auth.js";
 import ReactLoading from "react-loading";
 import ConstructArticle from "./pages/ConstructArticle.jsx";
 import ReaderHomepage from "./pages/reader/ReaderHomepage.jsx";
+import SectionPage from "./pages/reader/SectionPage.jsx";
+import ArticlePage from "./pages/reader/ArticlePage.jsx";
+import SearchPage from "./pages/reader/SearchPage.jsx";
+import AboutPage from "./pages/reader/AboutPage.jsx";
+import OurProcessPage from "./pages/reader/OurProcessPage.jsx";
 
 const ProtectedRoute = ({ requiredAccessLvl, children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -84,7 +89,12 @@ function App() {
           <Route path="/" element={<Redirector />} />
           {/* user searches editorially.app, calls redirector, checks for account, if none, throws user to landing page, if present, throws user to appropriate page */}
           <Route path="/aboutus" element={<LandingPage />} />
-          <Route path="/Readers" element={<ReaderHomepage />} />
+          <Route path="/readers" element={<ReaderHomepage />} />
+          <Route path="/article/:id" element={<ArticlePage />} />
+          <Route path="/section/:name" element={<SectionPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/our-process" element={<OurProcessPage />} />
           {/* <Route path="/Readers/:id" element={<LandingPage />} /> */}
           {/* <Route path="/Search" element={<LandingPage />} /> */}
           <Route path="/login" element={<Login />} />

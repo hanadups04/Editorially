@@ -1,3 +1,4 @@
+import ErrorList from "antd/es/form/ErrorList";
 import { supabase } from "../../supabaseClient";
 
 export async function fetchAllUsers() {
@@ -193,6 +194,125 @@ export async function avengersAssemble(ironman_id) {
 
     return data;
 }
+
+export async function getFeaturedArticles() {
+  const {data, error} = await supabase
+    .from("articles_tbl")
+    .select("*, sections_tbl(section_name), author1:users_tbl!author_id1(username), author2:users_tbl!author_id2(username)")
+    .lt("date_posted", new Date().toISOString())
+    .order("date_posted", { ascending: false })
+    .eq("is_featured", true)
+    .limit(5);
+
+    if (error) return error;
+    return data;
+}
+
+export async function getRecentArticles(){
+  const {data, error} = await supabase
+    .rpc('recent_articles_per_section');
+
+    if(error) return error;
+    console.log(data);
+    return data
+}
+
+export async function fetchAllArticles() {
+  const {data, error} = await supabase
+  .from("articles_tbl")
+  .select(`*, sections_tbl(section_name), 
+    author1:users_tbl!author_id1(username), 
+    author2:users_tbl!authoe_id2(username)`)
+  
+  if(error) return error;
+    console.log(data);
+    return data
+}
+
+export async function fetchSingleArticle(articleId) {
+  const {data, error} = await supabase
+    .from("articles_tbl")
+    .select(`*, sections_tbl(section_name),
+      author1:users_tbl!author_id1(username),
+      author2:users_tbl!author_id2(username)`)
+    .eq("article_id", articleId)
+    .maybeSingle()
+
+  if(error) return error;
+  return data
+}
+
+export async function getSectionArticles(sectionName){
+  const {data, error} = await supabase
+    .rpc('articles_per_section', { section_name_param: sectionName });
+
+    if(error) return error;
+    console.log(data);
+    return data
+}
+
+// export async function fetchRecentArticles() {
+//   const {data, error} = await Promise.All([
+//     supabase.from("articles_tbl")
+//     .select(`*, sections_tbl(section_name), 
+//       author1:users_tbl!author_id1(username),
+//       author2:users_tbl!author_id2(username),`)
+//     .eq("sections_tbl.section_name", "News")
+//     .order("date_posted", { ascending: false})
+//     .limit(10),
+
+//     supabase.from("articles_tbl")
+//     .select(`*, sections_tbl(section_name),
+//       author1:users_tbl!author_id1(username), 
+//       author2:users_tbl!author_id2(username)`)
+//     .eq("sections_tbl.section_name", "Sports")
+//     .order("date_posted", { ascending: false})
+//     .limit(10),
+
+//     supabase.from("articles_tbl")
+//     .select(`*, sections_tbl(section_name),
+//       author1:users_tbl!author_id1(username), 
+//       author2:users_tbl!author_id2(username)`)
+//     .eq("sections_tbl.section_name", "Literary")
+//     .order("date_posted", { ascending: false})
+//     .limit(10),
+
+//     supabase.from("articles_tbl")
+//     .select(`*, sections_tbl(section_name),
+//       author1:users_tbl!author_id1(username), 
+//       author2:users_tbl!author_id2(username)`)
+//     .eq("sections_tbl.section_name", "Opinion")
+//     .order("date_posted", { ascending: false})
+//     .limit(10),
+
+//     supabase.from("articles_tbl")
+//     .select(`*, sections_tbl(section_name),
+//       author1:users_tbl!author_id1(username), 
+//       author2:users_tbl!author_id2(username)`)
+//     .eq("sections_tbl.section_name", "General")
+//     .order("date_posted", { ascending: false})
+//     .limit(10),
+
+//     supabase.from("articles_tbl")
+//     .select(`*, sections_tbl(section_name),
+//       author1:users_tbl!author_id1(username), 
+//       author2:users_tbl!author_id2(username)`)
+//     .eq("sections_tbl.section_name", "Sci-tech")
+//     .order("date_posted", { ascending: false})
+//     .limit(10),
+
+//     supabase.from("articles_tbl")
+//     .select(`*, sections_tbl(section_name),
+//       author1:users_tbl!author_id1(username), 
+//       author2:users_tbl!author_id2(username)`)
+//     .eq("sections_tbl.section_name", "Feature")
+//     .order("date_posted", { ascending: false})
+//     .limit(10),
+//   ])
+
+//   if (error) return error;
+//   return data;
+// }
 
 
 //--------------------------------------------------------------------- <=3 TITI NI DON ANDREI TANEO -------------------------------------------------------- //

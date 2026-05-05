@@ -16,12 +16,12 @@
 .process-page__hero-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, hsla(var(--primary), 0.05), hsla(var(--accent), 0.05), transparent);
+  background: linear-gradient(135deg, hsla(var(--primary)/ 0.05), hsl(var(--accent)/ 0.05), transparent);
 }
 
 :root.dark .process-page__hero-bg,
 .dark .process-page__hero-bg {
-  background: linear-gradient(135deg, hsla(var(--accent), 0.1), hsla(var(--primary), 0.08), hsla(var(--accent), 0.05));
+  background: linear-gradient(135deg, hsl(var(--accent)/ 0.1), hsl(var(--primary)/ 0.2), hsl(var(--accent)/ 0.1));
 }
 
 .process-page__hero-content {
@@ -105,7 +105,7 @@
   width: 3rem;
   height: 3rem;
   border-radius: 0.75rem;
-  background: hsla(var(--accent), 0.1);
+  background: hsl(var(--accent)/ 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -116,7 +116,7 @@
 .process-page__step-line {
   width: 1px;
   flex: 1;
-  background: linear-gradient(to bottom, hsla(var(--accent), 0.3), hsla(var(--border), 0.3));
+  background: linear-gradient(to bottom, hsl(var(--accent)/ 0.3), hsl(var(--border)/ 0.3));
   margin-top: 0.75rem;
 }
 
@@ -171,7 +171,7 @@
   padding: 3rem;
   border-radius: 1rem;
   background: hsl(var(--card));
-  border: 1px solid hsla(var(--border), 0.5);
+  border: 1px solid hsl(var(--border)/ 0.5);
 }
 
 .process-page__closing-title {

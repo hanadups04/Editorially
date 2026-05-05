@@ -1,8 +1,8 @@
 /* ===========================
    OurProcessPage JSX + CSS3 Version (Plain JS)
    =========================== */
-import { NavbarCSS3 } from "../../components/readerSide/Navbar.css3";
-import { FooterCSS3 } from "../../components/readerSide/Footer.css3";
+import { NavbarCSS3 } from "../../components/readerSide/Navbar";
+import { FooterCSS3 } from "../../components/readerSide/Footer";
 import { useProjectContext } from "../../context/Context";
 import {
   Lightbulb,
@@ -100,7 +100,6 @@ export default function OurProcessPageCSS3JSX() {
   return (
     <div className="process-page">
       <NavbarCSS3 />
-      <div style={{ height: "104px" }} />
 
       <section className="process-page__hero">
         <div className="process-page__hero-bg" />

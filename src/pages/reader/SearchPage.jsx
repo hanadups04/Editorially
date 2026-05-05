@@ -2,9 +2,9 @@
    SearchPage JSX + CSS3 Version (Plain JS)
    =========================== */
 import { useState, useCallback, useEffect, useRef } from "react";
-import { NavbarCSS3 } from "../../components/readerSide/Navbar.css3";
-import { FooterCSS3 } from "../../components/readerSide/Footer.css3";
-import { ArticleCardCSS3 } from "../../components/readerSide/ArticleCard.css3";
+import { NavbarCSS3 } from "../../components/readerSide/Navbar";
+import { FooterCSS3 } from "../../components/readerSide/Footer";
+import { ArticleCardCSS3 } from "../../components/readerSide/ArticleCard";
 import { searchArticles } from "../../context/functions/db_queries";
 import { Search as SearchIcon, Loader2 } from "lucide-react";
 import "./SearchPage.css";

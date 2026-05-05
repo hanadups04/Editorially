@@ -17,7 +17,7 @@
 .section-divider__line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, transparent, hsl(var(--border)), transparent);
+  background: linear-gradient(to right, transparent, hsl(var(--border)), transparent) !important;
 }
 
 .section-divider__dots {
@@ -31,6 +31,6 @@
   border-radius: 50%;
 }
 
-.section-divider__dot:nth-child(1) { background: hsla(var(--accent), 0.6); }
-.section-divider__dot:nth-child(2) { background: hsla(var(--accent), 0.4); }
-.section-divider__dot:nth-child(3) { background: hsla(var(--accent), 0.2); }
+.section-divider__dot:nth-child(1) { background: hsl(var(--accent) / 0.6) !important; }
+.section-divider__dot:nth-child(2) { background: hsl(var(--accent) / 0.4) !important; }
+.section-divider__dot:nth-child(3) { background: hsl(var(--accent) / 0.2) !important; }

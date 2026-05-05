@@ -6,11 +6,11 @@ import { useState } from "react";
 import "./Marquee.css";
 
 export function MarqueeCSS3({ articles }) {
+  const [featuredArticles, setIsFeaturedArticles] = useState(articles);
   const [paused, setPaused] = useState(false);
+  console.log("artivlessss", featuredArticles);
 
-  if (articles.length === 0) return null;
-
-  const items = [...articles, ...articles];
+  // const items = [...articles, ...articles];
 
   return (
     <div
@@ -19,15 +19,17 @@ export function MarqueeCSS3({ articles }) {
       onMouseLeave={() => setPaused(false)}
     >
       <div className="marquee__track">
-        {items.map((article, i) => (
+        {featuredArticles.map((article) => (
           <Link
-            key={`${article.id}-${i}`}
-            to={`/article/${article.slug}`}
+            // key={`${article.article_id}-${i}`}
+            // to={`/article/${article.slug}`}
             className="marquee__item"
           >
             <span className="marquee__dot" />
-            <span className="marquee__title">{article.title}</span>
-            <span className="marquee__section">{article.section}</span>
+            <span className="marquee__title">{article.headline}</span>
+            <span className="marquee__section">
+              {article.sections_tbl.section_name}
+            </span>
           </Link>
         ))}
       </div>

@@ -23,7 +23,7 @@
 
 .not-found__text {
   font-size: 1.25rem;
-  color: hsl(var(--muted-foreground));
+  color: hsl(var(--muted-foreground)) !important;
   margin-bottom: 1rem;
 }
 
@@ -33,5 +33,5 @@
 }
 
 .not-found__link:hover {
-  color: hsla(var(--primary), 0.9);
+  color: hsl(var(--primary) / 0.9) !important;
 }

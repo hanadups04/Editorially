@@ -1,8 +1,8 @@
 /* ===========================
    AboutPage JSX + CSS3 Version (Plain JS)
    =========================== */
-import { NavbarCSS3 } from "../../components/readerSide/Navbar.css3";
-import { FooterCSS3 } from "../../components/readerSide/Footer.css3";
+import { NavbarCSS3 } from "../../components/readerSide/Navbar";
+import { FooterCSS3 } from "../../components/readerSide/Footer";
 import { useProjectContext } from "../../context/Context";
 import { BookOpen, Eye } from "lucide-react";
 import "./AboutPage.css";
@@ -41,7 +41,6 @@ export default function AboutPageCSS3JSX() {
   return (
     <div className="about-page">
       <NavbarCSS3 />
-      <div style={{ height: "104px" }} />
 
       <section className="about-page__hero">
         <div className="about-page__hero-bg" />

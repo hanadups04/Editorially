@@ -17,8 +17,8 @@
 
 .article-card__default:hover {
   transform: translateY(-4px);
-  box-shadow: 0 30px 80px -15px hsla(var(--primary), 0.15),
-              0 12px 30px -8px hsla(var(--primary), 0.12);
+  box-shadow: 0 30px 80px -30px hsl(var(--primary)/ 0.15),
+              0 12px 30px -20px hsl(var(--primary)/ 0.12);
 }
 
 .article-card__image-wrapper {
@@ -42,22 +42,35 @@
 .article-card__placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, hsla(var(--primary), 0.05), hsla(var(--accent), 0.05), hsla(var(--primary), 0.1));
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.05), hsl(var(--accent) / 0.05), hsl(var(--primary) / 0.1));
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.5s ease;
 }
 
+.article-card:hover .article-card__placeholder {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.15),
+    hsl(var(--accent) / 0.12),
+    hsl(var(--primary) / 0.15)
+  );
+
+
+  /* slight scale for “alive” feel */
+  transform: scale(1.02);
+}
+
 .article-card__placeholder-letter {
   font-family: var(--font-heading);
   font-size: 3rem;
-  color: hsla(var(--primary), 0.1);
+  color: hsl(var(--primary) / 0.1) !important;
   transition: color 0.3s;
 }
 
 .article-card__default:hover .article-card__placeholder-letter {
-  color: hsla(var(--primary), 0.2);
+  color: hsl(var(--primary) / 0.5) !important;
 }
 
 .article-card__badge {
@@ -70,7 +83,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  background: hsla(var(--background), 0.8);
+  background: hsl(var(--background)/ 0.8);
   backdrop-filter: blur(12px);
   border-radius: 9999px;
   color: hsl(var(--foreground));
@@ -95,7 +108,7 @@
 }
 
 .article-card__default:hover .article-card__title {
-  color: hsl(var(--primary));
+  color: hsl(var(--primary)) !important;
 }
 
 .article-card__excerpt {
@@ -133,7 +146,7 @@
 }
 
 .article-card__horizontal:hover {
-  background: hsla(var(--secondary), 0.5);
+  background: hsl(var(--secondary) / 0.5);
 }
 
 .article-card__horizontal-thumb {
@@ -165,7 +178,7 @@
 /* Compact variant */
 .article-card__compact {
   padding: 1rem 0;
-  border-bottom: 1px solid hsla(var(--border), 0.5);
+  border-bottom: 1px solid hsl(var(--border)/ 0.5);
   transition: all 0.2s;
 }
 

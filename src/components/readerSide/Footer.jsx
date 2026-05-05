@@ -54,7 +54,7 @@ export function FooterCSS3() {
               ].map((s) => (
                 <Link
                   key={s}
-                  to={`/section/${s.toLowerCase()}`}
+                  to={`/section/${s}`}
                   className="footer__section-link"
                 >
                   {s}

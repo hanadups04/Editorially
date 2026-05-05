@@ -8,13 +8,14 @@ import { Search, Sun, Moon, Menu, X } from "lucide-react";
 import "./Navbar.css";
 
 const navLinks = [
-  { label: "News", to: "/section/news" },
-  { label: "Sports", to: "/section/sports" },
-  { label: "Literary", to: "/section/literary" },
-  { label: "Opinion", to: "/section/opinion" },
-  { label: "General", to: "/section/general" },
-  { label: "Sci-Tech", to: "/section/sci-tech" },
-  { label: "Feature", to: "/section/feature" },
+  { label: "Home", to: "/readers" },
+  { label: "News", to: "/section/News" },
+  { label: "Sports", to: "/section/Sports" },
+  { label: "Literary", to: "/section/Literary" },
+  { label: "Opinion", to: "/section/Opinion" },
+  { label: "General", to: "/section/General" },
+  { label: "Sci-Tech", to: "/section/Sci-tech" },
+  { label: "Feature", to: "/section/Feature" },
   { label: "About Us", to: "/about" },
   { label: "Our Process", to: "/our-process" },
 ];
