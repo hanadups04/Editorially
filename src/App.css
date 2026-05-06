@@ -71,7 +71,7 @@
   --font-bold: 700;
 
   /* Reader Side */
---background: 0 0% 100%;
+  --background: 0 0% 100%;
   --foreground: 228 95% 13%;
 
   --card: 0 0% 100%;
@@ -104,9 +104,9 @@
   --surface-elevated: 0 0% 100%;
   --surface-overlay: 228 95% 13%;
 
-  --font-heading: 'Playfair Display', Georgia, serif;
-  --font-body: 'Inter', -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-heading: "Playfair Display", Georgia, serif;
+  --font-body: "Inter", -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 
   --sidebar-background: 0 0% 98%;
   --sidebar-foreground: 240 5.3% 26.1%;
@@ -180,7 +180,12 @@ body {
   caret-color: hsl(var(--foreground)) !important;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
 }
 
@@ -218,17 +223,23 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, hsl(var(--primary)), hsl(var(--accent)));
+  background-image: linear-gradient(
+    to right,
+    hsl(var(--primary)),
+    hsl(var(--accent))
+  );
 }
 
 .editorial-shadow {
-  box-shadow: 0 20px 60px -15px hsla(var(--primary), 0.1),
-              0 8px 20px -8px hsla(var(--primary), 0.08);
+  box-shadow:
+    0 20px 60px -15px hsla(var(--primary), 0.1),
+    0 8px 20px -8px hsla(var(--primary), 0.08);
 }
 
 .editorial-shadow-hover {
-  box-shadow: 0 30px 80px -15px hsla(var(--primary), 0.15),
-              0 12px 30px -8px hsla(var(--primary), 0.12);
+  box-shadow:
+    0 30px 80px -15px hsla(var(--primary), 0.15),
+    0 12px 30px -8px hsla(var(--primary), 0.12);
 }
 
 .section-divider {
@@ -236,14 +247,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .section-divider::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 4rem;
   height: 1px;
-  background: linear-gradient(to right, transparent, hsl(var(--accent)), transparent);
+  background: linear-gradient(
+    to right,
+    transparent,
+    hsl(var(--accent)),
+    transparent
+  );
 }
 
 /* ===========================
@@ -251,28 +267,54 @@ h1, h2, h3, h4, h5, h6 {
    =========================== */
 
 @keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 @keyframes fade-up {
-  0% { opacity: 0; transform: translateY(30px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fade-in {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes slide-in-left {
-  0% { opacity: 0; transform: translateX(-40px); }
-  100% { opacity: 1; transform: translateX(0); }
+  0% {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes slide-in-right {
-  0% { opacity: 0; transform: translateX(40px); }
-  100% { opacity: 1; transform: translateX(0); }
+  0% {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .animate-marquee {
@@ -295,8 +337,6 @@ h1, h2, h3, h4, h5, h6 {
   animation: slide-in-right 0.5s ease-out forwards;
 }
 
-
-
 /* Reset and Base Styles */
 /* * {
   margin: 0;
@@ -316,7 +356,7 @@ h1, h2, h3, h4, h5, h6 {
 } */
 
 /* Shared Button Styles */
-.btn {
+.admin-btn {
   padding: var(--spacing-sm) var(--spacing-lg);
   border-radius: var(--radius-md);
   border: none;
@@ -602,7 +642,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Shared Modal Styles */
-.modal-overlay {
+.admin-overlay {
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
@@ -613,7 +653,8 @@ h1, h2, h3, h4, h5, h6 {
   animation: fadeIn 0.2s ease-in-out;
 }
 
-.modal {
+.admin-modal {
+  /* background-color: green; */
   background-color: var(--bg-primary);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xl);
@@ -624,7 +665,7 @@ h1, h2, h3, h4, h5, h6 {
   animation: slideUp 0.3s ease-out;
 }
 
-.modal-header {
+.admin-header {
   padding: var(--spacing-lg);
   border-bottom: 1px solid var(--border-color);
   display: flex;
@@ -632,13 +673,13 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
 }
 
-.modal-title {
+.admin-title {
   font-size: var(--text-xl);
   font-weight: var(--font-semibold);
   color: var(--text-primary);
 }
 
-.modal-close {
+.admin-close {
   background: none;
   border: none;
   cursor: pointer;
@@ -648,15 +689,15 @@ h1, h2, h3, h4, h5, h6 {
   transition: background-color var(--transition-fast);
 }
 
-.modal-close:hover {
+.admin-close:hover {
   background-color: var(--bg-hover);
 }
 
-.modal-body {
+.admin-body {
   padding: var(--spacing-lg);
 }
 
-.modal-footer {
+.admin-footer {
   padding: var(--spacing-lg);
   border-top: 1px solid var(--border-color);
   display: flex;

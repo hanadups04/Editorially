@@ -88,7 +88,10 @@ const DocumentPage = () => {
       <div className="document-page">
         <div className="document-header">
           <div className="document-header-left">
-            <button className="btn btn-ghost" onClick={() => navigate(-1)}>
+            <button
+              className="admin-btn btn-ghost"
+              onClick={() => navigate(-1)}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -113,7 +116,7 @@ const DocumentPage = () => {
               <span className="save-status">Last saved: {lastSaved}</span>
             )}
             <button
-              className="btn btn-secondary"
+              className="admin-btn btn-secondary"
               onClick={handleSave}
               disabled={isSaving}
             >
@@ -133,7 +136,7 @@ const DocumentPage = () => {
               {isSaving ? "Saving..." : "Save Draft"}
             </button>
             <button
-              className="btn btn-primary"
+              className="admin-btn btn-primary"
               type="submit"
               onClick={handleSubmit}
             >

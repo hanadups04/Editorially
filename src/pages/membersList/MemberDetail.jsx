@@ -318,7 +318,7 @@ const MemberDetail = () => {
                     {/* Delete Confirmation Modal */}
                     {isDeleteOpen && (
                       <div
-                        className="modal-overlay"
+                        className="admin-overlay"
                         onClick={() => setIsDeleteOpen(false)}
                       >
                         <div
@@ -354,7 +354,7 @@ const MemberDetail = () => {
                     {/* Delete Confirmation Modal */}
                     {isDeleteOpen && (
                       <div
-                        className="modal-overlay"
+                        className="admin-overlay"
                         onClick={() => setIsDeleteOpen(false)}
                       >
                         <div

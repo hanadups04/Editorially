@@ -129,14 +129,14 @@ const EditTaskModal = ({ isOpen, onClose, subtask, onSubmit }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="admin-overlay" onClick={onClose}>
       <div
-        className="modal edit-task-modal"
+        className="admin-modal edit-task-modal"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="modal-header">
-          <h2 className="modal-title">Edit Task</h2>
-          <button className="modal-close" onClick={onClose}>
+        <div className="admin-header">
+          <h2 className="admin-title">Edit Task</h2>
+          <button className="admin-close" onClick={onClose}>
             <svg
               width="20"
               height="20"
@@ -152,7 +152,7 @@ const EditTaskModal = ({ isOpen, onClose, subtask, onSubmit }) => {
         </div>
 
         {/* <form onSubmit={handleSubmit}> */}
-        <div className="modal-body">
+        <div className="admin-body">
           <div className="form-row">
             <div className="form-group">
               <label className="form-label">Project Submission Type</label>
@@ -297,14 +297,18 @@ const EditTaskModal = ({ isOpen, onClose, subtask, onSubmit }) => {
           </div>
         </div>
 
-        <div className="modal-footer">
-          <button type="button" className="btn btn-secondary" onClick={onClose}>
+        <div className="admin-footer">
+          <button
+            type="button"
+            className="admin-btn btn-secondary"
+            onClick={onClose}
+          >
             Cancel
           </button>
           <button
             type="submit"
             onClick={handleSubmit}
-            className="btn btn-primary"
+            className="admin-btn btn-primary"
           >
             Save Changes
           </button>
