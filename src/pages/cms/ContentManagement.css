@@ -150,7 +150,7 @@
 
 .card-body {
   flex: 1;
-  padding: 1.5rem;
+  padding: 1rem !important;
 }
 
 .card-title {
@@ -215,7 +215,7 @@
   justify-content: end;
   gap: 0.5rem;
   padding: 1rem;
-  background-color: var(--color-primary);
+  background-color: var(--bg-primary);
   border-top: 1px solid #e5e5e5;
 }
 
@@ -225,7 +225,7 @@
 
 .btn-edit:hover {
   background-color: #171717;
-  border-color: #171717;
+  border-color: 1px solid #171717;
 }
 
 .modal-overlay {

@@ -99,6 +99,7 @@
   font-weight: 700;
   line-height: 1.3;
   color: hsl(var(--card-foreground));
+  color: white !important;
   transition: color 0.2s;
   display: -webkit-box;
   -webkit-line-clamp: 2;

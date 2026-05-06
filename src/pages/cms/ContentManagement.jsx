@@ -314,7 +314,6 @@ export default function ContentManagement() {
                             }}
                           >
                             <span className="btn-icon">✏️</span>
-                            Edit
                           </button>
                         )}
 

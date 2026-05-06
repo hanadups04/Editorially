@@ -52,7 +52,7 @@ export function ArticleCardCSS3({ article, variant = "default" }) {
             </h3>
             <div className="article-card__meta">
               <span>
-                {article.author1[0]} & {article.author2[0]}{" "}
+                {article.author1} & {article.author2}{" "}
               </span>
               <span>·</span>
               <span>{formattedDate}</span>
@@ -71,8 +71,10 @@ export function ArticleCardCSS3({ article, variant = "default" }) {
           className="article-card__compact"
           style={{ opacity: isVisible ? 1 : 0 }}
         >
-          <span className="article-card__section-label">{article.section}</span>
-          <h3 className="article-card__compact-title">{article.title}</h3>
+          <span className="article-card__section-label">
+            {article.section_name}
+          </span>
+          <h3 className="article-card__compact-title">{article.headline}</h3>
           <span
             className="article-card__meta"
             style={{ marginTop: "0.25rem", display: "block" }}
@@ -101,7 +103,7 @@ export function ArticleCardCSS3({ article, variant = "default" }) {
           ) : (
             <div className="article-card__placeholder">
               <span className="article-card__placeholder-letter">
-                {article.section_name[0].toUpperCase()}
+                {article.section_name.toUpperCase()}
               </span>
             </div>
           )}
