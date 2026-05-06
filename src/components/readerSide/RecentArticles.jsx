@@ -78,74 +78,86 @@ function SectionBlockCSS3JSX({ section, articles, showAll = false }) {
       ref={ref}
       className={`section-block ${isVisible ? "section-block--visible" : ""}`}
     >
-      <div className="section-block__header">
-        <div className="section-block__title-row">
-          <h2 className="section-block__title">{label}</h2>
-          <div className="section-block__line" />
-        </div>
-        {!showAll && (
-          <Link to={`/section/${section}`} className="section-block__view-all">
-            View All →
-          </Link>
-        )}
-      </div>
-
-      {layoutIndex === 0 && (
-        <div className="section-block__grid">
-          {articles.slice(0, 1).map((a) => (
-            <div key={a.article_id} className="section-block__grid-featured">
-              <ArticleCardCSS3 article={a} />
-              {/* <p>ghhhh</p> */}
+      {articles == 0 ? (
+        <></>
+      ) : (
+        <>
+          <div className="section-block__header">
+            <div className="section-block__title-row">
+              <h2 className="section-block__title">{label}</h2>
+              <div className="section-block__line" />
             </div>
-          ))}
-          {articles.slice(1).map((a) => (
-            <ArticleCardCSS3 key={a.article_id} article={a} />
-          ))}
-        </div>
-      )}
+            {!showAll && (
+              <Link
+                to={`/section/${section}`}
+                className="section-block__view-all"
+              >
+                View All →
+              </Link>
+            )}
+          </div>
 
-      {layoutIndex === 1 && (
-        <div>
-          {articles.slice(0, 1).map((a) => (
-            <ArticleCardCSS3 key={a.article_id} article={a} />
-          ))}
-          <div
-            className="section-block__list-grid"
-            style={{ marginTop: "1rem" }}
-          >
-            {/* <p>index1</p> */}
-            {articles.slice(1).map((a) => (
-              <ArticleCardCSS3
-                key={a.article_id}
-                article={a}
-                variant="horizontal"
-              />
-            ))}
-          </div>
-        </div>
-      )}
+          {layoutIndex === 0 && (
+            <div className="section-block__grid">
+              {articles.slice(0, 1).map((a) => (
+                <div
+                  key={a.article_id}
+                  className="section-block__grid-featured"
+                >
+                  <ArticleCardCSS3 article={a} />
+                  {/* <p>ghhhh</p> */}
+                </div>
+              ))}
+              {articles.slice(1).map((a) => (
+                <ArticleCardCSS3 key={a.article_id} article={a} />
+              ))}
+            </div>
+          )}
 
-      {layoutIndex === 2 && (
-        <div className="section-block__mixed">
-          <div className="section-block__mixed-cards">
-            {articles.slice(0, 4).map((a) => (
-              <ArticleCardCSS3 key={a.article_id} article={a} />
-            ))}
-          </div>
-          <div className="section-block__sidebar">
-            <span className="section-block__sidebar-label">
-              More in {label}
-            </span>
-            {/* <p>index2</p> */}
-            {articles.slice(4).map((a) => (
-              <ArticleCardCSS3
-                key={a.article_id}
-                article={a}
-                variant="compact"
-              />
-            ))}
-          </div>
-        </div>
+          {layoutIndex === 1 && (
+            <div>
+              {articles.slice(0, 1).map((a) => (
+                <ArticleCardCSS3 key={a.article_id} article={a} />
+              ))}
+              <div
+                className="section-block__list-grid"
+                style={{ marginTop: "1rem" }}
+              >
+                {/* <p>index1</p> */}
+                {articles.slice(1).map((a) => (
+                  <ArticleCardCSS3
+                    key={a.article_id}
+                    article={a}
+                    variant="horizontal"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {layoutIndex === 2 && (
+            <div className="section-block__mixed">
+              <div className="section-block__mixed-cards">
+                {articles.slice(0, 4).map((a) => (
+                  <ArticleCardCSS3 key={a.article_id} article={a} />
+                ))}
+              </div>
+              <div className="section-block__sidebar">
+                <span className="section-block__sidebar-label">
+                  More in {label}
+                </span>
+                {/* <p>index2</p> */}
+                {articles.slice(4).map((a) => (
+                  <ArticleCardCSS3
+                    key={a.article_id}
+                    article={a}
+                    variant="compact"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </section>
   );
