@@ -154,13 +154,13 @@ const ProjectPage = () => {
         (project.step_id == 2 && (
           <div>
             <button
-              className="btn btn-primary"
+              className="admin-btn btn-primary"
               onClick={() => UpdateFunctions.approveProject(projectID)}
             >
               APPROVE
             </button>
             <button
-              className="btn btn-primary"
+              className="admin-btn btn-primary"
               onClick={() => UpdateFunctions.rejectProject(projectID)}
             >
               REJECT
@@ -192,7 +192,7 @@ const ProjectPage = () => {
               </span>
             </div>
             <button
-              className="btn btn-primary"
+              className="admin-btn btn-primary"
               onClick={() =>
                 navigate(
                   `/create-article/${projectID}?section_id=${project.section_id}`,
@@ -220,7 +220,7 @@ const ProjectPage = () => {
         <div className="section-header">
           <h2 className="section-title">Team Tasks</h2>
           <button
-            className="btn btn-primary"
+            className="admin-btn btn-primary"
             onClick={() => setIsAddTaskModalOpen(true)}
           >
             <svg

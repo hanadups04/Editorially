@@ -86,11 +86,11 @@ const UploadImagesModal = ({ isOpen, onClose, taskId }) => {
   return (
     <>
       {isOpen && !uploading && (
-        <div className="modal-overlay" onClick={onClose}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2 className="modal-title">Upload Images</h2>
-              <button className="modal-close" onClick={onClose}>
+        <div className="admin-overlay" onClick={onClose}>
+          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="admin-header">
+              <h2 className="admin-title">Upload Images</h2>
+              <button className="admin-close" onClick={onClose}>
                 <svg
                   width="20"
                   height="20"
@@ -105,7 +105,7 @@ const UploadImagesModal = ({ isOpen, onClose, taskId }) => {
               </button>
             </div>
 
-            <div className="modal-body">
+            <div className="admin-body">
               <div
                 className={`file-upload-zone ${isDragging ? "drag-over" : ""}`}
                 onClick={() => fileInputRef.current?.click()}
@@ -175,17 +175,17 @@ const UploadImagesModal = ({ isOpen, onClose, taskId }) => {
               )}
             </div>
 
-            <div className="modal-footer">
+            <div className="admin-footer">
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="admin-btn btn-secondary"
                 onClick={onClose}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="btn btn-primary"
+                className="admin-btn btn-primary"
                 onClick={handleImageUpload}
                 disabled={selectedFiles.length === 0}
               >
@@ -203,7 +203,7 @@ const UploadImagesModal = ({ isOpen, onClose, taskId }) => {
             <span className="upload-title">
               Uploading {uploadProgress.length} file(s)
             </span>
-            <button className="modal-close" onClick={() => setUploading(false)}>
+            <button className="admin-close" onClick={() => setUploading(false)}>
               <svg
                 width="16"
                 height="16"

@@ -113,11 +113,11 @@ export default function CreateParentTaskModal({
 
   return (
     <>
-      <div className="CreateParentTaskModal-Parent modal-overlay">
-        <div className="CreateParentTaskModal-Parent modal">
-          <div className="modal-header">
-            <h2 className="modal-title">Create New Project</h2>
-            <button className="modal-close" onClick={onClose}>
+      <div className="CreateParentTaskModal-Parent admin-overlay">
+        <div className="CreateParentTaskModal-Parent admin-modal">
+          <div className="admin-header">
+            <h2 className="admin-title">Create New Project</h2>
+            <button className="admin-close" onClick={onClose}>
               <svg
                 width="20"
                 height="20"
@@ -132,7 +132,7 @@ export default function CreateParentTaskModal({
             </button>
           </div>
 
-          <div className="modal-body">
+          <div className="admin-body">
             <div className="form-group">
               <label className="form-label">Project Title</label>
               <input
@@ -196,10 +196,10 @@ export default function CreateParentTaskModal({
               </select>
             </div>
           </div>
-          <div className="modal-footer">
+          <div className="admin-footer">
             <button
               type="button"
-              className="btn btn-secondary"
+              className="admin-btn btn-secondary"
               onClick={onClose}
             >
               Cancel
@@ -207,7 +207,7 @@ export default function CreateParentTaskModal({
             <button
               type="submit"
               onClick={handleSubmit}
-              className="btn btn-primary"
+              className="admin-btn btn-primary"
             >
               Create Project
             </button>
@@ -218,7 +218,7 @@ export default function CreateParentTaskModal({
                 const userdata = await isAuthenticated();
                 console.log("userdata is:", userdata);
               }}
-              className="btn btn-primary"
+              className="admin-btn btn-primary"
             >
               Check
             </button>

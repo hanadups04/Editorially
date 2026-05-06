@@ -288,7 +288,7 @@ export default function ContentManagement() {
                       <div className="card-actions">
                         {userRole < 3 ? (
                           <button
-                            className="btn btn-secondary"
+                            className="admin-btn btn-secondary"
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
@@ -303,7 +303,7 @@ export default function ContentManagement() {
                           </button>
                         ) : (
                           <button
-                            className="btn btn-secondary"
+                            className="admin-btn btn-secondary"
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
@@ -319,7 +319,7 @@ export default function ContentManagement() {
 
                         {content.visible ? (
                           <button
-                            className="btn btn-secondary"
+                            className="admin-btn btn-secondary"
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
@@ -333,7 +333,7 @@ export default function ContentManagement() {
                           </button>
                         ) : (
                           <button
-                            className="btn btn-secondary"
+                            className="admin-btn btn-secondary"
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
@@ -357,54 +357,65 @@ export default function ContentManagement() {
 
         {filterModalOpen && (
           <div
-            className="modal-overlay"
+            className="admin-overlay"
             onClick={() => setFilterModalOpen(false)}
           >
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">
-                <h2 className="modal-title">Filter Options</h2>
-                <button
-                  className="modal-close"
-                  onClick={() => setFilterModalOpen(false)}
-                >
-                  ✕
-                </button>
-              </div>
-              <div className="modal-body">
-                <div className="filter-group">
-                  <label className="filter-label">Section</label>
-                  <select
-                    className="filter-select"
-                    value={filterSection}
-                    onChange={(e) => setFilterSection(e.target.value)}
+            <div className="admin-modal">
+              <div
+                className="admin-content"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="admin-header">
+                  <h2 className="admin-title">Filter Options</h2>
+                  <button
+                    className="admin-close"
+                    onClick={() => setFilterModalOpen(false)}
                   >
-                    {sections.map((section) => (
-                      <option key={section} value={section}>
-                        {section.charAt(0).toUpperCase() + section.slice(1)}
-                      </option>
-                    ))}
-                  </select>
+                    ✕
+                  </button>
                 </div>
+                <div className="admin-body">
+                  <div className="filter-group">
+                    <label className="filter-label">Section</label>
+                    <select
+                      className="filter-select"
+                      value={filterSection}
+                      onChange={(e) => setFilterSection(e.target.value)}
+                    >
+                      {sections.map((section) => (
+                        <option key={section} value={section}>
+                          {section.charAt(0).toUpperCase() + section.slice(1)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                <div className="filter-group">
-                  <label className="filter-label">Sort by Date</label>
-                  <select
-                    className="filter-select"
-                    value={filterDateSort}
-                    onChange={(e) => setFilterDateSort(e.target.value)}
-                  >
-                    <option value="newest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
-                  </select>
+                  <div className="filter-group">
+                    <label className="filter-label">Sort by Date</label>
+                    <select
+                      className="filter-select"
+                      value={filterDateSort}
+                      onChange={(e) => setFilterDateSort(e.target.value)}
+                    >
+                      <option value="newest">Newest First</option>
+                      <option value="oldest">Oldest First</option>
+                    </select>
+                  </div>
                 </div>
-              </div>
-              <div className="modal-footer">
-                <button className="btn btn-reset" onClick={resetFilters}>
-                  Reset
-                </button>
-                <button className="btn btn-apply" onClick={applyFilters}>
-                  Apply
-                </button>
+                <div className="admin-footer">
+                  <button
+                    className="admin-btn btn-reset"
+                    onClick={resetFilters}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    className="admin-btn btn-apply"
+                    onClick={applyFilters}
+                  >
+                    Apply
+                  </button>
+                </div>
               </div>
             </div>
           </div>
