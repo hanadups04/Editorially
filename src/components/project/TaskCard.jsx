@@ -184,7 +184,7 @@ const TaskCard = ({
       </label>
 
       <div className="task-actions">
-        <button className="btn btn-primary" onClick={handleActionClick}>
+        <button className="admin-btn btn-primary" onClick={handleActionClick}>
           {action.icon}
           {action.label}
         </button>

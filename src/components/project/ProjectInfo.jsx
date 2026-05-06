@@ -15,7 +15,10 @@ export default function ProjectInfo({
       <div className="card-header">
         <div className="card-header-top">
           <h1 className="card-title">{title}</h1>
-          <button className="btn btn-secondary btn-sm" onClick={onEditClick}>
+          <button
+            className="admin-btn btn-secondary btn-sm"
+            onClick={onEditClick}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"

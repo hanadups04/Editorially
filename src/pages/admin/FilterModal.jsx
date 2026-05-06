@@ -27,17 +27,17 @@ const FilterModal = ({ isOpen, onClose, onApply, currentFilters }) => {
   };
 
   const handleOverlayClick = (e) => {
-    if (e.target.className === "modal-overlay") {
+    if (e.target.className === "admin-overlay") {
       onClose();
     }
   };
 
   return (
-    <div className="modal-overlay" onClick={handleOverlayClick}>
-      <div className="modal filter-modal">
-        <div className="modal-header">
+    <div className="admin-overlay" onClick={handleOverlayClick}>
+      <div className="admin-modal filter-modal">
+        <div className="admin-header">
           <h2>Filter Projects</h2>
-          <button className="close-button" onClick={onClose}>
+          <button className="admin-close" onClick={onClose}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -53,7 +53,7 @@ const FilterModal = ({ isOpen, onClose, onApply, currentFilters }) => {
           </button>
         </div>
 
-        <div className="modal-body">
+        <div className="admin-body">
           <div className="filter-section">
             <label className="filter-label">Status</label>
             <div className="filter-options">
@@ -177,11 +177,11 @@ const FilterModal = ({ isOpen, onClose, onApply, currentFilters }) => {
           </div>
         </div>
 
-        <div className="modal-footer">
-          <button className="btn btn-secondary" onClick={handleReset}>
+        <div className="admin-footer">
+          <button className="admin-btn btn-secondary" onClick={handleReset}>
             Reset
           </button>
-          <button className="btn btn-primary" onClick={handleApply}>
+          <button className="admin-btn btn-primary" onClick={handleApply}>
             Apply Filters
           </button>
         </div>

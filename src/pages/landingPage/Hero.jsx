@@ -24,19 +24,24 @@ const Hero = () => {
             storytelling.
           </p>
           <div className="hero-buttons">
-            <div onClick={() => {
-              navigate("/Readers");
-            }}>
-                <Button className="btn btn-primary">
-                  Start Reading
+            <div
+              onClick={() => {
+                navigate("/Readers");
+              }}
+            >
+              <Button className="admin-btn btn-primary">
+                Start Reading
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
-            <div onClick={() => {
-              navigate("/login");
-            }}>
-            <Button className="btn btn-secondary" >Log In as Member</Button>
-
+            <div
+              onClick={() => {
+                navigate("/login");
+              }}
+            >
+              <Button className="admin-btn btn-secondary">
+                Log In as Member
+              </Button>
             </div>
           </div>
         </div>

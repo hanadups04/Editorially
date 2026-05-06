@@ -19,9 +19,9 @@ const ConfirmationModal = ({
   };
 
   return (
-    <div className="modal-overlay confirmation-overlay" onClick={onClose}>
+    <div className="admin-overlay confirmation-overlay" onClick={onClose}>
       <div
-        className="modal confirmation-modal"
+        className="admin-modal confirmation-modal"
         onClick={(e) => e.stopPropagation()}
       >
         <div className={`confirmation-icon ${variant}`}>
@@ -73,7 +73,7 @@ const ConfirmationModal = ({
         <p className="confirmation-message">{message}</p>
 
         <div className="confirmation-actions">
-          <button className="btn btn-secondary" onClick={onClose}>
+          <button className="admin-btn btn-secondary" onClick={onClose}>
             {cancelText}
           </button>
           <button

@@ -34,14 +34,14 @@ const RequestChangesModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="admin-overlay" onClick={onClose}>
       <div
-        className="modal request-changes-modal"
+        className="admin-modal request-changes-modal"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="modal-header">
-          <h2 className="modal-title">Request Changes</h2>
-          <button className="modal-close" onClick={onClose}>
+        <div className="admin-header">
+          <h2 className="admin-title">Request Changes</h2>
+          <button className="admin-close" onClick={onClose}>
             <svg
               width="20"
               height="20"
@@ -57,7 +57,7 @@ const RequestChangesModal = ({
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="modal-body">
+          <div className="admin-body">
             {content && (
               <div className="request-article-info">
                 <span className="info-label">Article:</span>
@@ -98,15 +98,15 @@ const RequestChangesModal = ({
             </div>
           </div>
 
-          <div className="modal-footer">
+          <div className="admin-footer">
             <button
               type="button"
-              className="btn btn-secondary"
+              className="admin-btn btn-secondary"
               onClick={onClose}
             >
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="admin-btn btn-primary">
               Submit Request
             </button>
           </div>

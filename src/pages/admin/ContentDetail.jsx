@@ -185,7 +185,7 @@ const ContentDetail = () => {
           >
             {userRole < 3 ? (
               <button
-                className="btn btn-primary"
+                className="admin-btn btn-primary"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -197,7 +197,7 @@ const ContentDetail = () => {
               </button>
             ) : (
               <button
-                className="btn btn-primary"
+                className="admin-btn btn-primary"
                 onClick={() => setIsEditModalOpen(true)}
               >
                 <svg
@@ -244,14 +244,14 @@ const ContentDetail = () => {
             </button>
             {content.visible ? (
               <button
-                className="btn btn-delete"
+                className="admin-btn btn-delete"
                 onClick={(e) => setDeleteConfirmOpen(true)}
               >
                 Hide Article
               </button>
             ) : (
               <button
-                className="btn btn-primary"
+                className="admin-btn btn-primary"
                 onClick={(e) => setShowConfirmOpen(true)}
               >
                 Show Article
@@ -290,12 +290,8 @@ const ContentDetail = () => {
                   .join("")}
               </div>
               <div className="author-info">
-                <span className="author-name">
-                  {content.author_content}
-                </span>
-                <span className="author-role">
-                 Writer
-                </span>
+                <span className="author-name">{content.author_content}</span>
+                <span className="author-role">Writer</span>
               </div>
               <div className="author-avatar">
                 {content.author_content
@@ -304,12 +300,8 @@ const ContentDetail = () => {
                   .join("")}
               </div>
               <div className="author-info">
-                <span className="author-name">
-                  {content.author_image}
-                </span>
-                <span className="author-role">
-                 Photographer
-                </span>
+                <span className="author-name">{content.author_image}</span>
+                <span className="author-role">Photographer</span>
               </div>
             </div>
 
