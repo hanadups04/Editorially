@@ -1,0 +1,44 @@
+/* ===========================
+   Index Page CSS3 Styles
+   =========================== */
+
+.index-page {
+  min-height: 100vh;
+  background: hsl(var(--background));
+}
+
+.index-page__spacer {
+  height: 88px;
+}
+
+@media (min-width: 1024px) {
+  .index-page__spacer {
+    height: 104px;
+  }
+}
+
+.index-page__scroll-trigger {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.index-page__spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: hsl(var(--muted-foreground));
+  animation: spin 1s linear infinite;
+}
+
+.index-page__end-text {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  font-family: var(--font-body);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

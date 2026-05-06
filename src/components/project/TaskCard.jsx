@@ -82,7 +82,7 @@ const TaskCard = ({
     } else {
       // Navigate to document page with task info
       navigate(
-        `/document?taskId=${subtask.subtask_id}&role=${encodeURIComponent(type)}`,
+        `/document?taskId=${subtask.subtask_id}&role=${encodeURIComponent(task)}`,
       );
     }
   };

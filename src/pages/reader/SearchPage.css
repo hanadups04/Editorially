@@ -1,0 +1,116 @@
+/* ===========================
+   SearchPage CSS3 Styles
+   =========================== */
+
+.search-page {
+  min-height: 100vh;
+  background: hsl(var(--background));
+}
+
+.search-page__container {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 3rem;
+}
+
+.search-page__header {
+  margin-bottom: 3rem;
+}
+
+.search-page__title {
+  font-family: var(--font-heading);
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .search-page__title {
+    font-size: 3rem;
+  }
+}
+
+.search-page__input-wrapper {
+  position: relative;
+}
+
+.search-page__input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: hsl(var(--muted-foreground));
+}
+
+.search-page__input {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  font-size: 1.125rem;
+  font-family: var(--font-body);
+  background: hsla(var(--secondary), 0.5);
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.75rem;
+  color: hsl(var(--foreground));
+  outline: none;
+  transition: all 0.2s;
+}
+
+.search-page__input::placeholder {
+  color: hsla(var(--muted-foreground), 0.5);
+}
+
+.search-page__input:focus {
+  border-color: hsl(var(--accent));
+  box-shadow: 0 0 0 3px hsla(var(--accent), 0.3);
+}
+
+.search-page__empty {
+  text-align: center;
+  padding: 5rem 0;
+}
+
+.search-page__empty-icon {
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 1.5rem;
+  border-radius: 50%;
+  background: hsl(var(--secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-page__empty-text {
+  color: hsl(var(--muted-foreground));
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+}
+
+.search-page__no-results h2 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  color: hsl(var(--foreground));
+  margin-bottom: 0.5rem;
+}
+
+.search-page__no-results p {
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  font-family: var(--font-body);
+}
+
+.search-page__results-count {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1.5rem;
+}
+
+.search-page__scroll-trigger {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}

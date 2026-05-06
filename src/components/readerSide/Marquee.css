@@ -1,0 +1,62 @@
+/* ===========================
+   Marquee CSS3 Styles
+   =========================== */
+
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  border-bottom: 1px solid hsl(var(--border)) !important;
+  background: hsl(var(--secondary)) !important;
+}
+
+.marquee__track {
+  display: flex;
+  white-space: nowrap;
+  padding: 0.75rem 0;
+  animation: marqueeScroll 30s linear infinite;
+}
+
+.marquee--paused .marquee__track {
+  animation-play-state: paused;
+}
+
+.marquee__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 2rem;
+  font-size: 0.875rem;
+  font-family: var(--font-body);
+  flex-shrink: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.marquee__dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: hsl(var(--accent));
+  flex-shrink: 0;
+}
+
+.marquee__title {
+  color: hsl(var(--muted-foreground));
+  transition: color 0.2s;
+}
+
+.marquee__item:hover .marquee__title {
+  color: hsl(var(--foreground));
+}
+
+.marquee__section {
+  font-size: 0.75rem;
+  color: hsla(var(--muted-foreground), 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+@keyframes marqueeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
