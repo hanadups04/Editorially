@@ -48,7 +48,7 @@ export default function Pwa() {
     window.addEventListener("beforeinstallprompt", handler);
 
     const fallbackTimer = setTimeout(() => {
-      if (!deferredPrompt) setInstallable(true);
+      if (!InstallPrompt) setInstallable(true);
     }, 3000);
 
     return () => {
@@ -58,7 +58,7 @@ export default function Pwa() {
   }, [InstallPrompt]);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
+    if (!InstallPrompt) return;
     InstallPrompt.prompt();
     const { outcome } = await InstallPrompt.userChoice;
     // Hide banner after user decides
