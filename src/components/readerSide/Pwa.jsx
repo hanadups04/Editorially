@@ -82,8 +82,8 @@ export default function Pwa() {
           <div className="Pwa-Cont">
             <img src={NuntiumLogo} className="Pwa-Logo" />
             <div className="Pwa-ContText">
-              <p>Install it in your app</p>
-              <p>{PromtInstruction}</p>
+              <strong>Install it in your app</strong>
+              <span>{PromtInstruction}</span>
             </div>
           </div>
           {ShowBtns && (
