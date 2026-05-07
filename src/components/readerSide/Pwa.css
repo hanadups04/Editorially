@@ -4,7 +4,7 @@
   bottom: 0;
   width: 100%;
   z-index: 2000;
-  background: var(--background);
+  background-color: var(--background);
   color: var(--text-primary);
   box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25);
   padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
@@ -22,8 +22,9 @@
 
 .Pwa-Child .Pwa-Cont{
   display: flex;
+  flex-direction: row;
+  row-gap: 10px;
   align-items: center;
-  gap: 2px;
 }
 
 .Pwa-Cont .Pwa-Logo{
@@ -41,15 +42,15 @@
 .Pwa-Child .Pwa-BtnCont{
   display: flex;
   align-items: center;
-  gap: 8px;
+  row-gap: 8px !important;
 }
 
 .Pwa-BtnCont .PwaBtn{
   appearance: none;
   border: 1px solid transparent;
   border-radius: 8px;
-  padding: 8px 14px;
-  font-size: 14px;
+  padding: 10px 14px;
+  font-size: 16px;
   line-height: 1;
   cursor: pointer;
   transition: transform 0.05s ease, opacity 0.2s ease, background 0.2s ease;
