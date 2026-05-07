@@ -85,7 +85,7 @@ export default function Pwa() {
               <p>{PromtInstruction}</p>
             </div>
           </div>
-          {showButtons && (
+          {ShowBtns && (
             <div className="Pwa-BtnCont">
               <button
                 className="PwaBtn Pwa-InstallBtn"
