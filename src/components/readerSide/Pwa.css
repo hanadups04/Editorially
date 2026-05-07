@@ -1,0 +1,114 @@
+.Pwa-Parent{
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 2000;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25);
+  padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+}
+
+.Pwa-Parent .Pwa-Child{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.Pwa-Child .Pwa-Cont{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.Pwa-Cont .Pwa-Logo{
+  width: 2rem;
+  height: 2rem;
+  border-radius: 30%;
+}
+
+.Pwa-Child .Pwa-ContText{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.Pwa-Child .Pwa-BtnCont{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.Pwa-BtnCont .PwaBtn{
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.05s ease, opacity 0.2s ease, background 0.2s ease;
+}
+
+.Pwa-BtnCont .Pwa-InstallBtn{
+  color: hsl(var(--accent));
+  background: hsl(var(--accent) / 0.2);
+  border-color: hsl(var(--accent));
+}
+
+.Pwa-BtnCont .Pwa-InstallBtn:hover{
+  filter: brightness(1.05);
+}
+
+.Pwa-BtnCont .Pwa-DismissBtn{
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--secondary));
+  border-color: 1px solid hsl(var(--border));
+}
+
+.Pwa-BtnCont .Pwa-DismissBtn:hover{
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.PWA-Close {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 6px 8px;
+  opacity: 0.8;
+}
+
+.PWA-Close:hover {
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .Pwa-Child {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .Pwa-BtnCont {
+    justify-content: stretch;
+  }
+  .PwaBtn {
+    width: 100%;
+  }
+}
+
+
+
+
+
+

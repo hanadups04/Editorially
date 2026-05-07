@@ -45,7 +45,7 @@ export function FeaturedSectionCSS3({ articles }) {
       </div>
 
       <div className="featured__grid">
-        <Link className="featured__hero">
+        <Link to={`/article/${hero.article_id}`} className="featured__hero">
           {hero.images ? (
             <img
               src={hero.images}
@@ -88,7 +88,7 @@ export function FeaturedSectionCSS3({ articles }) {
             return (
               <Link
                 key={article.article_id}
-                // to={`/article/${article.slug}`}
+                to={`/article/${article.article_id}`}
                 className="featured__secondary-item"
               >
                 <div className="featured__secondary-thumb">
