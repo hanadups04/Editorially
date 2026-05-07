@@ -126,7 +126,7 @@ export default function AboutPageCSS3JSX() {
       <AnimatedSection>
         <section className="about-page__section">
           <div className="about-page__team-header">
-            <span className="about-page__hero-label">The Team</span>
+            <span className="about-page__hero-label">The Team members</span>
             <h2 className="about-page__story-title">
               Meet Our Editorial Board
             </h2>

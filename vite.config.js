@@ -12,4 +12,7 @@ export default defineConfig({
       }
     })
   ],
+  build: {
+    outDir: "build", // This line tells Vite to output to the 'build' directory.
+  },
 })
