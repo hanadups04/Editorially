@@ -340,7 +340,7 @@ body {
   border-color: hsl(var(--border));
 } */
 
-/* body {
+body {
   margin: 0;
   background-color: hsl(var(--background)) !important;
   color: hsl(var(--foreground)) !important;
@@ -348,7 +348,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-family: var(--font-body);
   caret-color: hsl(var(--foreground)) !important;
-} */
+}
 
 /* Shared Button Styles */
 .admin-btn {
