@@ -37,12 +37,12 @@ export async function createArticle(data) {
     content: data.content,
     images: data.images,
     is_featured: false,
-    author_content: data.author_content,
-    author_image: data.author_image,
-    section_id: data.section_id
+    author_id2: data.author_id2,
+    author_id1: data.author_id1,
+    section_id: data.section_id,
   });
 
-  if(error) {
+  if (error) {
     console.log("error moy ay: ", error);
   }
 }
