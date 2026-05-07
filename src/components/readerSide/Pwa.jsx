@@ -48,12 +48,12 @@ export default function Pwa() {
 
     window.addEventListener("beforeinstallprompt", handler);
 
-    // const fallbackTimer = setTimeout(() => {
-    //   if (!InstallPrompt) setInstallable(true);
-    // }, 3000);
+    const fallbackTimer = setTimeout(() => {
+      if (!InstallPrompt) setInstallable(true);
+    }, 3000);
 
     return () => {
-      // clearTimeout(fallbackTimer);
+      clearTimeout(fallbackTimer);
       window.removeEventListener("beforeinstallprompt", handler);
     };
   }, [InstallPrompt]);
@@ -87,7 +87,7 @@ export default function Pwa() {
               <span>{PromtInstruction}</span>
             </div>
           </div>
-          {InstallPrompt && (
+          {ShowBtns && (
             <div className="Pwa-BtnCont">
               <button
                 className="PwaBtn Pwa-InstallBtn"
