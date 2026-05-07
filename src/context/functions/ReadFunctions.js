@@ -214,15 +214,14 @@ export async function getRecentArticles() {
   return data;
 }
 
-export async function fetchAllArticles() {
-  const { data, error } = await supabase.from("articles_tbl")
-    .select(`*, sections_tbl(section_name), 
-    author1:users_tbl!author_id1(username), 
-    author2:users_tbl!authoe_id2(username)`);
 
-  if (error) return error;
-  console.log(data);
-  return data;
+export async function getAllArticles() {
+  const {data, error} = await supabase
+  .rpc('all_articles');
+  
+  if(error) return error;
+    console.log(data);
+    return data
 }
 
 export async function fetchSingleArticle(articleId) {

@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useDarkMode } from "../../context/useDarkMode";
 import { useState } from "react";
 import { Search, Sun, Moon, Menu, X } from "lucide-react";
+import NuntiumLogo from "../../assets/images/NuntiumLogo.png";
 import "./Navbar.css";
 
 const navLinks = [
@@ -37,9 +38,10 @@ export function NavbarCSS3() {
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
 
-          <Link to="/" className="navbar__logo">
+          <Link to="/readers" className="navbar__logo">
             <div className="navbar__logo-icon">
-              <span className="navbar__logo-text">NU</span>
+              {/* <span className="navbar__logo-text">NU</span> */}
+              <img src={NuntiumLogo} className="navbar__logo-img" />
             </div>
             <span className="navbar__title">The Nuntium</span>
           </Link>

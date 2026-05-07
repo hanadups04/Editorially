@@ -5,6 +5,7 @@ import { NavbarCSS3 } from "../../components/readerSide/Navbar";
 import { FooterCSS3 } from "../../components/readerSide/Footer";
 import { useProjectContext } from "../../context/Context";
 import { BookOpen, Eye } from "lucide-react";
+import Nuntium from "../../assets/images/Nuntium.png";
 import "./AboutPage.css";
 
 const teamMembers = [
@@ -79,6 +80,7 @@ export default function AboutPageCSS3JSX() {
             <div className="about-page__story-visual">
               <div className="about-page__story-placeholder">
                 <div className="about-page__story-placeholder-inner">
+                  {/* <img src={Nuntium} /> */}
                   <div className="about-page__story-placeholder-circle">
                     <span className="about-page__story-placeholder-letter">
                       N

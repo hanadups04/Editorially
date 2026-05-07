@@ -7,6 +7,7 @@ import { FooterCSS3 } from "../../components/readerSide/Footer";
 import { ArticleCardCSS3 } from "../../components/readerSide/ArticleCard";
 import { searchArticles } from "../../context/functions/db_queries";
 import { Search as SearchIcon, Loader2 } from "lucide-react";
+import * as ReadFunctions from "../../context/functions/ReadFunctions";
 import "./SearchPage.css";
 
 export default function SearchPageCSS3JSX() {
@@ -19,25 +20,56 @@ export default function SearchPageCSS3JSX() {
   const debounceRef = useRef();
   const inputRef = useRef(null);
   const observerRef = useRef(null);
+  const [allArticles, setAllArticles] = useState([]);
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
-  const doSearch = useCallback(async (q, p = 0) => {
-    if (!q.trim()) {
-      setResults([]);
-      setHasSearched(false);
-      return;
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchAllArticles() {
+      try {
+        const data = await ReadFunctions.getAllArticles();
+
+        if (isMounted) {
+          setAllArticles(data);
+          console.log("all articles", data);
+        }
+      } catch (error) {
+        console.log("error", error);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
     }
-    setIsLoading(true);
-    const res = await searchArticles(q, p, 15);
-    if (p === 0) setResults(res.data);
-    else setResults((prev) => [...prev, ...res.data]);
-    setHasMore(res.hasMore);
-    setHasSearched(true);
-    setIsLoading(false);
+
+    fetchAllArticles();
+    return () => {
+      isMounted = false;
+    };
   }, []);
+
+  const doSearch = useCallback(
+    async (q, p = 0) => {
+      if (!q.trim()) {
+        setResults([]);
+        setHasSearched(false);
+        return;
+      }
+      setIsLoading(true);
+      const res = await searchArticles(allArticles, q, p, 15);
+      if (p === 0) setResults(res.data);
+      else setResults((prev) => [...prev, ...res.data]);
+      console.log("res", res.data);
+      setHasMore(res.hasMore);
+      setHasSearched(true);
+      setIsLoading(false);
+    },
+    [allArticles],
+  );
 
   const handleChange = (e) => {
     const val = e.target.value;
@@ -113,7 +145,7 @@ export default function SearchPageCSS3JSX() {
             </p>
             {results.map((article) => (
               <ArticleCardCSS3
-                key={article.id}
+                key={article.article_id}
                 article={article}
                 variant="horizontal"
               />
