@@ -4,8 +4,8 @@
   bottom: 0;
   width: 100%;
   z-index: 2000;
-  background-color: hsl(var(--bg-tertiary));
-  color: hsl(var(--text-primary));
+  background: var(--background);
+  color: var(--text-primary);
   box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25);
   padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
 }
@@ -23,7 +23,7 @@
 .Pwa-Child .Pwa-Cont{
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 2px;
 }
 
 .Pwa-Cont .Pwa-Logo{
@@ -35,13 +35,13 @@
 .Pwa-Child .Pwa-ContText{
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 2px;
 }
 
 .Pwa-Child .Pwa-BtnCont{
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
 }
 
 .Pwa-BtnCont .PwaBtn{
@@ -56,8 +56,8 @@
 }
 
 .Pwa-BtnCont .Pwa-InstallBtn{
-  color: hsl(var(--accent));
-  background: hsl(var(--accent) / 0.2);
+  color: hsl(var(text-primary));
+  background: hsl(var(--accent));
   border-color: hsl(var(--accent));
 }
 
