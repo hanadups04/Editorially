@@ -103,7 +103,7 @@ export function ArticleCardCSS3({ article, variant = "default" }) {
           ) : (
             <div className="article-card__placeholder">
               <span className="article-card__placeholder-letter">
-                {article.section_name.toUpperCase()}
+                {article.section_name[0].toUpperCase()}
               </span>
             </div>
           )}

@@ -29,13 +29,12 @@ export async function fetchArticlesBySection(section, page = 0, limit = 15) {
 }
 
 // Search articles
-export async function searchArticles(query, page = 0, limit = 15) {
+export async function searchArticles(dbArticles, query, page = 0, limit = 15) {
   await new Promise(r => setTimeout(r, 300));
   const q = query.toLowerCase();
-  const filtered = articles.filter(a =>
-    a.title.toLowerCase().includes(q) ||
-    a.content.toLowerCase().includes(q) ||
-    a.authors.some(author => author.toLowerCase().includes(q))
+  const filtered = dbArticles.filter(a =>
+    a.headline.toLowerCase().includes(q) ||
+    a.content.toLowerCase().includes(q) 
   );
   const start = page * limit;
   const data = filtered.slice(start, start + limit);
