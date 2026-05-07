@@ -32,6 +32,7 @@ import ArticlePage from "./pages/reader/ArticlePage.jsx";
 import SearchPage from "./pages/reader/SearchPage.jsx";
 import AboutPage from "./pages/reader/AboutPage.jsx";
 import OurProcessPage from "./pages/reader/OurProcessPage.jsx";
+import { useRegisterSW } from "virtual:pwa-register/react";
 
 const ProtectedRoute = ({ requiredAccessLvl, children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -82,6 +83,8 @@ const ProtectedRoute = ({ requiredAccessLvl, children }) => {
 };
 
 function App() {
+  useRegisterSW();
+
   return (
     <>
       <Router>
