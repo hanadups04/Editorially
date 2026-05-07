@@ -30,10 +30,14 @@ export default function Pwa() {
       setPromptInstruction(
         "Tap the Share icon → ‘Add to Home Screen’ to install this app.",
       );
+      setInstallable(true);
+      setShowBtns(false);
     } else if (isFirefox) {
       setPromptInstruction(
         "Use the browser menu → ‘Install’ or ‘Add to Home Screen’.",
       );
+      setInstallable(true);
+      setShowBtns(false);
     } else if (isChrome) {
       setPromptInstruction(
         "Use our app so you don't have to miss the latest news",
