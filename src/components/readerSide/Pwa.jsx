@@ -72,7 +72,7 @@ export default function Pwa() {
     setDismissed(true);
   };
 
-  if (!Installable || Dismissed) return null;
+  if (!Installable || dismissed) return null;
 
   return (
     <>
