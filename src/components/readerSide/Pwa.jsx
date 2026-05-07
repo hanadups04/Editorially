@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import NuntiumLogo from "../../assets/images/NuntiumLogo.png";
+import "./Pwa.css";
 
 export default function Pwa() {
   const [InstallPrompt, setInstallPrompt] = useState(null);
