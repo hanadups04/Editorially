@@ -73,8 +73,8 @@ const ConstructArticle = () => {
         headline,
         content,
         images: thumbnail,
-        author_content: author1,
-        author_image: author2,
+        author_id2: author1,
+        author_id1: author2,
         section_id: Number(sectionId),
       };
 
