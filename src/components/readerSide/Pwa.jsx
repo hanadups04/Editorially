@@ -38,6 +38,8 @@ export default function Pwa() {
       );
       setInstallable(true);
       setShowBtns(false);
+    } else if (isOperaGX) {
+      setInstallable(false);
     } else if (isChrome) {
       setPromptInstruction(
         "Use our app so you don't have to miss the latest news",
