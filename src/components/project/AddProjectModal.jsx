@@ -90,8 +90,18 @@ export default function CreateParentTaskModal({
       return;
     }
 
+    const data = {
+      owner_id: userData.user.id,
+      step_id: 1,
+      section_id: Number(formData.section_id),
+      title: formData.title,
+      deadline: selectedDateTime?.toISOString(),
+      details: formData.details,
+    };
+
+    // console.log(data);
+
     const { error } = await supabase.from("projects_tbl").insert({
-      project_id: "project-0001",
       owner_id: userData.user.id,
       step_id: 1,
       section_id: Number(formData.section_id),
@@ -188,6 +198,7 @@ export default function CreateParentTaskModal({
                 value={formData.section_id}
                 onChange={handleChange}
               >
+                <option>Select A Section</option>
                 {sections.map((section) => (
                   <option key={section.section_id} value={section.section_id}>
                     {section.section_name}
@@ -210,17 +221,6 @@ export default function CreateParentTaskModal({
               className="admin-btn btn-primary"
             >
               Create Project
-            </button>
-
-            <button
-              type="submit"
-              onClick={async () => {
-                const userdata = await isAuthenticated();
-                console.log("userdata is:", userdata);
-              }}
-              className="admin-btn btn-primary"
-            >
-              Check
             </button>
           </div>
         </div>

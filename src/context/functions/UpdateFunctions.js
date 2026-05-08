@@ -3,7 +3,7 @@ import { supabase } from "../../supabaseClient";
 export async function approveProject(project_id) {
   const { error } = await supabase
     .from("projects_tbl")
-    .update({ step_id: 3, status: "Approved - Pending Assignment" })
+    .update({ step_id: 3 })
     .eq("project_id", project_id);
 
   if (error) {
@@ -16,7 +16,7 @@ export async function approveProject(project_id) {
 export async function rejectProject(project_id) {
   const { error } = await supabase
     .from("projects_tbl")
-    .update({ status: "Rejected" })
+    .update({ step_id: 0 })
     .eq("project_id", project_id);
 
   if (error) {
@@ -40,19 +40,18 @@ export async function updateProject(project_id, formData) {
   return data;
 }
 
-export async function updateTask(subtask_id, formData){
+export async function updateTask(subtask_id, formData) {
   console.log("assyy", subtask_id, formData);
-  const { data, error} = await supabase
+  const { data, error } = await supabase
     .from("project_subtask_tbl")
     .update({
-      subtask_type: formData.subtask_type, 
-      subtask_title: formData.subtask_title, 
-      subtask_deadline: formData.subtask_deadline, 
-      subtask_details: formData.subtask_details, 
-      assignee_id: formData.assignee_id, 
-      })
-    .eq("subtask_id", subtask_id)
-    
+      subtask_type: formData.subtask_type,
+      subtask_title: formData.subtask_title,
+      subtask_deadline: formData.subtask_deadline,
+      subtask_details: formData.subtask_details,
+      assignee_id: formData.assignee_id,
+    })
+    .eq("subtask_id", subtask_id);
 
   if (error) throw error;
   return data;

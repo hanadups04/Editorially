@@ -43,7 +43,8 @@ export async function fetchAllRoles() {
 export async function fetchAllProjects() {
   const { data, error } = await supabase
     .from("projects_tbl")
-    .select("*, project_steps_tbl ( step_name )");
+    .select("*, project_steps_tbl ( step_name )")
+    .order("created_at", { ascending: false });
 
   if (error) throw error;
   return data;
@@ -181,7 +182,7 @@ export async function getProjectByStep() {
 export async function avengersAssemble(ironman_id) {
   const { data, error } = await supabase
     .from("contents_tbl")
-    .select("*, project_subtask_tbl ( users_tbl ( username ) )")
+    .select("*, project_subtask_tbl ( users_tbl ( username, uid ) )")
     .eq("project_id", ironman_id);
 
   if (error) {
@@ -214,14 +215,12 @@ export async function getRecentArticles() {
   return data;
 }
 
-
 export async function getAllArticles() {
-  const {data, error} = await supabase
-  .rpc('all_articles');
-  
-  if(error) return error;
-    console.log(data);
-    return data
+  const { data, error } = await supabase.rpc("all_articles");
+
+  if (error) return error;
+  console.log(data);
+  return data;
 }
 
 export async function fetchSingleArticle(articleId) {

@@ -154,7 +154,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
               key={`inline-${type}`}
               // className="mb-3"
             >
-              <p>Project Submission Type</p>
+              <p>Task Type</p>
               <div className="TaskSubmissionType">
                 <Form.Check
                   className="formType"

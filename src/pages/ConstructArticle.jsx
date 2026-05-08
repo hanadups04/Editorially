@@ -41,8 +41,8 @@ const ConstructArticle = () => {
         setHeadline(headline.content);
         setContent(content.content);
         setThumbnail(image.content);
-        setAuthor1(headline.project_subtask_tbl.users_tbl.username);
-        setAuthor2(image.project_subtask_tbl.users_tbl.username);
+        setAuthor1(headline.project_subtask_tbl.users_tbl.uid);
+        setAuthor2(image.project_subtask_tbl.users_tbl.uid);
 
         console.log(
           "hehe: ",
@@ -80,7 +80,7 @@ const ConstructArticle = () => {
 
       console.log("article data: ", data);
 
-      await createArticle(data);
+      await createArticle(data, projectId);
     } catch (error) {
       console.error("error mo'y: ", error);
     }

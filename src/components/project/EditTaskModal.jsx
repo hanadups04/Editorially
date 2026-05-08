@@ -155,14 +155,14 @@ const EditTaskModal = ({ isOpen, onClose, subtask, onSubmit }) => {
         <div className="admin-body">
           <div className="form-row">
             <div className="form-group">
-              <label className="form-label">Project Submission Type</label>
+              <label className="form-label">Task Type</label>
               {["radio"].map((type) => (
                 <div
                   className="TaskSubmissionTypeCont"
                   key={`inline-${type}`}
                   // className="mb-3"
                 >
-                  <p>Project Submission Type</p>
+                  <p>Task Type</p>
                   <div className="TaskSubmissionType">
                     <Form.Check
                       className="formType"

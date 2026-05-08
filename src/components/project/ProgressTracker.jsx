@@ -10,7 +10,7 @@ const ProgressTracker = ({ currentStep, steps }) => {
   return (
     <div className="card progress-tracker">
       <div className="card-header">
-        <h2 className="card-title">Project Progress</h2>
+        <h2 className="card-title">Project Progress Legend</h2>
         <p className="card-subtitle">Track the workflow stages</p>
       </div>
       <div className="progress-steps">

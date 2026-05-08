@@ -9,7 +9,9 @@ const DocumentPage = () => {
   const [searchParams] = useSearchParams();
   const taskId = searchParams.get("taskId");
   const taskRole = searchParams.get("role") || "Writer";
-  const taskAssignee = searchParams.get("assignee") || "Unknown";
+  const project_id = searchParams.get("project_id");
+
+  // const taskAssignee = searchParams.get("assignee") || "Unknown";
 
   const [content, setContent] = useState("");
   const [headline, setHeadline] = useState("");
@@ -64,8 +66,8 @@ const DocumentPage = () => {
     e.preventDefault();
 
     const rows = [
-      { category: 1, content: headline },
-      { category: 2, content: content },
+      { category: 1, content: headline, project_id: project_id },
+      { category: 2, content: content, project_id: project_id },
     ];
 
     for (const row of rows) {
@@ -107,15 +109,15 @@ const DocumentPage = () => {
               Back to Project
             </button>
             <div className="document-info">
-              <h1 className="document-title">{taskRole} - Work Submission</h1>
-              <span className="document-meta">Assigned to: {taskAssignee}</span>
+              <h1 className="document-title"> Work Submission</h1>
+              {/* <span className="document-meta">Assigned to: {taskAssignee}</span> */}
             </div>
           </div>
           <div className="document-header-right">
             {lastSaved && (
               <span className="save-status">Last saved: {lastSaved}</span>
             )}
-            <button
+            {/* <button
               className="admin-btn btn-secondary"
               onClick={handleSave}
               disabled={isSaving}
@@ -134,7 +136,7 @@ const DocumentPage = () => {
                 <polyline points="7 3 7 8 15 8"></polyline>
               </svg>
               {isSaving ? "Saving..." : "Save Draft"}
-            </button>
+            </button> */}
             <button
               className="admin-btn btn-primary"
               type="submit"
@@ -156,8 +158,9 @@ const DocumentPage = () => {
             </button>
           </div>
         </div>
-        <div className="document-editor-container">
-          <textarea
+        <div className="document-editor-container1">
+          <input
+            type="text"
             name="headline"
             className="document-editor"
             placeholder="Add your headline here..."
@@ -175,7 +178,7 @@ const DocumentPage = () => {
           </div>
         </div>
 
-        <div className="document-editor-container">
+        <div className="document-editor-container2">
           {/* <div className="editor-toolbar">
             <div className="toolbar-group">
               <button className="toolbar-btn" title="Bold">

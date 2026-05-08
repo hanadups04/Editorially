@@ -66,13 +66,9 @@ const ProjectPage = () => {
   // Workflow steps
   const workflowSteps = [
     { step_id: "1", label: "Proposed" },
-    { step_id: "2", label: "Pending Approval" },
-    { step_id: "3", label: "Approved - Pending Assignment" },
-    { step_id: "4", label: "In Progress" },
-    { step_id: "5", label: "Submitted for Review" },
-    { step_id: "6", label: "Revisions Required" },
-    { step_id: "7", label: "Approved for Posting" },
-    { step_id: "8", label: "Published" },
+    { step_id: "2", label: "Approval" },
+    { step_id: "3", label: "In Progress" },
+    { step_id: "4", label: "Published" },
   ];
 
   const handleAddTask = (newTask) => {
@@ -150,23 +146,23 @@ const ProjectPage = () => {
         status={project.project_steps_tbl?.step_name}
         onEditClick={() => setIsEditProjectModalOpen(true)}
       />
-      {project.step_id == 1 ||
-        (project.step_id == 2 && (
-          <div>
-            <button
-              className="admin-btn btn-primary"
-              onClick={() => UpdateFunctions.approveProject(projectID)}
-            >
-              APPROVE
-            </button>
-            <button
-              className="admin-btn btn-primary"
-              onClick={() => UpdateFunctions.rejectProject(projectID)}
-            >
-              REJECT
-            </button>
-          </div>
-        ))}
+
+      {(project.step_id == "1" || project.step_id == "2") && (
+        <div>
+          <button
+            className="admin-btn btn-primary"
+            onClick={() => UpdateFunctions.approveProject(projectID)}
+          >
+            APPROVE
+          </button>
+          <button
+            className="admin-btn btn-primary"
+            onClick={() => UpdateFunctions.rejectProject(projectID)}
+          >
+            REJECT
+          </button>
+        </div>
+      )}
 
       <ProgressTracker currentStep="in-progress" steps={workflowSteps} />
 
@@ -219,24 +215,28 @@ const ProjectPage = () => {
       <div className="tasks-section">
         <div className="section-header">
           <h2 className="section-title">Team Tasks</h2>
-          <button
-            className="admin-btn btn-primary"
-            onClick={() => setIsAddTaskModalOpen(true)}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
+          {(project.step_id === "3" ||
+            project.step_id === "4" ||
+            project.step_id === "5") && (
+            <button
+              className="admin-btn btn-primary"
+              onClick={() => setIsAddTaskModalOpen(true)}
             >
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            Add Task
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add Task
+            </button>
+          )}
         </div>
 
         <div className="tasks-grid">
@@ -245,9 +245,13 @@ const ProjectPage = () => {
               key={subtask.subtask_id}
               subtask={subtask}
               onToggleComplete={handleToggleComplete}
-              onUploadClick={() => setIsUploadModalOpen(true)}
+              onUploadClick={(subtaskId) => {
+                setIsUploadModalOpen(true);
+                setTaskId(subtaskId);
+              }}
               onEditClick={handleEditTaskClick}
               task={subtask.subtask_type}
+              projectId={projectID}
             />
           ))}
         </div>
@@ -280,6 +284,7 @@ const ProjectPage = () => {
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
         taskId={taskId}
+        project_id={projectID}
       />
     </Layout>
   );
