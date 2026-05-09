@@ -32,13 +32,30 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background-color: rgb(247, 212, 148);
+  background-color: rgb(250, 234, 181);
   border-radius: 10px;
   margin-bottom: 30px;
+  gap: 10px;
+}
+
+.Project-ApproveRejectBtnsCont .Project-BtnsContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 20px;
+}
+
+.Project-ApproveRejectBtnsCont .Project-Buttons {
+  display: flex;
+  gap: 10px;
+  padding-right: 20px;
 }
 
 .Project-ApproveRejectBtnsCont .BtnsTitle {
+  font-size: 18px;
+  font-weight: 600;
   font-style: italic;
+  margin: 0;
 }
 
 .Project-ApproveRejectBtnsCont .Project-ApproveRejectBtns {

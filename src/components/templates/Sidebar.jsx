@@ -98,22 +98,22 @@ const Sidebar = ({ isCollapsed, isOpen }) => {
       );
     }
 
-    if(path === "/members") {
-      return(
+    if (path === "/members") {
+      return (
         location.pathname.startsWith("/members") ||
         location.pathname.startsWith("/members/:id")
-      )
+      );
     }
 
     return location.pathname === path;
   };
 
-    const handleLogout = async () => {
+  const handleLogout = async () => {
     try {
       await signOut();
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
-      console.error('Error logging out:', error);
+      console.error("Error logging out:", error);
     }
   };
 
@@ -122,7 +122,7 @@ const Sidebar = ({ isCollapsed, isOpen }) => {
       className={`sidebar ${isCollapsed ? "collapsed" : ""} ${isOpen ? "open" : ""}`}
     >
       <div className="sidebar-header">
-        {!isCollapsed && <h2>Navigation</h2>}
+        {!isCollapsed && <h2>The NUntium</h2>}
       </div>
       <nav className="sidebar-nav">
         {navItems.map((item) => (
@@ -139,7 +139,7 @@ const Sidebar = ({ isCollapsed, isOpen }) => {
         ))}
       </nav>
       <div className="sidebar-footer">
-        <button 
+        <button
           onClick={() => setConfirm(true)}
           className="nav-item logout-btn"
         >
@@ -155,9 +155,7 @@ const Sidebar = ({ isCollapsed, isOpen }) => {
             <polyline points="16 17 21 12 16 7"></polyline>
             <line x1="21" y1="12" x2="9" y2="12"></line>
           </svg>
-          {!isCollapsed && (
-            <span className="nav-item-text">Logout</span>
-          )}
+          {!isCollapsed && <span className="nav-item-text">Logout</span>}
         </button>
       </div>
 

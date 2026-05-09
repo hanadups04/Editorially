@@ -23,6 +23,15 @@ const TaskCard = ({
 
   console.log("jaisjaijsias", subtask);
 
+  const subtaskDeadline = new Date(subtask.subtask_deadline).toLocaleDateString(
+    "en-US",
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    },
+  );
+
   const getActionButton = (type) => {
     const actions = {
       1: {
@@ -110,9 +119,9 @@ const TaskCard = ({
       <div className="task-header">
         <span
           // className={`task-role ${subtask.role.toLowerCase()}`}
-          className="task-role"
+          className="task-role task-title"
         >
-          {subtask.users_tbl.roles_tbl.role_name}
+          {subtask.subtask_title}
         </span>
         {/* <span
           // className={`task-status ${subtask.status.toLowerCase().replace(" ", "-")}`}
@@ -148,7 +157,7 @@ const TaskCard = ({
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
-          <span>Due: {subtask.subtask_deadline}</span>
+          <span>Due: {subtaskDeadline}</span>
         </div>
         <div className="badge badge-primary">
           <svg

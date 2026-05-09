@@ -215,68 +215,78 @@ const TaskList = () => {
             </div>
           ) : (
             <>
-              {filteredProjects.map((project) => (
-                <div
-                  key={project.project_id}
-                  className="project-card"
-                  onClick={() => handleProjectClick(project.project_id)}
-                >
-                  <div className="project-card-header">
-                    <h3 className="project-title">{project.title}</h3>
-                    <span
-                      className={`task-status ${project.project_steps_tbl.step_name
-                        .toLowerCase()
-                        .replace(" ", "-")}`}
-                    >
-                      {project.project_steps_tbl.step_name}
-                    </span>
-                  </div>
-                  <div className="project-card-body">
-                    <div className="project-info-row">
-                      <div className="project-info-item">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        >
-                          <rect
-                            x="3"
-                            y="4"
-                            width="18"
-                            height="18"
-                            rx="2"
-                            ry="2"
-                          ></rect>
-                          <line x1="16" y1="2" x2="16" y2="6"></line>
-                          <line x1="8" y1="2" x2="8" y2="6"></line>
-                          <line x1="3" y1="10" x2="21" y2="10"></line>
-                        </svg>
-                        <span>{project.deadline}</span>
+              {filteredProjects.map((project) => {
+                const date = new Date(project.deadline).toLocaleDateString(
+                  "en-US",
+                  {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  },
+                );
+                return (
+                  <div
+                    key={project.project_id}
+                    className="project-card"
+                    onClick={() => handleProjectClick(project.project_id)}
+                  >
+                    <div className="project-card-header">
+                      <h3 className="project-title">{project.title}</h3>
+                      <span
+                        className={`task-status ${project.project_steps_tbl.step_name
+                          .toLowerCase()
+                          .replace(" ", "-")}`}
+                      >
+                        {project.project_steps_tbl.step_name}
+                      </span>
+                    </div>
+                    <div className="project-card-body">
+                      <div className="project-info-row">
+                        <div className="project-info-item">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                          >
+                            <rect
+                              x="3"
+                              y="4"
+                              width="18"
+                              height="18"
+                              rx="2"
+                              ry="2"
+                            ></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                          </svg>
+                          <span>{date}</span>
+                        </div>
+                      </div>
+                      <div className="project-info-row">
+                        <div className="project-info-item">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                          >
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                          </svg>
+                          <span>{project.section_id}</span>
+                        </div>
                       </div>
                     </div>
-                    <div className="project-info-row">
-                      <div className="project-info-item">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        >
-                          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                        <span>{project.section_id}</span>
-                      </div>
-                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
 
               {filteredProjects.length === 0 && (
                 <div className="empty-state">
