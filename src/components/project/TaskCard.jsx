@@ -8,6 +8,7 @@ const TaskCard = ({
   onUploadClick,
   onEditClick,
   task,
+  projectId,
 }) => {
   const navigate = useNavigate();
   const [isCompleted, setIsCompleted] = useState(
@@ -91,7 +92,7 @@ const TaskCard = ({
     } else {
       // Navigate to document page with task info
       navigate(
-        `/document?taskId=${subtask.subtask_id}&role=${encodeURIComponent(task)}`,
+        `/document?taskId=${subtask.subtask_id}&role=${encodeURIComponent(task)}&project_id=${projectId}`,
       );
     }
   };

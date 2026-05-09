@@ -31,8 +31,8 @@ export async function uploadThumbnail(file) {
   return publicUrlData.publicUrl;
 }
 
-export async function createArticle(data) {
-  const { error } = await supabase.from("articles_tbl").insert({
+export async function createArticle(data, project_id) {
+  const { error2 } = await supabase.from("articles_tbl").insert({
     headline: data.headline,
     content: data.content,
     images: data.images,
@@ -42,7 +42,18 @@ export async function createArticle(data) {
     section_id: data.section_id,
   });
 
-  if (error) {
-    console.log("error moy ay: ", error);
+  const { error1 } = await supabase
+    .from("projects_tbl")
+    .update({
+      step_id: 4,
+    })
+    .eq("project_id", project_id);
+
+  if (error1) {
+    console.log("error moy ay: ", error1);
+  }
+
+  if (error2) {
+    console.log("error moy ay: ", error2);
   }
 }

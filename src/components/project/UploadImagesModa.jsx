@@ -3,7 +3,7 @@ import { supabase } from "../../supabaseClient.js";
 import * as AddFunctions from "../../context/functions/AddFunctions.js";
 import "./UploadImagesModal.css";
 
-const UploadImagesModal = ({ isOpen, onClose, taskId }) => {
+const UploadImagesModal = ({ isOpen, onClose, taskId, project_id }) => {
   console.log("asa", taskId);
   const [selectedFiles, setSelectedFiles] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -52,7 +52,9 @@ const UploadImagesModal = ({ isOpen, onClose, taskId }) => {
       subtask_id: taskId,
       category: 3,
       content: uploadedUrls,
+      project_id: project_id,
     });
+
     console.log("data booger: ", payload);
   };
 
