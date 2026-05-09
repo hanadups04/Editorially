@@ -80,14 +80,14 @@
 }
 
 .chart-card {
-  padding: var(--spacing-lg);
+  /* padding: var(--spacing-lg); */
   background: var(--bg-secondary);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
 }
 
 .chart-container {
-  margin-top: var(--spacing-lg);
+  margin: var(--spacing-lg);
 }
 
 .activity-section {

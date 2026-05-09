@@ -2,6 +2,10 @@
   margin-bottom: var(--spacing-xl);
 }
 
+.card-header {
+  padding: var(--spacing-lg);
+}
+
 .card-header-top {
   display: flex;
   justify-content: space-between;
@@ -20,7 +24,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: var(--spacing-lg);
-  margin-top: var(--spacing-md);
+  /* margin-top: var(--spacing-md); */
+  padding: var(--spacing-lg);
 }
 
 .info-item {
