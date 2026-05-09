@@ -146,30 +146,30 @@ const ProjectPage = () => {
 
   return (
     <Layout>
-      {/* {project.step_id == 1 ||
-        (project.step_id == 2 && ( */}
-      <div className="Project-ApproveRejectBtnsCont">
-        <div className="Project-BtnsContent">
-          <p className="BtnsTitle">
-            Do you want to Approve or Reject this Project?
-          </p>
+      {(project.step_id == 1 || project.step_id == 2) && (
+        <div className="Project-ApproveRejectBtnsCont">
+          <div className="Project-BtnsContent">
+            <p className="BtnsTitle">
+              Do you want to Approve or Reject this Project?
+            </p>
+          </div>
+          <div className="Project-Buttons">
+            <button
+              className="admin-btn btn-success"
+              onClick={() => UpdateFunctions.approveProject(projectID)}
+            >
+              APPROVE
+            </button>
+            <button
+              className="admin-btn btn-delete"
+              onClick={() => UpdateFunctions.rejectProject(projectID)}
+            >
+              REJECT
+            </button>
+          </div>
         </div>
-        <div className="Project-Buttons">
-          <button
-            className="admin-btn btn-success"
-            onClick={() => UpdateFunctions.approveProject(projectID)}
-          >
-            APPROVE
-          </button>
-          <button
-            className="admin-btn btn-delete"
-            onClick={() => UpdateFunctions.rejectProject(projectID)}
-          >
-            REJECT
-          </button>
-        </div>
-      </div>
-      {/* ))} */}
+      )}
+
       <ProjectInfo
         // project={projectID}
         title={project.title}
@@ -180,7 +180,7 @@ const ProjectPage = () => {
         onEditClick={() => setIsEditProjectModalOpen(true)}
       />
 
-      {(project.step_id == "1" || project.step_id == "2") && (
+      {/* {(project.step_id == "1" || project.step_id == "2") && (
         <div>
           <button
             className="admin-btn btn-primary"
@@ -195,7 +195,7 @@ const ProjectPage = () => {
             REJECT
           </button>
         </div>
-      )}
+      )} */}
 
       <ProgressTracker currentStep="in-progress" steps={workflowSteps} />
 

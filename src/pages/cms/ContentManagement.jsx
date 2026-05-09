@@ -313,7 +313,7 @@ export default function ContentManagement() {
                               }
                             }}
                           >
-                            <span className="btn-icon">✏️</span>
+                            <span className="btn-icon">✏️ Edit Article</span>
                           </button>
                         )}
 
@@ -329,7 +329,7 @@ export default function ContentManagement() {
                             }}
                           >
                             {/* change to eye icon for show OR hide */}
-                            <span className="btn-icon">🙈</span>
+                            <span className="btn-icon">🙉</span>
                           </button>
                         ) : (
                           <button
@@ -343,7 +343,7 @@ export default function ContentManagement() {
                             }}
                           >
                             {/* change to eye icon for show OR hide */}
-                            <span className="btn-icon">🙉</span>
+                            <span className="btn-icon">🙈</span>
                           </button>
                         )}
                       </div>

@@ -133,8 +133,14 @@ export default function ArticlePageCSS3JSX() {
 
           <div
             className="article-page__content"
-            dangerouslySetInnerHTML={{ __html: article.content }}
-          />
+            // dangerouslySetInnerHTML={{ __html: article.content }}
+          >
+            {article.content.split("\n\n").map((paragraph, index) => (
+              <p key={index} style={{ fontSize: "18px" }}>
+                {paragraph}
+              </p>
+            ))}
+          </div>
         </article>
       )}
 

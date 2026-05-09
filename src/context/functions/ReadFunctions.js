@@ -85,7 +85,9 @@ export async function getPostedArticles() {
 export async function getSingleArticle(article_id) {
   const { data, error } = await supabase
     .from("articles_tbl")
-    .select("*, sections_tbl (section_name)")
+    .select(
+      "*, sections_tbl (section_name), author1:users_tbl!author_id1(username), author2:users_tbl!author_id2(username)",
+    )
     .eq("article_id", article_id)
     .maybeSingle();
 
