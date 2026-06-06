@@ -1,8 +1,36 @@
 import React, { useState, useEffect } from "react";
 import "./FilterModal.css";
+import { fetchStatus } from "../../context/functions/ReadFunctions";
 
 const FilterModal = ({ isOpen, onClose, onApply, currentFilters }) => {
   const [filters, setFilters] = useState(currentFilters);
+  const [status, setStatus] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchData() {
+      try {
+        const data = await fetchStatus();
+        if (isMounted) {
+          setStatus(data);
+          console.log("status data: ", data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     setFilters(currentFilters);
@@ -11,6 +39,7 @@ const FilterModal = ({ isOpen, onClose, onApply, currentFilters }) => {
   if (!isOpen) return null;
 
   const handleFilterChange = (filterType, value) => {
+    console.log("status shit: ", filterType, value);
     setFilters((prev) => ({
       ...prev,
       [filterType]: value,
@@ -22,7 +51,7 @@ const FilterModal = ({ isOpen, onClose, onApply, currentFilters }) => {
   };
 
   const handleReset = () => {
-    const resetFilters = { status: "all", deadline: "all" };
+    const resetFilters = { step_id: "all", deadline: "all" };
     setFilters(resetFilters);
   };
 
@@ -60,53 +89,30 @@ const FilterModal = ({ isOpen, onClose, onApply, currentFilters }) => {
               <label className="filter-option">
                 <input
                   type="radio"
-                  name="status"
+                  name="step_id"
                   value="all"
-                  checked={filters.status === "all"}
-                  onChange={(e) => handleFilterChange("status", e.target.value)}
+                  checked={filters.step_id === "all"}
+                  onChange={(e) =>
+                    handleFilterChange("step_id", e.target.value)
+                  }
                 />
                 <span>All Statuses</span>
               </label>
-              <label className="filter-option">
-                <input
-                  type="radio"
-                  name="status"
-                  value="Pending"
-                  checked={filters.status === "Pending"}
-                  onChange={(e) => handleFilterChange("status", e.target.value)}
-                />
-                <span>Pending</span>
-              </label>
-              <label className="filter-option">
-                <input
-                  type="radio"
-                  name="status"
-                  value="In Progress"
-                  checked={filters.status === "In Progress"}
-                  onChange={(e) => handleFilterChange("status", e.target.value)}
-                />
-                <span>In Progress</span>
-              </label>
-              <label className="filter-option">
-                <input
-                  type="radio"
-                  name="status"
-                  value="Review"
-                  checked={filters.status === "Review"}
-                  onChange={(e) => handleFilterChange("status", e.target.value)}
-                />
-                <span>Review</span>
-              </label>
-              <label className="filter-option">
-                <input
-                  type="radio"
-                  name="status"
-                  value="Completed"
-                  checked={filters.status === "Completed"}
-                  onChange={(e) => handleFilterChange("status", e.target.value)}
-                />
-                <span>Completed</span>
-              </label>
+              {status.map((i) => (
+                <label className="filter-option">
+                  <input
+                    type="radio"
+                    name="step_id"
+                    value={i.step_id}
+                    checked={filters.step_id === i.step_id}
+                    onChange={(e) =>
+                      handleFilterChange("step_id", e.target.value)
+                    }
+                    key={i.step_id}
+                  />
+                  <span>{i.step_name}</span>
+                </label>
+              ))}
             </div>
           </div>
 
