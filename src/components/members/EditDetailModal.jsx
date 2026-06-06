@@ -107,9 +107,9 @@ export const EditMemberModal = ({
     <div className="edit-modal-overlay" onClick={() => onOpenChange(false)}>
       <div className="edit-modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="edit-modal-header">
-          <h2>Edit Member Information</h2>
+          <h2>Edit Information</h2>
           <p className="edit-modal-description">
-            Update member details. Email cannot be changed.
+            Update details. Email cannot be changed.
           </p>
         </div>
 

@@ -76,8 +76,9 @@ const MembersList = () => {
       member.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.email.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesSection =
-      !filters.section || member.section === filters.section;
-    const matchesRole = !filters.role || member.role === filters.role;
+      !filters.section || member.sections_tbl?.section_name === filters.section;
+    const matchesRole =
+      !filters.role || member.roles_tbl?.role_name === filters.role;
     return matchesSearch && matchesSection && matchesRole;
   });
 

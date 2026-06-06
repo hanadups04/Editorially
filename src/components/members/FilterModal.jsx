@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./FilterModal.css";
+import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
 
-const sections = ["Technology", "Design", "Marketing", "Sales", "Operations"];
-const roles = ["admin", "editor", "member"];
+// const sections = ["Technology", "Design", "Marketing", "Sales", "Operations"];
+// const roles = ["admin", "editor", "member"];
 
 export const FilterModal = ({
   open,
@@ -11,6 +12,40 @@ export const FilterModal = ({
   onApplyFilters,
 }) => {
   const [localFilters, setLocalFilters] = useState(filters);
+
+  const [sections, setSections] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [loading, setIsLoading] = useState(true);
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchData() {
+      try {
+        const [sections, roles] = await Promise.all([
+          ReadFunctions.fetchAllSections(),
+          ReadFunctions.fetchAllRoles(),
+        ]);
+
+        if (isMounted) {
+          console.log("sections", sections, roles);
+          setSections(sections);
+          setRoles(roles);
+        }
+      } catch (error) {
+        console.log("error", error);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   if (!open) return null;
 
@@ -47,10 +82,12 @@ export const FilterModal = ({
               }
               className="filter-select"
             >
-              <option value="">All sections</option>
+              <option value="" disabled>
+                Select a Section:
+              </option>
               {sections.map((section) => (
-                <option key={section} value={section}>
-                  {section}
+                <option key={section.section_name} value={section.section_name}>
+                  {section.section_name}
                 </option>
               ))}
             </select>
@@ -66,10 +103,12 @@ export const FilterModal = ({
               }
               className="filter-select"
             >
-              <option value="">All roles</option>
+              <option value="" disabled>
+                Select a Role:
+              </option>
               {roles.map((role) => (
-                <option key={role} value={role}>
-                  {role}
+                <option key={role.role_name} value={role.role_name}>
+                  {role.role_name}
                 </option>
               ))}
             </select>

@@ -205,7 +205,7 @@ const MemberDetail = () => {
                           {member.roles_tbl.role_name}
                         </p>
                       </div>
-                      {isProfilePage && (
+                      {/* {isProfilePage && (
                         <div className="notification-toggle">
                           <div className="toggle-label">
                             <svg
@@ -228,7 +228,7 @@ const MemberDetail = () => {
                             <span className="slider"></span>
                           </label>
                         </div>
-                      )}
+                      )} */}
                     </div>
                   </div>
 
