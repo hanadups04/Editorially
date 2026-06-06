@@ -6,13 +6,14 @@ import CreateProjectModal from "../../components/project/AddProjectModal.jsx";
 import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
 import "./TaskList.css";
 import ReactLoading from "react-loading";
+import { supabase } from "../../supabaseClient.js";
 
 const TaskList = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [filters, setFilters] = useState({
-    status: "all",
+    step_id: "all",
     deadline: "all",
   });
   const [isCreateProjModalOpen, setIsCreateProjModalOpen] = useState(false);
@@ -37,8 +38,22 @@ const TaskList = () => {
     }
 
     fetchProjects();
+
+    const subscription = supabase
+      .channel("projects-updates")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "projects_tbl" },
+        async (payload) => {
+          console.log("Changes Received: ", payload);
+          await fetchProjects();
+        },
+      )
+      .subscribe();
+
     return () => {
       isMounted = false;
+      supabase.removeChannel(subscription);
     };
   }, []);
 
@@ -50,7 +65,7 @@ const TaskList = () => {
       .includes(searchQuery.toLowerCase());
 
     const matchesStatus =
-      filters.step_name === "all" || project.step_name === filters.step_name;
+      filters.step_id === "all" || project.step_id === filters.step_id;
 
     let matchesDeadline = true;
     if (filters.deadline !== "all") {
@@ -80,15 +95,15 @@ const TaskList = () => {
     return matchesSearch && matchesStatus && matchesDeadline;
   });
 
-  const [searchParams] = useSearchParams();
+  // const [searchParams] = useSearchParams();
 
-  useEffect(() => {
-    const projectID = searchParams.get("project_id");
-    if (projectID) {
-      setValue(projectID);
-      console.log(`id value is: ${projectID}`);
-    }
-  }, [searchParams]);
+  // useEffect(() => {
+  //   const projectID = searchParams.get("project_id");
+  //   if (projectID) {
+  //     setValue(projectID);
+  //     console.log(`id value is: ${projectID}`);
+  //   }
+  // }, [searchParams]);
 
   const handleProjectClick = (project_id) => {
     navigate(`/tasks?project_id=${project_id}`);
@@ -100,7 +115,7 @@ const TaskList = () => {
   };
 
   const handleClearFilters = () => {
-    setFilters({ status: "all", deadline: "all" });
+    setFilters({ step_id: "all", deadline: "all" });
   };
 
   const activeFiltersCount = Object.values(filters).filter(

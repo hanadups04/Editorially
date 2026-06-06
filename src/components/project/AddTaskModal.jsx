@@ -6,7 +6,7 @@ import { supabase } from "../../supabaseClient.js";
 import { isAuthenticated } from "../../context/auth.js";
 import "./AddTaskModal.css";
 
-const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
+const AddTaskModal = ({ isOpen, onClose, onSubmit, section_id }) => {
   const [searchParams] = useSearchParams();
   const projectID =
     searchParams.get("project_id") ?? searchParams.get("projectID");
@@ -29,6 +29,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
   const [sections, setSections] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setIsLoading] = useState(true);
+  const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
     let isMounted = true;
@@ -58,7 +59,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
 
     async function fetchUsers() {
       try {
-        const data = await ReadFunctions.fetchAllUsers();
+        const data = await ReadFunctions.fetchSectionMembers(section_id);
         if (isMounted) {
           console.log("data is: ", data);
           setAllUsers(data);
@@ -234,7 +235,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
               <option value="">Select a team member</option>
               {allUsers.map((member) => (
                 <option key={member.uid} value={member.uid}>
-                  {member.username} ({member.email})
+                  {member.username}
                 </option>
               ))}
             </select>
@@ -286,6 +287,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit }) => {
               className="form-input"
               value={formData.subtask_deadline}
               onChange={handleChange}
+              min={today}
               required
             />
           </div>
