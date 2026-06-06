@@ -8,7 +8,7 @@ const LandingPage = () => {
   return (
     <main style={{ minHeight: "100vh" }}>
       <Hero />
-      <TrustedBy />
+      {/* <TrustedBy /> */}
       <ModulesPreview />
       <About />
       {/* <InstallPrompt /> */}

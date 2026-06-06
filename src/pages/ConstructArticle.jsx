@@ -41,8 +41,8 @@ const ConstructArticle = () => {
         setHeadline(headline.content);
         setContent(content.content);
         setThumbnail(image.content);
-        setAuthor1(headline.project_subtask_tbl.users_tbl.uid);
-        setAuthor2(image.project_subtask_tbl.users_tbl.uid);
+        setAuthor1(headline.project_subtask_tbl.users_tbl.username);
+        setAuthor2(image.project_subtask_tbl.users_tbl.username);
 
         console.log(
           "hehe: ",
@@ -126,13 +126,17 @@ const ConstructArticle = () => {
           <div className="source-items">
             {/* {contentSources.map((source, index) => ( */}
             <div className="source-item">
-              <span className="status-icon">✓</span>
-              <span className="source-type">Headline</span>
+              <div className="source-item1">
+                <span className="status-icon">✓</span>
+                <span className="source-type">Headline</span>
+              </div>
               <span>Submitted by {author1}</span>
             </div>
             <div className="source-item">
-              <span className="status-icon">✓</span>
-              <span className="source-type">Image</span>
+              <div className="source-item1">
+                <span className="status-icon">✓</span>
+                <span className="source-type">Image</span>
+              </div>
               <span>Submitted by {author2}</span>
             </div>
             {/* ))} */}

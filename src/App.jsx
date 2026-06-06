@@ -6,6 +6,7 @@ import {
   Link,
   Outlet,
   useNavigate,
+  Navigate,
   Await,
 } from "react-router-dom";
 import "./App.css";
@@ -34,6 +35,7 @@ import AboutPage from "./pages/reader/AboutPage.jsx";
 import OurProcessPage from "./pages/reader/OurProcessPage.jsx";
 import { useRegisterSW } from "virtual:pwa-register/react";
 import PwaInstall from "./components/readerSide/Pwa.jsx";
+import NotFound from "./pages/reader/NotFound.jsx";
 
 const ProtectedRoute = ({ requiredAccessLvl, children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -48,7 +50,7 @@ const ProtectedRoute = ({ requiredAccessLvl, children }) => {
 
       if (!session) {
         // navigate('/Readers')
-        navigate("/aboutus");
+        navigate("/login");
       }
     };
 
@@ -85,13 +87,32 @@ const ProtectedRoute = ({ requiredAccessLvl, children }) => {
 
 function App() {
   useRegisterSW();
+  const isAdmin = window.location.hostname === "admin.editorially.app";
+
+  // useEffect(() => {
+  //   if (isAdmin) {
+  //     navigate("/login");
+  //   } else {
+  //     navigate("/reader");
+  //   }
+  // }, []);
+
+  // if (hostname === "admin.editorially.app") {
+  //   return <Login />;
+  // } else if (hostname === "editorially.app") {
+  //   return <ReaderHomepage />;
+  // }
 
   return (
     <>
       <PwaInstall />
       <Router>
         <Routes>
-          <Route path="/" element={<Redirector />} />
+          <Route
+            path="/"
+            element={<Navigate to={isAdmin ? "/login" : "/readers"} replace />}
+          />
+          {/* <Route path="/" element={<Redirector />} /> */}
           {/* user searches editorially.app, calls redirector, checks for account, if none, throws user to landing page, if present, throws user to appropriate page */}
           <Route path="/aboutus" element={<LandingPage />} />
           <Route path="/readers" element={<ReaderHomepage />} />
@@ -103,6 +124,7 @@ function App() {
           {/* <Route path="/Readers/:id" element={<LandingPage />} /> */}
           {/* <Route path="/Search" element={<LandingPage />} /> */}
           <Route path="/login" element={<Login />} />
+          <Route path="*" element={<NotFound />} />
 
           {/* only allow access on admin roles */}
           <Route element={<ProtectedRoute />}>
