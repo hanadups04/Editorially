@@ -40,7 +40,7 @@ const Hero = () => {
               }}
             >
               <Button className="admin-btn btn-secondary">
-                Log In as Member
+                Continue as Member
               </Button>
             </div>
           </div>

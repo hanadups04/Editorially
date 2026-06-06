@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Layout from "../../components/templates/AdminTemplate";
 import { supabase } from "../../supabaseClient.js";
 import "./DocumentPage.css";
+import { readWork } from "../../context/functions/ReadFunctions.js";
+import ReactLoading from "react-loading";
 
 const DocumentPage = () => {
   const navigate = useNavigate();
@@ -10,14 +12,51 @@ const DocumentPage = () => {
   const taskId = searchParams.get("taskId");
   const taskRole = searchParams.get("role") || "Writer";
   const project_id = searchParams.get("project_id");
-
+  const [loading, isLoading] = useState(true);
+  const [content, setContent] = useState("");
+  const [error, setError] = useState("");
+  const [isError, setIsError] = useState(false);
   // const taskAssignee = searchParams.get("assignee") || "Unknown";
 
-  const [content, setContent] = useState("");
   const [headline, setHeadline] = useState("");
   const [isCommentsModalOpen, setIsCommentsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchWork() {
+      try {
+        const data = await readWork(taskId);
+        if (isMounted && data) {
+          const headline = data.find((row) => row.category === 1);
+          const content = data.find((row) => row.category === 2);
+
+          console.log("content is: ", content.content);
+          console.log("headline is: ", headline.content);
+
+          setContent(content.content);
+          setHeadline(headline.content);
+        } else {
+          setContent("");
+          setHeadline("");
+        }
+      } catch (error) {
+        console.error(error);
+        setIsError(true);
+        setError(error);
+      } finally {
+        if (isMounted) isLoading(false);
+      }
+    }
+
+    fetchWork();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Sample comments data
   const [comments, setComments] = useState([
@@ -114,29 +153,6 @@ const DocumentPage = () => {
             </div>
           </div>
           <div className="document-header-right">
-            {lastSaved && (
-              <span className="save-status">Last saved: {lastSaved}</span>
-            )}
-            {/* <button
-              className="admin-btn btn-secondary"
-              onClick={handleSave}
-              disabled={isSaving}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                <polyline points="7 3 7 8 15 8"></polyline>
-              </svg>
-              {isSaving ? "Saving..." : "Save Draft"}
-            </button> */}
             <button
               className="admin-btn btn-primary"
               type="submit"
@@ -158,162 +174,81 @@ const DocumentPage = () => {
             </button>
           </div>
         </div>
-        <div className="document-editor-container1">
-          <input
-            type="text"
-            name="headline"
-            className="document-editor"
-            placeholder="Add your headline here..."
-            maxLength={50}
-            value={headline}
-            onChange={(e) => setHeadline(e.target.value)}
-          />
 
-          <div className="editor-footer">
-            <span className="word-count">
-              {headline.split(/\s+/).filter((word) => word.length > 0).length}{" "}
-              words
-            </span>
-            <span className="char-count">{headline.length} characters</span>
-          </div>
-        </div>
+        <>
+          {loading ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ReactLoading
+                type="spinningBubbles"
+                color="#133e87"
+                height={60}
+                width={60}
+              />
+            </div>
+          ) : (
+            <>
+              <div className="document-editor-container1">
+                <input
+                  type="text"
+                  name="headline"
+                  className="document-editor"
+                  placeholder="Add your headline here..."
+                  maxLength={50}
+                  value={headline}
+                  onChange={(e) => setHeadline(e.target.value)}
+                />
 
-        <div className="document-editor-container2">
-          {/* <div className="editor-toolbar">
-            <div className="toolbar-group">
-              <button className="toolbar-btn" title="Bold">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
-                  <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
-                </svg>
-              </button>
-              <button className="toolbar-btn" title="Italic">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <line x1="19" y1="4" x2="10" y2="4"></line>
-                  <line x1="14" y1="20" x2="5" y2="20"></line>
-                  <line x1="15" y1="4" x2="9" y2="20"></line>
-                </svg>
-              </button>
-              <button className="toolbar-btn" title="Underline">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"></path>
-                  <line x1="4" y1="21" x2="20" y2="21"></line>
-                </svg>
-              </button>
-            </div>
-            <div className="toolbar-divider"></div>
-            <div className="toolbar-group">
-              <button className="toolbar-btn" title="Heading 1">
-                H1
-              </button>
-              <button className="toolbar-btn" title="Heading 2">
-                H2
-              </button>
-              <button className="toolbar-btn" title="Heading 3">
-                H3
-              </button>
-            </div>
-            <div className="toolbar-divider"></div>
-            <div className="toolbar-group">
-              <button className="toolbar-btn" title="Bullet List">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <line x1="8" y1="6" x2="21" y2="6"></line>
-                  <line x1="8" y1="12" x2="21" y2="12"></line>
-                  <line x1="8" y1="18" x2="21" y2="18"></line>
-                  <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                  <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                  <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                </svg>
-              </button>
-              <button className="toolbar-btn" title="Numbered List">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <line x1="10" y1="6" x2="21" y2="6"></line>
-                  <line x1="10" y1="12" x2="21" y2="12"></line>
-                  <line x1="10" y1="18" x2="21" y2="18"></line>
-                  <path d="M4 6h1v4"></path>
-                  <path d="M4 10h2"></path>
-                  <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path>
-                </svg>
-              </button>
-              <button className="toolbar-btn" title="Quote">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"></path>
-                  <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3z"></path>
-                </svg>
-              </button>
-            </div>
-          </div> */}
+                <div className="editor-footer">
+                  <span className="word-count">
+                    {
+                      headline.split(/\s+/).filter((word) => word.length > 0)
+                        .length
+                    }{" "}
+                    words
+                  </span>
+                  <span className="char-count">
+                    {headline.length} characters
+                  </span>
+                </div>
+              </div>
 
-          <textarea
-            name="content"
-            className="document-editor"
-            placeholder="Start writing your content here...
+              <div className="document-editor-container2">
+                <textarea
+                  name="content"
+                  className="document-editor"
+                  placeholder="Start writing your content here...
 
 Tips:
 • Begin with a compelling introduction
 • Include relevant quotes and data
 • Structure your content with clear sections
 • Proofread before submitting"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                />
 
-          <div className="editor-footer">
-            <span className="word-count">
-              {content.split(/\s+/).filter((word) => word.length > 0).length}{" "}
-              words
-            </span>
-            <span className="char-count">{content.length} characters</span>
-          </div>
-        </div>
+                <div className="editor-footer">
+                  <span className="word-count">
+                    {
+                      content.split(/\s+/).filter((word) => word.length > 0)
+                        .length
+                    }{" "}
+                    words
+                  </span>
+                  <span className="char-count">
+                    {content.length} characters
+                  </span>
+                </div>
+              </div>
+            </>
+          )}
+        </>
       </div>
     </Layout>
   );

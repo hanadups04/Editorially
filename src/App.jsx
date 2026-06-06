@@ -48,7 +48,7 @@ const ProtectedRoute = ({ requiredAccessLvl, children }) => {
 
       if (!session) {
         // navigate('/Readers')
-        navigate("/aboutus");
+        navigate("/readers");
       }
     };
 

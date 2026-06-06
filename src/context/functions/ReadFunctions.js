@@ -12,6 +12,29 @@ export async function fetchAllUsers() {
   return data;
 }
 
+export async function fetchStatus() {
+  const { data, error } = await supabase
+    .from("project_steps_tbl")
+    .select("*")
+    .not("step_id", "in", "(0,4)");
+
+  if (error) return error;
+
+  return data;
+}
+
+export async function fetchSectionMembers(section_id) {
+  const { data, error } = await supabase
+    .from("users_tbl")
+    .select("*, roles_tbl( role_name ), sections_tbl( section_name )")
+    .order("created_at", { ascending: false })
+    .eq("section_id", section_id);
+
+  if (error) return error;
+
+  return data;
+}
+
 export async function getUserProfile(uid) {
   const { data, error } = await supabase
     .from("users_tbl")
@@ -44,6 +67,7 @@ export async function fetchAllProjects() {
   const { data, error } = await supabase
     .from("projects_tbl")
     .select("*, project_steps_tbl ( step_name )")
+    .not("step_id", "in", "(4,0)")
     .order("created_at", { ascending: false });
 
   if (error) throw error;
@@ -247,6 +271,16 @@ export async function getSectionArticles(sectionName) {
 
   if (error) return error;
   console.log(data);
+  return data;
+}
+
+export async function readWork(taskId) {
+  const { data, error } = await supabase
+    .from("contents_tbl")
+    .select(`content, category`)
+    .eq("subtask_id", taskId);
+
+  if (error) return error;
   return data;
 }
 

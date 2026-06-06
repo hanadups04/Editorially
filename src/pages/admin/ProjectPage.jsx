@@ -13,6 +13,7 @@ import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
 import * as UpdateFunctions from "../../context/functions/UpdateFunctions.js";
 import "./ProjectPage.css";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../../supabaseClient.js";
 
 const ProjectPage = () => {
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
@@ -58,8 +59,29 @@ const ProjectPage = () => {
 
     fetchData();
 
+    const subscription = supabase
+      .channel("subtask-updates")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "project_subtask_tbl" },
+        async (payload) => {
+          console.log("Changes Received: ", payload);
+          await fetchData();
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "projects_tbl" },
+        async (payload) => {
+          console.log("project change:", payload);
+          await fetchData();
+        },
+      )
+      .subscribe();
+
     return () => {
       isMounted = false;
+      supabase.removeChannel(subscription);
     };
   }, []);
 
@@ -294,6 +316,7 @@ const ProjectPage = () => {
         isOpen={isAddTaskModalOpen}
         onClose={() => setIsAddTaskModalOpen(false)}
         onSubmit={handleAddTask}
+        section_id={project.section_id}
       />
 
       <EditProjectModal
