@@ -15,8 +15,12 @@ const ConstructArticle = () => {
   const [author1, setAuthor1] = useState("");
   const [author2, setAuthor2] = useState("");
 
+  const [username1, setUsername1] = useState("");
+  const [username2, setUsername2] = useState("");
+
   const [headline, setHeadline] = useState("");
   const [thumbnail, setThumbnail] = useState("");
+  const [smallImage, setSmallImage] = useState("");
   const [content, setContent] = useState("");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [successModal, setSuccessModal] = useState({
@@ -37,17 +41,21 @@ const ConstructArticle = () => {
         const headline = data.find((item) => item.category === 1);
         const content = data.find((item) => item.category === 2);
         const image = data.find((item) => item.category === 3);
+        const small = data.find((item) => item.category === 4);
 
         setHeadline(headline.content);
         setContent(content.content);
         setThumbnail(image.content);
-        setAuthor1(headline.project_subtask_tbl.users_tbl.username);
-        setAuthor2(image.project_subtask_tbl.users_tbl.username);
+        setSmallImage(small.content);
+        setAuthor1(headline.project_subtask_tbl.users_tbl.uid);
+        setAuthor2(image.project_subtask_tbl.users_tbl.uid);
+        setUsername1(headline.project_subtask_tbl.users_tbl.username);
+        setUsername2(image.project_subtask_tbl.users_tbl.username);
 
         console.log(
           "hehe: ",
-          headline.project_subtask_tbl.users_tbl.username,
-          image.project_subtask_tbl.users_tbl.username,
+          headline.project_subtask_tbl.users_tbl.uid,
+          image.project_subtask_tbl.users_tbl.uid,
         );
       } catch (error) {
         console.error(error);
@@ -76,9 +84,10 @@ const ConstructArticle = () => {
         author_id2: author1,
         author_id1: author2,
         section_id: Number(sectionId),
+        thumbnail: smallImage,
       };
 
-      console.log("article data: ", data);
+      console.log("article data: ", data, projectId);
 
       await createArticle(data, projectId);
     } catch (error) {
@@ -128,16 +137,16 @@ const ConstructArticle = () => {
             <div className="source-item">
               <div className="source-item1">
                 <span className="status-icon">✓</span>
-                <span className="source-type">Headline</span>
+                <span className="source-type">Content</span>
               </div>
-              <span>Submitted by {author1}</span>
+              <span>Submitted by {username1}</span>
             </div>
             <div className="source-item">
               <div className="source-item1">
                 <span className="status-icon">✓</span>
                 <span className="source-type">Image</span>
               </div>
-              <span>Submitted by {author2}</span>
+              <span>Submitted by {username2}</span>
             </div>
             {/* ))} */}
           </div>

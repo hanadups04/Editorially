@@ -28,6 +28,7 @@ export default function CreateParentTaskModal({
   hideCancel = false,
   branchData,
   secType,
+  onAdd,
 }) {
   const [sections, setSections] = useState([]);
   const [loading, setIsLoading] = useState(true);
@@ -118,6 +119,7 @@ export default function CreateParentTaskModal({
     }
 
     // setShowAlertSuccess(true);
+    if (onAdd) onAdd();
     onClose();
   };
 
@@ -225,26 +227,6 @@ export default function CreateParentTaskModal({
           </div>
         </div>
       </div>
-
-      {/* {showAlertSuccess && (
-        <AlertsNConfirmsModal
-          show={showAlertSuccess}
-          onHide={() => onclose()}
-          type="success"
-          title="Project Created Successfully!"
-          message="Project has been Created successfully."
-        />
-      )}
-
-      {showAlertError && (
-        <AlertsNConfirmsModal
-          show={showAlertError}
-          onHide={() => setShowAlertError(false)}
-          type="error"
-          title="An Error Occured!"
-          message="Unable to create the Project. Please try again."
-        />
-      )} */}
     </>
   );
 }

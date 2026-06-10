@@ -6,14 +6,14 @@
   background-color: #ffffff; /* 60% */
 }
 
-.content-header {
+.content-headerP {
   border-bottom: 1px solid #e5e5e5;
   background-color: #ffffff;
 }
 
-.container {
+.containerP {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0;
   padding: 2rem 1rem;
 }
 

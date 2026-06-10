@@ -7,6 +7,8 @@ import Layout from "../../components/templates/AdminTemplate";
 import * as ReadFunctions from "../../context/functions/ReadFunctions";
 import { supabase } from "../../supabaseClient";
 import * as auth from "../../context/auth";
+import ConfirmationModal from "../../components/ArticleManagement/ConfirmationModal";
+import SuccessModal from "../../components/ArticleManagement/SuccessModa";
 
 const MembersList = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,6 +18,7 @@ const MembersList = () => {
   const [loading, setIsLoading] = useState(true);
   const [members, setMembers] = useState([]);
   const [userRole, setRole] = useState([]);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -70,6 +73,11 @@ const MembersList = () => {
       supabase.removeChannel(subscription);
     };
   }, []);
+
+  const handleSuccessClose = () => {
+    setIsSuccess(false);
+    // navigate('/content');
+  };
 
   const filteredMembers = members.filter((member) => {
     const matchesSearch =
@@ -256,8 +264,18 @@ const MembersList = () => {
         <AddMemberModal
           open={isAddMemberOpen}
           onOpenChange={setIsAddMemberOpen}
+          onAdd={() => {
+            setIsSuccess(true);
+          }}
         />
       </div>
+
+      <SuccessModal
+        isOpen={isSuccess}
+        onClose={handleSuccessClose}
+        title={"Success!"}
+        message={"New Member Added Successfully"}
+      />
     </Layout>
   );
 };

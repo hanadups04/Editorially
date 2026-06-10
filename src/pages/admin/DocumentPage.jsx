@@ -5,6 +5,8 @@ import { supabase } from "../../supabaseClient.js";
 import "./DocumentPage.css";
 import { readWork } from "../../context/functions/ReadFunctions.js";
 import ReactLoading from "react-loading";
+import Toast from "react-bootstrap/Toast";
+import ToastContainer from "react-bootstrap/ToastContainer";
 
 const DocumentPage = () => {
   const navigate = useNavigate();
@@ -22,6 +24,10 @@ const DocumentPage = () => {
   const [isCommentsModalOpen, setIsCommentsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
+  const [show, setShow] = useState(false);
+  const [shouldUpdate, setShouldUpdate] = useState(false);
+  const [headlineID, setHeadlineID] = useState("");
+  const [contentID, setContentID] = useState("");
 
   useEffect(() => {
     let isMounted = true;
@@ -33,8 +39,11 @@ const DocumentPage = () => {
           const headline = data.find((row) => row.category === 1);
           const content = data.find((row) => row.category === 2);
 
-          console.log("content is: ", content.content);
-          console.log("headline is: ", headline.content);
+          console.log("content is: ", content);
+          console.log("headline is: ", headline);
+          setShouldUpdate(true);
+          setHeadlineID(headline.content_id);
+          setContentID(content.content_id);
 
           setContent(content.content);
           setHeadline(headline.content);
@@ -101,9 +110,7 @@ const DocumentPage = () => {
     setComments((prev) => [...prev, comment]);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async () => {
     const rows = [
       { category: 1, content: headline, project_id: project_id },
       { category: 2, content: content, project_id: project_id },
@@ -115,6 +122,8 @@ const DocumentPage = () => {
         ...row,
       });
 
+      setShow(true);
+
       if (error) {
         console.error("Insert failed:", error);
         return;
@@ -122,6 +131,43 @@ const DocumentPage = () => {
     }
 
     // navigate(-1);
+  };
+
+  const handleUpdate = async () => {
+    const updates = [
+      {
+        id: headlineID,
+        payload: {
+          subtask_id: taskId,
+          category: 1,
+          content: headline,
+          project_id,
+        },
+      },
+      {
+        id: contentID,
+        payload: {
+          subtask_id: taskId,
+          category: 2,
+          content: content,
+          project_id,
+        },
+      },
+    ];
+
+    for (const item of updates) {
+      const { error } = await supabase
+        .from("contents_tbl")
+        .update(item.payload)
+        .eq("content_id", item.id);
+
+      if (error) {
+        console.error("Update failed:", error);
+        return;
+      }
+    }
+
+    setShow(true);
   };
 
   return (
@@ -156,7 +202,15 @@ const DocumentPage = () => {
             <button
               className="admin-btn btn-primary"
               type="submit"
-              onClick={handleSubmit}
+              onClick={async () => {
+                if (shouldUpdate) {
+                  await handleUpdate();
+                  console.log("update running:");
+                } else {
+                  await handleSubmit();
+                  console.log("insert running:");
+                }
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -250,6 +304,17 @@ Tips:
           )}
         </>
       </div>
+
+      <ToastContainer position="top-end" className="p-3">
+        <Toast show={show} onClose={() => setShow(false)} delay={3000} autohide>
+          <Toast.Header>
+            <strong className="me-auto">Work Saved!</strong>
+          </Toast.Header>
+          <Toast.Body>
+            Your Work has been saved and is waiting for review!
+          </Toast.Body>
+        </Toast>
+      </ToastContainer>
     </Layout>
   );
 };

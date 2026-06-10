@@ -1,29 +1,82 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { supabase } from "../../supabaseClient.js";
 import * as AddFunctions from "../../context/functions/AddFunctions.js";
 import "./UploadImagesModal.css";
+import { compressImage } from "../../context/functions/AddFunctions.js";
+import ReactLoading from "react-loading";
+import { readImages } from "../../context/functions/ReadFunctions.js";
 
-const UploadImagesModal = ({ isOpen, onClose, taskId, project_id }) => {
+const UploadImagesModal = ({ isOpen, onClose, taskId, project_id, onAdd }) => {
   console.log("asa", taskId);
-  const [selectedFiles, setSelectedFiles] = useState("");
+  const [selectedFiles, setSelectedFiles] = useState({});
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
+  const [thumbnail, setThumbnail] = useState("");
+  const [processing, setProcessing] = useState(false);
+  const [image, setImage] = useState("");
+  const [loading, setIsLoading] = useState(true);
+  const [shouldUpdate, setShouldUpdate] = useState(false);
+  const [imageID3, setImageID3] = useState("");
+  const [imageID4, setImageID4] = useState("");
+
+  const hasSelectedFile = !!selectedFiles?.file;
+  const hasUploadedImage = !!image;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function getData() {
+      try {
+        const data = await readImages(taskId);
+        console.log(data, "data of image");
+        const hires3 = data.find((item) => item.category === 3);
+        const hires4 = data.find((item) => item.category === 4);
+
+        setImageID3(hires3.content_id);
+        setImageID4(hires4.content_id);
+
+        setImage(hires3.content);
+        setShouldUpdate(true);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    getData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleFileSelect = (e) => {
-    const files = Array.from(e.target.files);
-    addFiles(files);
+    const file = e.target.files[0];
+
+    if (!file) return;
+    addFile(file);
   };
 
-  const addFiles = (files) => {
-    const newFiles = files.map((file) => ({
-      id: Math.random().toString(36).substr(2, 9),
-      file,
+  const addFile = async (file) => {
+    const newFile = {
+      id: crypto.randomUUID(),
+      file: file,
       preview: URL.createObjectURL(file),
       name: file.name,
-    }));
-    setSelectedFiles((prev) => [...prev, ...newFiles]);
+    };
+    try {
+      setProcessing(true);
+      const compressed = await compressImage(file);
+      setSelectedFiles(newFile);
+      setThumbnail(compressed);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setProcessing(false);
+    }
   };
 
   const handleDragOver = (e) => {
@@ -47,7 +100,7 @@ const UploadImagesModal = ({ isOpen, onClose, taskId, project_id }) => {
     setSelectedFiles((prev) => prev.filter((f) => f.id !== id));
   };
 
-  const handleSubmit = async (uploadedUrls) => {
+  const handleSubmit = async (uploadedUrls, thumbsnail) => {
     const payload = await supabase.from("contents_tbl").insert({
       subtask_id: taskId,
       category: 3,
@@ -55,24 +108,64 @@ const UploadImagesModal = ({ isOpen, onClose, taskId, project_id }) => {
       project_id: project_id,
     });
 
+    const payload2 = await supabase.from("contents_tbl").insert({
+      subtask_id: taskId,
+      category: 4,
+      content: thumbsnail,
+      project_id: project_id,
+    });
+
     console.log("data booger: ", payload);
   };
 
+  const handleUpdate = async (uploadedUrls, thumbsnail) => {
+    const [payload, payload2] = await Promise.all([
+      supabase
+        .from("contents_tbl")
+        .update({
+          subtask_id: taskId,
+          category: 3,
+          content: uploadedUrls,
+          project_id: project_id,
+        })
+        .eq("content_id", imageID3),
+
+      supabase
+        .from("contents_tbl")
+        .update({
+          subtask_id: taskId,
+          category: 4,
+          content: thumbsnail,
+          project_id: project_id,
+        })
+        .eq("content_id", imageID4),
+    ]);
+
+    console.log("update result:", { payload, payload2 });
+  };
+
   const handleImageUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
+    // const file = e.target.files?.[0];
+    if (!selectedFiles?.file) return;
+    if (selectedFiles) {
       setUploading(true);
       try {
-        const newFiles = await AddFunctions.uploadThumbnail(file);
+        const newFiles = await AddFunctions.uploadThumbnail(selectedFiles.file);
+        const newThumbnail = await AddFunctions.uploadThumbnail(thumbnail);
         console.log("file uplaoded: ", newFiles);
+        setSelectedFiles(newFiles);
 
-        setSelectedFiles((prev) => [...prev, ...newFiles]);
-
-        // trigger submit AFTER upload
-        await handleSubmit(newFiles);
+        if (shouldUpdate) {
+          console.log("newThumbnail:", newThumbnail);
+          console.log("newFiles:", newFiles);
+          await handleUpdate(newFiles, newThumbnail);
+        } else {
+          await handleSubmit(newFiles, newThumbnail);
+        }
 
         // optional cleanup
         setSelectedFiles("");
+        if (onAdd) onAdd();
         onClose();
       } catch (err) {
         console.error("Upload/submit failed:", err);
@@ -134,7 +227,7 @@ const UploadImagesModal = ({ isOpen, onClose, taskId, project_id }) => {
                     color: "var(--text-secondary)",
                   }}
                 >
-                  Click to select files or drag and drop
+                  Click to select file or drag and drop
                 </p>
                 <p
                   style={{
@@ -152,28 +245,48 @@ const UploadImagesModal = ({ isOpen, onClose, taskId, project_id }) => {
                 type="file"
                 multiple
                 accept="image/*"
-                onChange={handleImageUpload}
+                onChange={handleFileSelect}
                 style={{ display: "none" }}
               />
 
-              {selectedFiles.length > 0 && (
-                <div className="file-preview-grid">
-                  {selectedFiles.map((file) => (
-                    <div key={file.id} className="file-preview-item">
+              {!processing && (hasSelectedFile || hasUploadedImage) && (
+                <>
+                  <div className="file-preview-grid">
+                    <div className="file-preview-item">
                       <img
-                        src={file.preview}
-                        alt={file.name}
+                        src={hasSelectedFile ? selectedFiles.preview : image}
+                        alt={
+                          hasSelectedFile
+                            ? selectedFiles.name
+                            : "article thumbnail"
+                        }
                         className="file-preview-image"
                       />
-                      <button
-                        className="file-preview-remove"
-                        onClick={() => removeFile(file.id)}
-                      >
-                        ×
-                      </button>
                     </div>
-                  ))}
+                  </div>
+                </>
+              )}
+
+              {processing ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: "20px",
+                    flexDirection: "column",
+                  }}
+                >
+                  <ReactLoading
+                    type="spinningBubbles"
+                    color="#133e87"
+                    height={60}
+                    width={60}
+                  />
+                  Please wait while we process your image
                 </div>
+              ) : (
+                <></>
               )}
             </div>
 
@@ -189,10 +302,9 @@ const UploadImagesModal = ({ isOpen, onClose, taskId, project_id }) => {
                 type="button"
                 className="admin-btn btn-primary"
                 onClick={handleImageUpload}
-                disabled={selectedFiles.length === 0}
+                disabled={Object.keys(selectedFiles).length === 0}
               >
-                Upload{" "}
-                {selectedFiles.length > 0 ? `(${selectedFiles.length})` : ""}
+                Upload
               </button>
             </div>
           </div>
@@ -219,7 +331,7 @@ const UploadImagesModal = ({ isOpen, onClose, taskId, project_id }) => {
               </svg>
             </button>
           </div>
-          {selectedFiles.map((file, index) => (
+          {/* {selectedFiles.map((file, index) => (
             <div key={file.id} className="upload-item">
               <div className="upload-icon">
                 <svg
@@ -247,7 +359,7 @@ const UploadImagesModal = ({ isOpen, onClose, taskId, project_id }) => {
                 </div>
               </div>
             </div>
-          ))}
+          ))} */}
         </div>
       )}
     </>

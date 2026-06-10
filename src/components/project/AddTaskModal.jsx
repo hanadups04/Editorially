@@ -6,7 +6,7 @@ import { supabase } from "../../supabaseClient.js";
 import { isAuthenticated } from "../../context/auth.js";
 import "./AddTaskModal.css";
 
-const AddTaskModal = ({ isOpen, onClose, onSubmit, section_id }) => {
+const AddTaskModal = ({ isOpen, onClose, onSubmit, section_id, onAdd }) => {
   const [searchParams] = useSearchParams();
   const projectID =
     searchParams.get("project_id") ?? searchParams.get("projectID");
@@ -121,6 +121,8 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit, section_id }) => {
       subtask_deadline: formData.subtask_deadline,
       is_done: false,
     });
+
+    if (onAdd) onAdd();
 
     onClose();
   };

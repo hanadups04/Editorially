@@ -7,6 +7,8 @@ import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
 import "./TaskList.css";
 import ReactLoading from "react-loading";
 import { supabase } from "../../supabaseClient.js";
+import Toast from "react-bootstrap/Toast";
+import ToastContainer from "react-bootstrap/ToastContainer";
 
 const TaskList = () => {
   const navigate = useNavigate();
@@ -19,6 +21,7 @@ const TaskList = () => {
   const [isCreateProjModalOpen, setIsCreateProjModalOpen] = useState(false);
   const [loading, setIsLoading] = useState(true);
   const [projects, setAllProjects] = useState([]);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -334,8 +337,22 @@ const TaskList = () => {
       />
 
       {isCreateProjModalOpen && (
-        <CreateProjectModal onClose={() => setIsCreateProjModalOpen(false)} />
+        <CreateProjectModal
+          onClose={() => setIsCreateProjModalOpen(false)}
+          onAdd={() => {
+            setShow(true);
+          }}
+        />
       )}
+
+      <ToastContainer position="top-end" className="p-3">
+        <Toast show={show} onClose={() => setShow(false)} delay={3000} autohide>
+          <Toast.Header>
+            <strong className="me-auto">Project Proposed!</strong>
+          </Toast.Header>
+          <Toast.Body>Project is now Proposed!</Toast.Body>
+        </Toast>
+      </ToastContainer>
     </Layout>
   );
 };
