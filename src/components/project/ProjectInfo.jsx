@@ -19,7 +19,8 @@ export default function ProjectInfo({
           {status === "Rejected" ? (
             <></>
           ) : (
-          {(roleId === "role-0002" || roleId === "role-0006") && (
+            <>
+              {(roleId === "role-0002" || roleId === "role-0006") && (
             <button
               className="admin-btn btn-secondary btn-sm"
               onClick={onEditClick}
@@ -39,6 +40,7 @@ export default function ProjectInfo({
               Edit Project
             </button>
           )}
+            </>
           )}
         </div>
         <p className="card-subtitle">{description}</p>
