@@ -4,6 +4,7 @@ import "./Sidebar.css";
 import { signOut } from "../../context/auth";
 import { useNavigate } from "react-router-dom";
 import ConfirmationModal from "../ArticleManagement/ConfirmationModal";
+import NuntiumLogo from "../../assets/images/NuntiumLogo.png";
 
 const Sidebar = ({ isCollapsed, isOpen }) => {
   const location = useLocation();
@@ -122,7 +123,11 @@ const Sidebar = ({ isCollapsed, isOpen }) => {
       className={`sidebar ${isCollapsed ? "collapsed" : ""} ${isOpen ? "open" : ""}`}
     >
       <div className="sidebar-header">
-        {!isCollapsed && <h2>The NUntium</h2>}
+        <div className="sidebar__logo-icon">
+          {/* <span className="navbar__logo-text">NU</span> */}
+          <img src={NuntiumLogo} className="navbar__logo-img" />
+        </div>
+        {!isCollapsed && <h4>The NUntium</h4>}
       </div>
       <nav className="sidebar-nav">
         {navItems.map((item) => (

@@ -1,6 +1,7 @@
 :root {
   /* Colors */
-  --color-primary: #2563eb;
+  --color-primary: #020b40;
+  /* --color-primary: hsl(225 20% 96%); */
   --color-primary-dark: #1d4ed8;
   --color-primary-light: #3b82f6;
   --color-secondary: #64748b;
@@ -8,12 +9,14 @@
   --color-warning: #f59e0b;
   --color-danger: #d81c1c;
   --color-danger-hover: #be1616;
+  --cc-primary: #6366f1;
 
   /* Background Colors */
-  --bg-primary: #ffffff;
+  --bg-primary: #fafafafa;
   --bg-secondary: #f8fafc;
   --bg-tertiary: #f1f5f9;
-  --bg-sidebar: #1e293b;
+  /* --bg-sidebar: #1e293b; */
+   --bg-sidebar: #ffffff;
   --bg-hover: #f1f5f9;
 
   /* Text Colors */
@@ -332,7 +335,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: var(--text-primary);
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-primary) !important;
   line-height: 1.5;
 }
 
@@ -342,7 +345,7 @@ body {
 
 body {
   margin: 0;
-  background-color: hsl(var(--background)) !important;
+  /* background-color: hsl(var(--background)) !important; */
   color: hsl(var(--foreground)) !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -354,7 +357,7 @@ body {
 .admin-btn {
   padding: var(--spacing-sm) var(--spacing-lg);
   border-radius: var(--radius-md);
-  border: none;
+  border: 1px solid #e5e5e5;
   cursor: pointer;
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
@@ -364,6 +367,7 @@ body {
   gap: var(--spacing-sm);
   text-decoration: none;
   justify-content: center;
+  background-color: var(--bg-primary);
 }
 
 .btn-delete {
@@ -444,10 +448,10 @@ body {
   justify-content: center;
 }
 
-.btn-icon:hover {
+/* .btn-icon:hover {
   background-color: var(--bg-hover);
   color: var(--text-primary);
-}
+} */
 
 .btn-icon svg {
   width: 20px;

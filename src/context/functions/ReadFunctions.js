@@ -39,7 +39,7 @@ export async function getUserProfile(uid) {
   const { data, error } = await supabase
     .from("users_tbl")
     .select(
-      "*, roles_tbl ( role_name, access_level ), sections_tbl ( section_name )",
+      "*, roles_tbl ( role_id, role_name, access_level ), sections_tbl ( section_id, section_name )",
     )
     .eq("uid", uid)
     .maybeSingle(); // avoids 406
@@ -66,7 +66,7 @@ export async function fetchAllRoles() {
 export async function fetchAllProjects() {
   const { data, error } = await supabase
     .from("projects_tbl")
-    .select("*, project_steps_tbl ( step_name )")
+    .select("*, project_steps_tbl ( step_name ), sections_tbl ( section_name )")
     .not("step_id", "in", "(4,0)")
     .order("created_at", { ascending: false });
 
