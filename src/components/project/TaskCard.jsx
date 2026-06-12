@@ -9,6 +9,9 @@ const TaskCard = ({
   onEditClick,
   task,
   projectId,
+  roleId,
+  sectionId,
+  userId,
 }) => {
   const navigate = useNavigate();
   const [isCompleted, setIsCompleted] = useState(
@@ -56,7 +59,7 @@ const TaskCard = ({
         path: "/docs",
       },
       2: {
-        label: "Upload Images",
+        label: `${roleId === "role-0003" && userId !== subtask.assignee_id ? "View Images" : "Upload Images"}`,
         icon: (
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -92,31 +95,35 @@ const TaskCard = ({
     } else {
       // Navigate to document page with task info
       navigate(
-        `/document?taskId=${subtask.subtask_id}&role=${encodeURIComponent(task)}&project_id=${projectId}`,
+        `/document?taskId=${subtask.subtask_id}&role=${encodeURIComponent(task)}&project_id=${projectId}&role_id=${roleId}&user_id=${userId}&assignee_id=${subtask.assignee_id}`,
       );
     }
   };
 
   return (
     <div className="task-card">
-      <button
-        className="task-edit-btn"
-        onClick={() => onEditClick && onEditClick(subtask)}
-        title="Edit Task"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
+      {(roleId === "role-0002" ||
+        roleId === "role-0004" ||
+        roleId === "role-0006") && (
+        <button
+          className="task-edit-btn"
+          onClick={() => onEditClick && onEditClick(subtask)}
+          title="Edit Task"
         >
-          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-        </svg>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+        </button>
+      )}
       <div className="task-header">
         <span
           // className={`task-role ${subtask.role.toLowerCase()}`}
@@ -180,18 +187,20 @@ const TaskCard = ({
         </div>
       </div>
 
-      <label
-        className="checkbox-wrapper"
-        style={{ marginTop: "var(--spacing-md)" }}
-      >
-        <input
-          type="checkbox"
-          className="checkbox-input"
-          checked={isCompleted}
-          onChange={handleToggleComplete}
-        />
-        <span className="checkbox-label">Mark as complete</span>
-      </label>
+      {roleId === "role-0002" && (
+        <label
+          className="checkbox-wrapper"
+          style={{ marginTop: "var(--spacing-md)" }}
+        >
+          <input
+            type="checkbox"
+            className="checkbox-input"
+            checked={isCompleted}
+            onChange={handleToggleComplete}
+          />
+          <span className="checkbox-label">Mark as complete</span>
+        </label>
+      )}
 
       <div className="task-actions">
         <button className="admin-btn btn-primary" onClick={handleActionClick}>

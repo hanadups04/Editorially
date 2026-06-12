@@ -14,6 +14,9 @@ const DocumentPage = () => {
   const taskId = searchParams.get("taskId");
   const taskRole = searchParams.get("role") || "Writer";
   const project_id = searchParams.get("project_id");
+  const role_id = searchParams.get("role_id");
+  const user_id = searchParams.get("user_id");
+  const assignee_id = searchParams.get("assignee_id");
   const [loading, isLoading] = useState(true);
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
@@ -28,6 +31,8 @@ const DocumentPage = () => {
   const [shouldUpdate, setShouldUpdate] = useState(false);
   const [headlineID, setHeadlineID] = useState("");
   const [contentID, setContentID] = useState("");
+
+  console.log("akahkas", role_id);
 
   useEffect(() => {
     let isMounted = true;
@@ -198,6 +203,9 @@ const DocumentPage = () => {
               {/* <span className="document-meta">Assigned to: {taskAssignee}</span> */}
             </div>
           </div>
+{role_id === 1 || user_id !== assignee_id ? (
+            <></>
+          ) : (
           <div className="document-header-right">
             <button
               className="admin-btn btn-primary"
@@ -212,21 +220,23 @@ const DocumentPage = () => {
                 }
               }}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <line x1="22" y1="2" x2="11" y2="13"></line>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-              </svg>
-              Save my work
-            </button>
-          </div>
+            
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+                Save my work
+              </button>
+            </div>
+          )}
         </div>
 
         <>
@@ -248,57 +258,95 @@ const DocumentPage = () => {
           ) : (
             <>
               <div className="document-editor-container1">
-                <input
-                  type="text"
-                  name="headline"
-                  className="document-editor"
-                  placeholder="Add your headline here..."
-                  maxLength={50}
-                  value={headline}
-                  onChange={(e) => setHeadline(e.target.value)}
-                />
+                {role_id === 1 || user_id !== assignee_id ? (
+                  <input
+                    type="text"
+                    name="headline"
+                    className="document-editor"
+                    placeholder="Add your headline here..."
+                    maxLength={50}
+                    value={headline}
+                    // onChange={(e) => setHeadline(e.target.value)}
+                    readOnly
+                    disabled
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    name="headline"
+                    className="document-editor"
+                    placeholder="Add your headline here..."
+                    maxLength={50}
+                    value={headline}
+                    onChange={(e) => setHeadline(e.target.value)}
+                  />
+                )}
 
-                <div className="editor-footer">
-                  <span className="word-count">
-                    {
-                      headline.split(/\s+/).filter((word) => word.length > 0)
-                        .length
-                    }{" "}
-                    words
-                  </span>
-                  <span className="char-count">
-                    {headline.length} characters
-                  </span>
-                </div>
+                {role_id === 1 || user_id !== assignee_id ? (
+                  <></>
+                ) : (
+                  <div className="editor-footer">
+                    <span className="word-count">
+                      {
+                        headline.split(/\s+/).filter((word) => word.length > 0)
+                          .length
+                      }{" "}
+                      words
+                    </span>
+                    <span className="char-count">
+                      {headline.length} characters
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div className="document-editor-container2">
-                <textarea
-                  name="content"
-                  className="document-editor"
-                  placeholder="Start writing your content here...
+                {role_id === 1 || user_id !== assignee_id ? (
+                  <textarea
+                    name="content"
+                    className="document-editor"
+                    placeholder="Start writing your content here...
 
 Tips:
 • Begin with a compelling introduction
 • Include relevant quotes and data
 • Structure your content with clear sections
 • Proofread before submitting"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                />
+                    value={content}
+                    readOnly
+                    disabled
+                  />
+                ) : (
+                  <textarea
+                    name="content"
+                    className="document-editor"
+                    placeholder="Start writing your content here...
 
-                <div className="editor-footer">
-                  <span className="word-count">
-                    {
-                      content.split(/\s+/).filter((word) => word.length > 0)
-                        .length
-                    }{" "}
-                    words
-                  </span>
-                  <span className="char-count">
-                    {content.length} characters
-                  </span>
-                </div>
+Tips:
+• Begin with a compelling introduction
+• Include relevant quotes and data
+• Structure your content with clear sections
+• Proofread before submitting"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                  />
+                )}
+                {role_id === 1 || user_id !== assignee_id ? (
+                  <></>
+                ) : (
+                  <div className="editor-footer">
+                    <span className="word-count">
+                      {
+                        content.split(/\s+/).filter((word) => word.length > 0)
+                          .length
+                      }{" "}
+                      words
+                    </span>
+                    <span className="char-count">
+                      {content.length} characters
+                    </span>
+                  </div>
+                )}
               </div>
             </>
           )}

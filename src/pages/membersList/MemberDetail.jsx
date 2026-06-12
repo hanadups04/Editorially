@@ -176,7 +176,7 @@ const MemberDetail = () => {
                         {member.username}
                       </h1>
                       <span className={`role-badge-large admin`}>
-                        {member.role}
+                        {member.roles_tbl.role_name}
                       </span>
                       <p className="profile-email">{member.email}</p>
                     </div>

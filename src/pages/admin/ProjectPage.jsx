@@ -11,6 +11,7 @@ import UploadImagesModal from "../../components/project/UploadImagesModa";
 import EditTaskModal from "../../components/project/EditTaskModal";
 import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
 import * as UpdateFunctions from "../../context/functions/UpdateFunctions.js";
+import * as auth from "../../context/auth";
 import "./ProjectPage.css";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient.js";
@@ -32,6 +33,9 @@ const ProjectPage = () => {
   const [project, setProject] = useState({});
   const [subtasks, setSubtasks] = useState([]);
   const [loading, setIsLoading] = useState(true);
+  const [userRole, setUserRole] = useState([]);
+  const [userSection, setUserSection] = useState([]);
+  const [userId, setUserId] = useState([]);
   const navigate = useNavigate();
   const [showapprove, setShowApprove] = useState(false);
   const [showtask, setShowtask] = useState(false);
@@ -62,6 +66,26 @@ const ProjectPage = () => {
         }
       }
     }
+
+    async function fetchRole() {
+      try {
+        const user = await auth.isAuthenticated();
+        console.log("user", user.data.id);
+        const data = await ReadFunctions.getUserProfile(user.data.id);
+        if (isMounted) {
+          console.log("user role is", data);
+          setUserRole(data.roles_tbl.role_id);
+          setUserSection(data.sections_tbl.section_id);
+          setUserId(data.uid);
+        }
+      } catch (error) {
+        console.log("error", error);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    fetchRole();
 
     fetchData();
 
@@ -174,7 +198,9 @@ const ProjectPage = () => {
 
   return (
     <Layout>
-      {(project.step_id == 1 || project.step_id == 2) && (
+
+      {(project.step_id == 1 || project.step_id == 2) &&
+        (userRole === "role-0002" || userRole === "role-0006") && (
         <div className="Project-ApproveRejectBtnsCont">
           <div className="Project-BtnsContent">
             <p className="BtnsTitle">
@@ -201,9 +227,11 @@ const ProjectPage = () => {
             >
               REJECT
             </button>
+
+            </div>
+
           </div>
-        </div>
-      )}
+        )}
 
       <ProjectInfo
         // project={projectID}
@@ -212,6 +240,7 @@ const ProjectPage = () => {
         deadline={formattedDeadline}
         section={project.sections_tbl?.section_name}
         status={project.project_steps_tbl?.step_name}
+        roleId={userRole}
         onEditClick={() => setIsEditProjectModalOpen(true)}
       />
 
@@ -285,26 +314,27 @@ const ProjectPage = () => {
           <h2 className="section-title">Team Tasks</h2>
           {(project.step_id === "3" ||
             project.step_id === "4" ||
-            project.step_id === "5") && (
-            <button
-              className="admin-btn btn-primary"
-              onClick={() => setIsAddTaskModalOpen(true)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
+            project.step_id === "5") &&
+            (userRole === "role-0002" || userRole === "role-0006") && (
+              <button
+                className="admin-btn btn-primary"
+                onClick={() => setIsAddTaskModalOpen(true)}
               >
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              Add Task
-            </button>
-          )}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Add Task
+              </button>
+            )}
         </div>
 
         <div className="tasks-grid">
@@ -320,6 +350,9 @@ const ProjectPage = () => {
               onEditClick={handleEditTaskClick}
               task={subtask.subtask_type}
               projectId={projectID}
+              roleId={userRole}
+              sectionId={userSection}
+              userId={userId}
             />
           ))}
         </div>

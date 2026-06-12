@@ -9,6 +9,7 @@ export default function ProjectInfo({
   section,
   status,
   onEditClick,
+  roleId,
 }) {
   return (
     <div className="card project-info">
@@ -18,6 +19,7 @@ export default function ProjectInfo({
           {status === "Rejected" ? (
             <></>
           ) : (
+          {(roleId === "role-0002" || roleId === "role-0006") && (
             <button
               className="admin-btn btn-secondary btn-sm"
               onClick={onEditClick}
@@ -36,6 +38,7 @@ export default function ProjectInfo({
               </svg>
               Edit Project
             </button>
+          )}
           )}
         </div>
         <p className="card-subtitle">{description}</p>

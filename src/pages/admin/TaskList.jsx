@@ -4,6 +4,7 @@ import Layout from "../../components/templates/AdminTemplate";
 import FilterModal from "./FilterModal";
 import CreateProjectModal from "../../components/project/AddProjectModal.jsx";
 import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
+import * as auth from "../../context/auth";
 import "./TaskList.css";
 import ReactLoading from "react-loading";
 import { supabase } from "../../supabaseClient.js";
@@ -23,6 +24,8 @@ const TaskList = () => {
   const [projects, setAllProjects] = useState([]);
   const [show, setShow] = useState(false);
 
+  const [userRole, setUserRole] = useState([]);
+  const [userSection, setUserSection] = useState([]);
   useEffect(() => {
     let isMounted = true;
 
@@ -40,7 +43,25 @@ const TaskList = () => {
       }
     }
 
+    async function fetchRole() {
+      try {
+        const user = await auth.isAuthenticated();
+        console.log("user", user.data.id);
+        const data = await ReadFunctions.getUserProfile(user.data.id);
+        if (isMounted) {
+          console.log("user role is", data);
+          setUserRole(data.roles_tbl.role_id);
+          setUserSection(data.sections_tbl.section_id);
+        }
+      } catch (error) {
+        console.log("error", error);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
     fetchProjects();
+    fetchRole();
 
     const subscription = supabase
       .channel("projects-updates")
@@ -95,6 +116,11 @@ const TaskList = () => {
       }
     }
 
+    const checkRole = ["role-0003", "role-0004"].includes(userRole);
+    if (checkRole && project.section_id !== userSection) {
+      return false;
+    }
+
     return matchesSearch && matchesStatus && matchesDeadline;
   });
 
@@ -130,7 +156,7 @@ const TaskList = () => {
       <div className="dashboard-container">
         <div className="dashboard-header">
           <div className="header-text">
-            <h1>Projects</h1>
+            <span>Projects</span>
             <p>Manage all your publication projects</p>
           </div>
         </div>
@@ -160,7 +186,7 @@ const TaskList = () => {
 
           <div className="filter-controls">
             <button
-              className="admin-btn btn-secondary"
+              className="filter-btn"
               onClick={() => setIsFilterModalOpen(true)}
             >
               <svg
@@ -190,30 +216,38 @@ const TaskList = () => {
           </div>
         </div>
 
-        <div className="projects-stats">
-          <span className="stats-text">
-            Showing {filteredProjects.length} of {projects.length} projects
-          </span>
+        {userRole === "role-0003" || userRole === "role-0005" ? (
+          <div className="projects-stats">
+            <span className="stats-text">
+              Showing {filteredProjects.length} of {projects.length} projects
+            </span>
+          </div>
+        ) : (
+          <div className="projects-stats">
+            <span className="stats-text">
+              Showing {filteredProjects.length} of {projects.length} projects
+            </span>
 
-          <button
-            className="admin-btn btn-primary"
-            onClick={() => setIsCreateProjModalOpen(true)}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
+            <button
+              className="admin-btn btn-primary"
+              onClick={() => setIsCreateProjModalOpen(true)}
             >
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            Create Project
-          </button>
-        </div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Create Project
+            </button>
+          </div>
+        )}
 
         <div className="projects-grid">
           {loading ? (
@@ -261,44 +295,58 @@ const TaskList = () => {
                     <div className="project-card-body">
                       <div className="project-info-row">
                         <div className="project-info-item">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
+                          <span
+                            className="project-icon-wrap"
+                            aria-hidden="true"
                           >
-                            <rect
-                              x="3"
-                              y="4"
-                              width="18"
-                              height="18"
-                              rx="2"
-                              ry="2"
-                            ></rect>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
-                          </svg>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <rect
+                                x="3"
+                                y="4"
+                                width="18"
+                                height="18"
+                                rx="2"
+                                ry="2"
+                              ></rect>
+                              <line x1="16" y1="2" x2="16" y2="6"></line>
+                              <line x1="8" y1="2" x2="8" y2="6"></line>
+                              <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                          </span>
                           <span>{date}</span>
                         </div>
                       </div>
                       <div className="project-info-row">
                         <div className="project-info-item">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
+                          <span
+                            className="project-icon-wrap"
+                            aria-hidden="true"
                           >
-                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                          </svg>
-                          <span>{project.section_id}</span>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                          </span>
+                          <span>{project.sections_tbl.section_name}</span>
                         </div>
                       </div>
                     </div>
@@ -342,6 +390,8 @@ const TaskList = () => {
           onAdd={() => {
             setShow(true);
           }}
+          // sectionUser={userSection}
+          // roleUser={userRole}
         />
       )}
 
