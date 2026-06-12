@@ -1,7 +1,10 @@
+
+
 .overview-page {
   padding: var(--spacing-xl);
   max-width: 100%;
   margin: 0 auto;
+  background-color: var(--bg-primary) !important;
 }
 
 .overview-header {

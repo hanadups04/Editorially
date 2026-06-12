@@ -10,7 +10,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
 import { supabase } from "../../supabaseClient.js";
 import { isAuthenticated } from "../../context/auth.js";
-
+import * as auth from "../../context/auth";
 import * as AddFunctions from "../../context/functions/AddFunctions.js";
 // import { useAdminContext } from "../../context/Context.jsx";
 import { Key } from "slate-dom";
@@ -28,9 +28,13 @@ export default function CreateParentTaskModal({
   hideCancel = false,
   branchData,
   secType,
+  // sectionUser,
+  // roleUser,
 }) {
   const [sections, setSections] = useState([]);
   const [loading, setIsLoading] = useState(true);
+  const [userRole, setUserRole] = useState([]);
+  const [userSection, setUserSection] = useState([]);
   const dateModified = useRef(false);
 
   useEffect(() => {
@@ -50,11 +54,38 @@ export default function CreateParentTaskModal({
       }
     }
 
+    async function fetchRole() {
+      try {
+        const user = await auth.isAuthenticated();
+        console.log("user", user.data.id);
+        const data = await ReadFunctions.getUserProfile(user.data.id);
+        if (isMounted) {
+          console.log("user role is", data);
+          setUserRole(data.roles_tbl.role_id);
+          setUserSection(data.sections_tbl.section_id);
+        }
+      } catch (error) {
+        console.log("error", error);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    fetchRole();
+
     fetchSections();
     return () => {
       isMounted = false;
     };
   }, []);
+
+  const filteredSections = sections.filter((section) => {
+    const checkRole = "role-0004".includes(userRole);
+    if (checkRole) {
+      return Number(section.section_id) === Number(userSection);
+    }
+    return true;
+  });
 
   const [formData, setFormData] = useState({
     title: "",
@@ -199,7 +230,7 @@ export default function CreateParentTaskModal({
                 onChange={handleChange}
               >
                 <option>Select A Section</option>
-                {sections.map((section) => (
+                {filteredSections.map((section) => (
                   <option key={section.section_id} value={section.section_id}>
                     {section.section_name}
                   </option>
