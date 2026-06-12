@@ -1,4 +1,22 @@
 import { supabase } from "../../supabaseClient";
+import imageCompression from "browser-image-compression";
+
+export async function compressImage(image) {
+  const options = {
+    maxSizeMB: 0.5,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true,
+  };
+
+  try {
+    const compressedFile = await imageCompression(image, options);
+    console.log("compressed file: ", compressedFile);
+
+    return compressedFile;
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 export async function insertEditRequest(data) {
   await supabase.from("edit_request_tbl").insert({
@@ -40,6 +58,7 @@ export async function createArticle(data, project_id) {
     author_id2: data.author_id2,
     author_id1: data.author_id1,
     section_id: data.section_id,
+    thumbnail: data.thumbnail,
   });
 
   const { error1 } = await supabase

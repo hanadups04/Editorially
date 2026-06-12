@@ -15,6 +15,8 @@ import * as auth from "../../context/auth";
 import "./ProjectPage.css";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient.js";
+import Toast from "react-bootstrap/Toast";
+import ToastContainer from "react-bootstrap/ToastContainer";
 
 const ProjectPage = () => {
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
@@ -35,6 +37,10 @@ const ProjectPage = () => {
   const [userSection, setUserSection] = useState([]);
   const [userId, setUserId] = useState([]);
   const navigate = useNavigate();
+  const [showapprove, setShowApprove] = useState(false);
+  const [showtask, setShowtask] = useState(false);
+  const [showReject, setShowReject] = useState(false);
+  const [showUpload, setShowUpload] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -192,28 +198,38 @@ const ProjectPage = () => {
 
   return (
     <Layout>
+
       {(project.step_id == 1 || project.step_id == 2) &&
         (userRole === "role-0002" || userRole === "role-0006") && (
-          <div className="Project-ApproveRejectBtnsCont">
-            <div className="Project-BtnsContent">
-              <p className="BtnsTitle">
-                Do you want to Approve or Reject this Project?
-              </p>
+        <div className="Project-ApproveRejectBtnsCont">
+          <div className="Project-BtnsContent">
+            <p className="BtnsTitle">
+              Do you want to Approve or Reject this Project?
+            </p>
+          </div>
+          <div className="Project-Buttons">
+            <button
+              className="admin-btn btn-success"
+              onClick={async () => {
+                await UpdateFunctions.approveProject(projectID);
+                setShowApprove(true);
+              }}
+            >
+              APPROVE
+            </button>
+            <button
+              className="admin-btn btn-delete"
+              onClick={async () => {
+                await UpdateFunctions.rejectProject(projectID);
+                setShowReject(true);
+                // navigate(-1);
+              }}
+            >
+              REJECT
+            </button>
+
             </div>
-            <div className="Project-Buttons">
-              <button
-                className="admin-btn btn-success"
-                onClick={() => UpdateFunctions.approveProject(projectID)}
-              >
-                APPROVE
-              </button>
-              <button
-                className="admin-btn btn-delete"
-                onClick={() => UpdateFunctions.rejectProject(projectID)}
-              >
-                REJECT
-              </button>
-            </div>
+
           </div>
         )}
 
@@ -347,6 +363,9 @@ const ProjectPage = () => {
         onClose={() => setIsAddTaskModalOpen(false)}
         onSubmit={handleAddTask}
         section_id={project.section_id}
+        onAdd={() => {
+          setShowtask(true);
+        }}
       />
 
       <EditProjectModal
@@ -366,12 +385,73 @@ const ProjectPage = () => {
         onSubmit={handleEditTask}
       />
 
-      <UploadImagesModal
-        isOpen={isUploadModalOpen}
-        onClose={() => setIsUploadModalOpen(false)}
-        taskId={taskId}
-        project_id={projectID}
-      />
+      {isUploadModalOpen && (
+        <UploadImagesModal
+          isOpen={isUploadModalOpen}
+          onClose={() => setIsUploadModalOpen(false)}
+          taskId={taskId}
+          project_id={projectID}
+          onAdd={() => {
+            setShowUpload(true);
+          }}
+        />
+      )}
+
+      <ToastContainer position="top-end" className="p-3">
+        <Toast
+          show={showapprove}
+          onClose={() => setShowApprove(false)}
+          delay={3000}
+          autohide
+        >
+          <Toast.Header>
+            <strong className="me-auto">Project Approved!</strong>
+          </Toast.Header>
+          <Toast.Body>Project is now Approved!</Toast.Body>
+        </Toast>
+      </ToastContainer>
+
+      <ToastContainer position="top-end" className="p-3">
+        <Toast
+          show={showtask}
+          onClose={() => setShowtask(false)}
+          delay={3000}
+          autohide
+        >
+          <Toast.Header>
+            <strong className="me-auto">Task Created!</strong>
+          </Toast.Header>
+          <Toast.Body>Task has been created!</Toast.Body>
+        </Toast>
+      </ToastContainer>
+
+      <ToastContainer position="top-end" className="p-3">
+        <Toast
+          show={showReject}
+          onClose={() => setShowReject(false)}
+          delay={3000}
+          autohide
+        >
+          <Toast.Header>
+            <strong className="me-auto">Project Rejected!</strong>
+          </Toast.Header>
+          <Toast.Body>Project has been Rejected!</Toast.Body>
+        </Toast>
+      </ToastContainer>
+
+      <ToastContainer position="top-end" className="p-3">
+        <Toast
+          show={showUpload}
+          onClose={() => setShowUpload(false)}
+          delay={3000}
+          autohide
+        >
+          <Toast.Header>
+            <strong className="me-auto">Image Uploaded!</strong>
+          </Toast.Header>
+          <Toast.Body>Image has been uploaded!</Toast.Body>
+        </Toast>
+      </ToastContainer>
     </Layout>
   );
 };

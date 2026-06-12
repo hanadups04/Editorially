@@ -1,5 +1,6 @@
 import ErrorList from "antd/es/form/ErrorList";
 import { supabase } from "../../supabaseClient";
+import ColumnGroup from "antd/es/table/ColumnGroup";
 
 export async function fetchAllUsers() {
   const { data, error } = await supabase
@@ -144,7 +145,7 @@ export async function getProjectsLength() {
   const { count, error } = await supabase
     .from("projects_tbl")
     .select("*", { count: "exact", head: true })
-    .neq("step_id", 8);
+    .in("step_id", ["2", "3"]);
 
   if (error) throw error;
   return count;
@@ -174,7 +175,7 @@ export async function getOverdue() {
     .from("projects_tbl")
     .select("*", { count: "exact", head: true })
     .lt("deadline", new Date().toISOString())
-    .neq("step_id", 8);
+    .not("step_id", "in", "(0,4)");
 
   if (error) throw error;
   return count;
@@ -188,12 +189,16 @@ export async function projectsByMonth() {
   });
 
   if (error) throw error;
-  console.log(data);
+  console.log(data, "month projects");
   return data;
 }
 
 export async function getProjectByStep() {
-  const { data, error } = await supabase.rpc("projects_by_step");
+  const year = new Date().getFullYear();
+
+  const { data, error } = await supabase.rpc("projects_by_step", {
+    current_year: year,
+  });
 
   if (error) {
     console.error(error);
@@ -210,6 +215,8 @@ export async function avengersAssemble(ironman_id) {
     .from("contents_tbl")
     .select("*, project_subtask_tbl ( users_tbl ( username, uid ) )")
     .eq("project_id", ironman_id);
+
+  console.log("avengers: ", data);
 
   if (error) {
     throw error;
@@ -277,74 +284,19 @@ export async function getSectionArticles(sectionName) {
 export async function readWork(taskId) {
   const { data, error } = await supabase
     .from("contents_tbl")
-    .select(`content, category`)
+    .select(`content, category, content_id`)
     .eq("subtask_id", taskId);
 
   if (error) return error;
   return data;
 }
 
-// export async function fetchRecentArticles() {
-//   const {data, error} = await Promise.All([
-//     supabase.from("articles_tbl")
-//     .select(`*, sections_tbl(section_name),
-//       author1:users_tbl!author_id1(username),
-//       author2:users_tbl!author_id2(username),`)
-//     .eq("sections_tbl.section_name", "News")
-//     .order("date_posted", { ascending: false})
-//     .limit(10),
+export async function readImages(taskId) {
+  const { data, error } = await supabase
+    .from("contents_tbl")
+    .select(`content, category, content_id`)
+    .eq("subtask_id", taskId);
 
-//     supabase.from("articles_tbl")
-//     .select(`*, sections_tbl(section_name),
-//       author1:users_tbl!author_id1(username),
-//       author2:users_tbl!author_id2(username)`)
-//     .eq("sections_tbl.section_name", "Sports")
-//     .order("date_posted", { ascending: false})
-//     .limit(10),
-
-//     supabase.from("articles_tbl")
-//     .select(`*, sections_tbl(section_name),
-//       author1:users_tbl!author_id1(username),
-//       author2:users_tbl!author_id2(username)`)
-//     .eq("sections_tbl.section_name", "Literary")
-//     .order("date_posted", { ascending: false})
-//     .limit(10),
-
-//     supabase.from("articles_tbl")
-//     .select(`*, sections_tbl(section_name),
-//       author1:users_tbl!author_id1(username),
-//       author2:users_tbl!author_id2(username)`)
-//     .eq("sections_tbl.section_name", "Opinion")
-//     .order("date_posted", { ascending: false})
-//     .limit(10),
-
-//     supabase.from("articles_tbl")
-//     .select(`*, sections_tbl(section_name),
-//       author1:users_tbl!author_id1(username),
-//       author2:users_tbl!author_id2(username)`)
-//     .eq("sections_tbl.section_name", "General")
-//     .order("date_posted", { ascending: false})
-//     .limit(10),
-
-//     supabase.from("articles_tbl")
-//     .select(`*, sections_tbl(section_name),
-//       author1:users_tbl!author_id1(username),
-//       author2:users_tbl!author_id2(username)`)
-//     .eq("sections_tbl.section_name", "Sci-tech")
-//     .order("date_posted", { ascending: false})
-//     .limit(10),
-
-//     supabase.from("articles_tbl")
-//     .select(`*, sections_tbl(section_name),
-//       author1:users_tbl!author_id1(username),
-//       author2:users_tbl!author_id2(username)`)
-//     .eq("sections_tbl.section_name", "Feature")
-//     .order("date_posted", { ascending: false})
-//     .limit(10),
-//   ])
-
-//   if (error) return error;
-//   return data;
-// }
-
-//--------------------------------------------------------------------- <=3 TITI NI DON ANDREI TANEO -------------------------------------------------------- //
+  if (error) return error;
+  return data;
+}

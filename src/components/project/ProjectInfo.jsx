@@ -16,6 +16,9 @@ export default function ProjectInfo({
       <div className="card-header">
         <div className="card-header-top">
           <h1 className="card-title">{title}</h1>
+          {status === "Rejected" ? (
+            <></>
+          ) : (
           {(roleId === "role-0002" || roleId === "role-0006") && (
             <button
               className="admin-btn btn-secondary btn-sm"
@@ -35,6 +38,7 @@ export default function ProjectInfo({
               </svg>
               Edit Project
             </button>
+          )}
           )}
         </div>
         <p className="card-subtitle">{description}</p>

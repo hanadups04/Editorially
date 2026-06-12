@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import "./Dashboard.css";
 // import { ChartContainer } from "@/components/ui/chart";
 import {
@@ -16,12 +16,12 @@ import {
   Cell,
 } from "recharts";
 import Layout from "../../components/templates/AdminTemplate";
-import * as ReadFunctions from "../../context/functions/ReadFunctions"
+import * as ReadFunctions from "../../context/functions/ReadFunctions";
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [ongoing, setOngoing] = useState(0);
-  const [proposal, setProposal] = useState(0)
+  const [proposal, setProposal] = useState(0);
   const [completed, setCompleted] = useState(0);
   const [overdue, setOverdue] = useState(0);
   const [stats, setStats] = useState([]);
@@ -29,12 +29,12 @@ const Dashboard = () => {
   const [success, setSuccess] = useState("");
   const [months, setMonths] = useState([]);
   const [steps, setSteps] = useState([]);
-
+  const year = new Date().getFullYear();
 
   useEffect(() => {
     let isMounted = true;
-    
-    async function fetchDatas() { 
+
+    async function fetchDatas() {
       try {
         const projects = await ReadFunctions.getProjectsLength();
         const proposals = await ReadFunctions.getForProposal();
@@ -43,103 +43,42 @@ const Dashboard = () => {
         const monthly = await ReadFunctions.projectsByMonth();
         const step = await ReadFunctions.getProjectByStep();
 
-        if(isMounted) {
-        setSuccess("yehey sakses");
-        setOngoing(projects);
-        setProposal(proposals)
-        setCompleted(posted);
-        setOverdue(over);
-        setMonths(monthly);
-        setSteps(step);
+        if (isMounted) {
+          setSuccess("yehey sakses");
+          setOngoing(projects);
+          setProposal(proposals);
+          setCompleted(posted);
+          setOverdue(over);
+          setMonths(monthly);
+          setSteps(step);
 
-        console.log("eto data mo tol: ", step);
+          console.log("eto data mo tol: ", step);
         }
       } catch (error) {
         setError("Something went wrong. Please try again later");
       } finally {
-        if(isMounted) setLoading(false);
+        if (isMounted) setLoading(false);
       }
-
-      
-      
     }
 
-      fetchDatas();
+    fetchDatas();
 
-
-    return () =>  {
+    return () => {
       isMounted = false;
       setError("");
       setSuccess("");
-    }
-  }, [])
-
-  // // Sample data for stats
-  // const stats = [
-  //   { label: "Ongoing Projects", value: 12, change: "+3", trend: "up" },
-  //   { label: "For Proposal", value: 8, change: "+2", trend: "up" },
-  //   { label: "Completed", value: 45, change: "+5", trend: "up" },
-  //   { label: "Overdue Tasks", value: 3, change: "-2", trend: "down" },
-  // ];
-
-  // Placeholder data for charts
-  const projectsByMonth = [
-    { month: "Jan", projects: 12 },
-    { month: "Feb", projects: 15 },
-    { month: "Mar", projects: 10 },
-    { month: "Apr", projects: 18 },
-    { month: "May", projects: 14 },
-    { month: "Jun", projects: 16 },
-    { month: "Jul", projects: 16 },
-    { month: "Aug", projects: 16 },
-    { month: "Sept", projects: 16 },
-    { month: "Oct", projects: 16 },
-    { month: "Nov", projects: 16 },
-    { month: "Dec", projects: 16 },
-
-  ];
-
-  const statusDistribution = [
-    { name: "Ongoing", value: 12 },
-    { name: "For Proposal", value: 8 },
-    { name: "Review", value: 5 },
-    { name: "Completed", value: 45 },
-  ];
+    };
+  }, []);
 
   const COLORS = ["#6366f1", "#f59e0b", "#8b5cf6", "#10b981"];
 
-  const recentActivities = [
-    {
-      project: "Modern Kitchen Renovation",
-      activity: "Task completed",
-      time: "2 hours ago",
-    },
-    {
-      project: "Office Space Redesign",
-      activity: "Status updated",
-      time: "5 hours ago",
-    },
-    {
-      project: "Luxury Bathroom Update",
-      activity: "New task added",
-      time: "1 day ago",
-    },
-    {
-      project: "Living Room Makeover",
-      activity: "Images uploaded",
-      time: "2 days ago",
-    },
-  ];
-
-    if (loading) {
-      
+  if (loading) {
     return (
       <Layout>
         <div className="content-detail">Loading...</div>
       </Layout>
     );
   }
-
 
   return (
     <Layout>
@@ -153,45 +92,45 @@ const Dashboard = () => {
 
         <div className="stats-grid">
           {/* {stats.map((stat, index) => ( */}
-            <div key="ongoing" className="stat-card card">
-              <div className="stat-label">Ongoing Projects</div>
-              <div className="stat-value">{ongoing}</div>
-              {/* <div className={`stat-change ${stat.trend}`}> */}
-                {/* <span>{stat.change}</span> */}
-                {/* <span className="stat-period">this month</span> */}
-              {/* </div> */}
-            </div>
-            <div key="proposal" className="stat-card card">
-              <div className="stat-label">For Proposal</div>
-              <div className="stat-value">{proposal}</div>
-              {/* <div className={`stat-change ${stat.trend}`}> */}
-                {/* <span>{stat.change}</span> */}
-                {/* <span className="stat-period">this month</span> */}
-              {/* </div> */}
-            </div>
-            <div key="complete" className="stat-card card">
-              <div className="stat-label">Completed</div>
-              <div className="stat-value">{completed}</div>
-              {/* <div className={`stat-change ${stat.trend}`}> */}
-                {/* <span>{stat.change}</span> */}
-                {/* <span className="stat-period">this month</span> */}
-              {/* </div> */}
-            </div>
-            <div key="overdue" className="stat-card card">
-              <div className="stat-label">Overdue</div>
-              <div className="stat-value">{overdue}</div>
-              {/* <div className={`stat-change ${stat.trend}`}> */}
-                {/* <span>{stat.change}</span> */}
-                {/* <span className="stat-period">this month</span> */}
-              {/* </div> */}
-            </div>
+          <div key="ongoing" className="stat-card card">
+            <div className="stat-label">Ongoing Projects</div>
+            <div className="stat-value">{ongoing}</div>
+            {/* <div className={`stat-change ${stat.trend}`}> */}
+            {/* <span>{stat.change}</span> */}
+            {/* <span className="stat-period">this month</span> */}
+            {/* </div> */}
+          </div>
+          <div key="proposal" className="stat-card card">
+            <div className="stat-label">For Proposal</div>
+            <div className="stat-value">{proposal}</div>
+            {/* <div className={`stat-change ${stat.trend}`}> */}
+            {/* <span>{stat.change}</span> */}
+            {/* <span className="stat-period">this month</span> */}
+            {/* </div> */}
+          </div>
+          <div key="complete" className="stat-card card">
+            <div className="stat-label">Completed</div>
+            <div className="stat-value">{completed}</div>
+            {/* <div className={`stat-change ${stat.trend}`}> */}
+            {/* <span>{stat.change}</span> */}
+            {/* <span className="stat-period">this month</span> */}
+            {/* </div> */}
+          </div>
+          <div key="overdue" className="stat-card card">
+            <div className="stat-label">Overdue</div>
+            <div className="stat-value">{overdue}</div>
+            {/* <div className={`stat-change ${stat.trend}`}> */}
+            {/* <span>{stat.change}</span> */}
+            {/* <span className="stat-period">this month</span> */}
+            {/* </div> */}
+          </div>
           {/* ))} */}
         </div>
 
         <div className="charts-grid">
           <div className="chart-card card">
             <div className="card-header">
-              <h2 className="card-title">Projects by Month</h2>
+              <h2 className="card-title">Active Projects by Month</h2>
               <p className="card-subtitle">Monthly project creation trend</p>
             </div>
             <div className="chart-container">
@@ -213,7 +152,9 @@ const Dashboard = () => {
 
           <div className="chart-card card">
             <div className="card-header">
-              <h2 className="card-title">Project Status Distribution</h2>
+              <h2 className="card-title">
+                Project Distribution For Year: {`${year}`}
+              </h2>
               <p className="card-subtitle">Current project breakdown</p>
             </div>
             <div className="chart-container">

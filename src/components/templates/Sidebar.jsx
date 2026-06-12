@@ -88,7 +88,8 @@ const Sidebar = ({ isCollapsed, isOpen }) => {
     if (path === "/projects") {
       return (
         location.pathname.startsWith("/projects") ||
-        location.pathname.startsWith("/tasks")
+        location.pathname.startsWith("/tasks") ||
+        location.pathname.startsWith("/create-article/")
       );
     }
 

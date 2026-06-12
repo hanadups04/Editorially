@@ -258,7 +258,11 @@ export default function ContentManagement() {
                       className="content-card"
                     >
                       <div className="card-thumbnail">
-                        <img src={content.images} alt={content.headline} />
+                        <img
+                          src={content.thumbnail}
+                          loading="lazy"
+                          alt={content.headline}
+                        />
                       </div>
                       <div className="card-body">
                         <span className="card-section">
@@ -459,20 +463,6 @@ export default function ContentManagement() {
                       <option value="oldest">Oldest First</option>
                     </select>
                   </div>
-                </div>
-                <div className="admin-footer">
-                  <button
-                    className="admin-btn btn-reset"
-                    onClick={resetFilters}
-                  >
-                    Reset
-                  </button>
-                  <button
-                    className="admin-btn btn-apply"
-                    onClick={applyFilters}
-                  >
-                    Apply
-                  </button>
                 </div>
               </div>
             </div>

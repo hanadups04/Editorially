@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import "./AddMembersModal.css";
 import * as ReadFunctions from "../../context/functions/ReadFunctions";
 import * as auth from "../../context/auth";
+import ConfirmationModal from "../ArticleManagement/ConfirmationModal";
+import ReactLoading from "react-loading";
 
 export const AddMemberModal = ({ open, onOpenChange, onAdd }) => {
   const [formData, setFormData] = useState({
@@ -14,6 +16,10 @@ export const AddMemberModal = ({ open, onOpenChange, onAdd }) => {
   const [sections, setSections] = useState([]);
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [btnload, setbtnload] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -43,9 +49,8 @@ export const AddMemberModal = ({ open, onOpenChange, onAdd }) => {
 
   if (!open) return null;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async () => {
+    setbtnload(true);
     if (
       !formData.username ||
       !formData.email ||
@@ -60,6 +65,7 @@ export const AddMemberModal = ({ open, onOpenChange, onAdd }) => {
     const createUser = await auth.createUser(formData);
     console.log("formdata new user: ", formData);
     console.log("user created: ", createUser);
+    if (onAdd) onAdd();
 
     // onAdd(formData);
     setFormData({
@@ -69,7 +75,9 @@ export const AddMemberModal = ({ open, onOpenChange, onAdd }) => {
       section_id: "",
       role_id: "",
     });
+    setIsConfirmOpen(false);
     onOpenChange(false);
+    setbtnload(false);
   };
 
   const handleClose = () => {
@@ -105,7 +113,7 @@ export const AddMemberModal = ({ open, onOpenChange, onAdd }) => {
             Loading...
           </div>
         ) : (
-          <form onSubmit={handleSubmit}>
+          <form>
             <div className="add-modal-body">
               <div className="add-form-group">
                 <label htmlFor="username">Full Name</label>
@@ -205,13 +213,51 @@ export const AddMemberModal = ({ open, onOpenChange, onAdd }) => {
               >
                 Cancel
               </button>
-              <button type="submit" className="add-save-button">
-                Add Member
-              </button>
+
+              {btnload ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <ReactLoading
+                    type="spinningBubbles"
+                    color="#133e87"
+                    height={60}
+                    width={60}
+                  />
+                </div>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className="add-save-button"
+                    onClick={() => {
+                      setIsConfirmOpen(true);
+                    }}
+                  >
+                    Add Member
+                  </button>
+                </>
+              )}
             </div>
           </form>
         )}
       </div>
+
+      <ConfirmationModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={() => {
+          handleSubmit();
+        }}
+        title="Add Member"
+        message="Are you sure you want to add this user? They will be able to access the site."
+        confirmText="Add Member"
+        variant="default"
+      />
     </div>
   );
 };
