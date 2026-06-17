@@ -17,7 +17,7 @@ export async function fetchStatus() {
   const { data, error } = await supabase
     .from("project_steps_tbl")
     .select("*")
-    .not("step_id", "in", "(0,4)");
+    .not("step_id", "in", "(0,5)");
 
   if (error) return error;
 
@@ -68,7 +68,7 @@ export async function fetchAllProjects() {
   const { data, error } = await supabase
     .from("projects_tbl")
     .select("*, project_steps_tbl ( step_name ), sections_tbl ( section_name )")
-    .not("step_id", "in", "(4,0)")
+    .not("step_id", "in", "(5,0)")
     .order("created_at", { ascending: false });
 
   if (error) throw error;
@@ -188,7 +188,7 @@ export async function getOverdue() {
     .from("projects_tbl")
     .select("*", { count: "exact", head: true })
     .lt("deadline", new Date().toISOString())
-    .not("step_id", "in", "(0,4)");
+    .not("step_id", "in", "(0,5)");
 
   if (error) throw error;
   return count;
