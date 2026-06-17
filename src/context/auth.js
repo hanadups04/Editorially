@@ -83,6 +83,17 @@ export async function changePass(newPassword) {
   }
 }
 
+export async function sendResetEmail(email) {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: "https://admin.editorially.app/forgot-password",
+    // redirectTo: "http://localhost:5173/forgot-password",
+  });
+
+  if (error) {
+    console.error(error);
+  }
+}
+
 export async function createUser(formdata) {
   // Get current user session
   const {

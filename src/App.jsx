@@ -36,6 +36,7 @@ import OurProcessPage from "./pages/reader/OurProcessPage.jsx";
 import { useRegisterSW } from "virtual:pwa-register/react";
 import PwaInstall from "./components/readerSide/Pwa.jsx";
 import NotFound from "./pages/reader/NotFound.jsx";
+import ForgotPassword from "./pages/admin/ForgotPass.jsx";
 
 const ProtectedRoute = ({ requiredAccessLvl, children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -124,6 +125,7 @@ function App() {
           {/* <Route path="/Readers/:id" element={<LandingPage />} /> */}
           {/* <Route path="/Search" element={<LandingPage />} /> */}
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="*" element={<NotFound />} />
 
           {/* only allow access on admin roles */}

@@ -89,8 +89,9 @@ export async function fetchSingleProject(project_id) {
 export async function fetchSingleUser(uid) {
   const { data, error } = await supabase
     .from("users_tbl")
-    .select("*")
-    .eq("uid", uid);
+    .select("*, roles_tbl ( access_level )")
+    .eq("uid", uid)
+    .maybeSingle();
 
   if (error) throw error;
   return data;
@@ -101,6 +102,18 @@ export async function getPostedArticles() {
     .from("articles_tbl")
     .select("*, sections_tbl(section_name)")
     .order("date_posted", { ascending: false });
+
+  if (error) return error;
+
+  return data;
+}
+
+export async function getAssignee(subtask_id) {
+  const { data, error } = await supabase
+    .from("project_subtask_tbl")
+    .select("users_tbl (uid)")
+    .eq("subtask_id", subtask_id)
+    .maybeSingle();
 
   if (error) return error;
 

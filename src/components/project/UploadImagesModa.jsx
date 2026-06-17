@@ -115,6 +115,13 @@ const UploadImagesModal = ({ isOpen, onClose, taskId, project_id, onAdd }) => {
       project_id: project_id,
     });
 
+    const payload3 = await supabase
+      .from("project_subtask_tbl")
+      .update({
+        is_done: true,
+      })
+      .eq("subtask_id", taskId);
+
     console.log("data booger: ", payload);
   };
 

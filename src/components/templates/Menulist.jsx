@@ -145,19 +145,19 @@ export default function MenuList({
   // Build menu items and choose icon src based on currently selected key.
   const menuItems = useMemo(
     () => [
-      {
-        key: "dashboard",
-        icon: (
-          <img
-            src={selectedKeys[0] === "dashboard" ? DashboardB : DashboardW}
-            alt="dashboard"
-            className="menu-icon"
-          />
-        ),
-        label: "Dashboard",
-        roles: [5, 4],
-        style: { color: selectedKeys[0] === "dashboard" ? "black" : "white" },
-      },
+      // {
+      //   key: "dashboard",
+      //   icon: (
+      //     <img
+      //       src={selectedKeys[0] === "dashboard" ? DashboardB : DashboardW}
+      //       alt="dashboard"
+      //       className="menu-icon"
+      //     />
+      //   ),
+      //   label: "Dashboard",
+      //   roles: [5, 4],
+      //   style: { color: selectedKeys[0] === "dashboard" ? "black" : "white" },
+      // },
       {
         key: "eichomepage",
         icon: (
@@ -238,11 +238,11 @@ export default function MenuList({
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectedKeys[0]] // only rebuild icons when selected key changes
+    [selectedKeys[0]], // only rebuild icons when selected key changes
   );
 
   const filteredMenuItems = menuItems.filter((item) =>
-    item.roles.includes(userRole)
+    item.roles.includes(userRole),
   );
 
   let groupedMenuItems = {};
@@ -252,14 +252,14 @@ export default function MenuList({
         icon: <img src={ProjCms} alt="pdf-icon" className="menu-icon" />,
         label: "Projects & CMS",
         items: filteredMenuItems.filter((item) =>
-          ["eichomepage", "cms"].includes(item.key)
+          ["eichomepage", "cms"].includes(item.key),
         ),
       },
       MembersNApplicants: {
         icon: <img src={MembersW} alt="mem-icon" className="menu-icon" />,
         label: "Members & Applicants",
         items: filteredMenuItems.filter((item) =>
-          ["members", "applicants"].includes(item.key)
+          ["members", "applicants"].includes(item.key),
         ),
       },
     };
@@ -332,7 +332,7 @@ export default function MenuList({
           selectedKeys={selectedKeys}
           onClick={handleMenuClick}
           items={filteredMenuItems.filter((item) =>
-            ["profile", "readerMode", "logout"].includes(item.key)
+            ["profile", "readerMode", "logout"].includes(item.key),
           )}
         />
       )}
