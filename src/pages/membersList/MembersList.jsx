@@ -17,7 +17,7 @@ const MembersList = () => {
   const [filters, setFilters] = useState({ section: "", role: "" });
   const [loading, setIsLoading] = useState(true);
   const [members, setMembers] = useState([]);
-  const [userRole, setRole] = useState([]);
+  const [accessLvl, setAccessLvl] = useState([]);
   const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const MembersList = () => {
         const data = await ReadFunctions.getUserProfile(user.data.id);
         if (isMounted) {
           console.log("userdata is: ", data);
-          setRole(data.roles_tbl.access_level);
+          setAccessLvl(data.roles_tbl.access_level);
         }
       } catch (error) {
         console.error(error);
@@ -149,7 +149,7 @@ const MembersList = () => {
               </svg>
               Filter
             </button>
-            {userRole === 5 && (
+            {accessLvl === 5 && (
               <button
                 className="filter-button"
                 onClick={() => setIsAddMemberOpen(true)}

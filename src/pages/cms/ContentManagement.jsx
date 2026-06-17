@@ -16,7 +16,7 @@ import { supabase } from "../../supabaseClient";
 export default function ContentManagement() {
   const [loading, setIsLoading] = useState(true);
   const [contents, setContents] = useState([]);
-  const [userRole, setRole] = useState([]);
+  const [accessLvl, setAccessLvl] = useState([]);
   const [userId, setId] = useState([]);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function ContentManagement() {
         if (isMounted) {
           console.log("userdata is: ", data);
           setId(user.data.id);
-          setRole(data.roles_tbl.access_level);
+          setAccessLvl(data.roles_tbl.access_level);
         }
       } catch (error) {
         console.error(error);
@@ -326,7 +326,7 @@ export default function ContentManagement() {
                       </div>
 
                       <div className="card-actions">
-                        {userRole < 3 ? (
+                        {accessLvl < 3 ? (
                           <button
                             className="btn0 btn-edit"
                             onClick={(e) => {
@@ -358,7 +358,7 @@ export default function ContentManagement() {
                           </button>
                         )}
 
-                        {userRole === 5 && (
+                        {accessLvl === 5 && (
                           <>
                             {content.visible ? (
                               <button

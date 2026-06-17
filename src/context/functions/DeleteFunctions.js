@@ -30,3 +30,29 @@ export async function archiveArticle(article_id, archiveStatus) {
 
   return data;
 }
+
+export async function deleteProject(project_id) {
+  const {error} = await supabase
+    .from("projects_tbl")
+    .delete()
+    .eq("project_id", project_id);
+
+  if (error) {
+    console.error("Delete Project Failed", error);
+    return error;
+  }
+  return true;
+}
+
+export async function deleteTask(subtask_id) {
+  const {error} = await supabase
+    .from("projects_subtask_tbl")
+    .delete()
+    .eq("subtask_id", subtask_id);
+
+  if (error) {
+    console.error("Delete Task Failed", error);
+    return error;
+  }
+  return true;
+}

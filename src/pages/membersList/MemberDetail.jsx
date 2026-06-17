@@ -18,7 +18,7 @@ const MemberDetail = () => {
   const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
-  const [userRole, setRole] = useState([]);
+  const [accessLvl, setAccessLvl] = useState([]);
 
   const isProfilePage = location.pathname.startsWith("/profile");
   const isMembersPage = location.pathname.startsWith("/members");
@@ -40,14 +40,14 @@ const MemberDetail = () => {
       }
     }
 
-    async function fetchRole() {
+    async function fetchAccessLvl() {
       try {
         const user = await auth.isAuthenticated();
         console.log("user is", user.data.id);
         const data = await ReadFunctions.getUserProfile(user.data.id);
         if (isMounted) {
           console.log("userdata is: ", data);
-          setRole(data.roles_tbl.access_level);
+          setAccessLvl(data.roles_tbl.access_level);
         }
       } catch (error) {
         console.error(error);
@@ -55,7 +55,7 @@ const MemberDetail = () => {
     }
 
     fetchProfile();
-    fetchRole();
+    fetchAccessLvl();
 
     const subscription = supabase
       .channel("profile-changes")
@@ -232,7 +232,7 @@ const MemberDetail = () => {
                     </div>
                   </div>
 
-                  {userRole >= 4 ? (
+                  {accessLvl >= 4 ? (
                     <>
                       {/* Action Buttons */}
                       <div className="action-buttons">

@@ -33,7 +33,7 @@ const ProjectPage = () => {
   const [project, setProject] = useState({});
   const [subtasks, setSubtasks] = useState([]);
   const [loading, setIsLoading] = useState(true);
-  const [userRole, setUserRole] = useState([]);
+  const [accessLvl, setAccessLvl] = useState([]);
   const [userSection, setUserSection] = useState([]);
   const [userId, setUserId] = useState([]);
   const navigate = useNavigate();
@@ -74,7 +74,7 @@ const ProjectPage = () => {
         const data = await ReadFunctions.getUserProfile(user.data.id);
         if (isMounted) {
           console.log("user role is", data);
-          setUserRole(data.roles_tbl.role_id);
+          setAccessLvl(data.roles_tbl.access_level);
           setUserSection(data.sections_tbl.section_id);
           setUserId(data.uid);
         }
@@ -198,38 +198,35 @@ const ProjectPage = () => {
 
   return (
     <Layout>
-
       {(project.step_id == 1 || project.step_id == 2) &&
-        (userRole === "role-0002" || userRole === "role-0006") && (
-        <div className="Project-ApproveRejectBtnsCont">
-          <div className="Project-BtnsContent">
-            <p className="BtnsTitle">
-              Do you want to Approve or Reject this Project?
-            </p>
-          </div>
-          <div className="Project-Buttons">
-            <button
-              className="admin-btn btn-success"
-              onClick={async () => {
-                await UpdateFunctions.approveProject(projectID);
-                setShowApprove(true);
-              }}
-            >
-              APPROVE
-            </button>
-            <button
-              className="admin-btn btn-delete"
-              onClick={async () => {
-                await UpdateFunctions.rejectProject(projectID);
-                setShowReject(true);
-                // navigate(-1);
-              }}
-            >
-              REJECT
-            </button>
-
+        (accessLvl === 5 || accessLvl === 4) && (
+          <div className="Project-ApproveRejectBtnsCont">
+            <div className="Project-BtnsContent">
+              <p className="BtnsTitle">
+                Do you want to Approve or Reject this Project?
+              </p>
             </div>
-
+            <div className="Project-Buttons">
+              <button
+                className="admin-btn btn-success"
+                onClick={async () => {
+                  await UpdateFunctions.approveProject(projectID);
+                  setShowApprove(true);
+                }}
+              >
+                APPROVE
+              </button>
+              <button
+                className="admin-btn btn-delete"
+                onClick={async () => {
+                  await UpdateFunctions.rejectProject(projectID);
+                  setShowReject(true);
+                  // navigate(-1);
+                }}
+              >
+                REJECT
+              </button>
+            </div>
           </div>
         )}
 
@@ -240,7 +237,7 @@ const ProjectPage = () => {
         deadline={formattedDeadline}
         section={project.sections_tbl?.section_name}
         status={project.project_steps_tbl?.step_name}
-        roleId={userRole}
+        accessLvl={accessLvl}
         onEditClick={() => setIsEditProjectModalOpen(true)}
       />
 
@@ -315,7 +312,7 @@ const ProjectPage = () => {
           {(project.step_id === "3" ||
             project.step_id === "4" ||
             project.step_id === "5") &&
-            (userRole === "role-0002" || userRole === "role-0006") && (
+            (accessLvl === 5 || accessLvl === 4 || accessLvl === 3) && (
               <button
                 className="admin-btn btn-primary"
                 onClick={() => setIsAddTaskModalOpen(true)}
@@ -350,7 +347,7 @@ const ProjectPage = () => {
               onEditClick={handleEditTaskClick}
               task={subtask.subtask_type}
               projectId={projectID}
-              roleId={userRole}
+              accessLvl={accessLvl}
               sectionId={userSection}
               userId={userId}
             />
