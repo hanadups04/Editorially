@@ -307,6 +307,7 @@ const TaskCard = ({
         cancelText="Cancel"
         variant="danger"
       />
+        </div>
     </>
   );
 };
