@@ -3,10 +3,15 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Layout from "../../components/templates/AdminTemplate";
 import { supabase } from "../../supabaseClient.js";
 import "./DocumentPage.css";
-import { readWork } from "../../context/functions/ReadFunctions.js";
+import {
+  fetchSingleUser,
+  readWork,
+} from "../../context/functions/ReadFunctions.js";
 import ReactLoading from "react-loading";
 import Toast from "react-bootstrap/Toast";
 import ToastContainer from "react-bootstrap/ToastContainer";
+import { isAuthenticated } from "../../context/auth.js";
+import { getAssignee } from "../../context/functions/ReadFunctions.js";
 
 const DocumentPage = () => {
   const navigate = useNavigate();
@@ -23,6 +28,9 @@ const DocumentPage = () => {
   const [isError, setIsError] = useState(false);
   // const taskAssignee = searchParams.get("assignee") || "Unknown";
 
+  //access level > 3 OR assignee lang pwede mag touch nung document page
+  //id na nasa url dapat project & subtask id lang for referencing
+
   const [headline, setHeadline] = useState("");
   const [isCommentsModalOpen, setIsCommentsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -31,6 +39,9 @@ const DocumentPage = () => {
   const [shouldUpdate, setShouldUpdate] = useState(false);
   const [headlineID, setHeadlineID] = useState("");
   const [contentID, setContentID] = useState("");
+  const [currentUser, setCurrentUser] = useState("");
+  const [assignee, setAssignee] = useState("");
+  const [accessLevel, setAcccessLevel] = useState("");
 
   console.log("akahkas", role_id);
 
@@ -40,18 +51,33 @@ const DocumentPage = () => {
     async function fetchWork() {
       try {
         const data = await readWork(taskId);
+        const userAuth = await isAuthenticated();
+        const assign = await getAssignee(taskId);
         if (isMounted && data) {
+          const user = await fetchSingleUser(userAuth.data.id);
           const headline = data.find((row) => row.category === 1);
           const content = data.find((row) => row.category === 2);
 
           console.log("content is: ", content);
           console.log("headline is: ", headline);
-          setShouldUpdate(true);
+          console.log("assign:", assign.users_tbl.uid);
+          console.log("currentuser:", userAuth.data.id);
+          console.log("accesslevel: ", user.roles_tbl.access_level);
+
           setHeadlineID(headline.content_id);
           setContentID(content.content_id);
+          setCurrentUser(userAuth.data.id);
+          setAssignee(assign.users_tbl.uid);
+          setAcccessLevel(user.roles_tbl.access_level);
 
           setContent(content.content);
           setHeadline(headline.content);
+
+          if (Array.isArray(readWork) ? readWork.length > 0 : !!readWork) {
+            setShouldUpdate(true);
+          } else {
+            setShouldUpdate(false);
+          }
         } else {
           setContent("");
           setHeadline("");
@@ -135,6 +161,13 @@ const DocumentPage = () => {
       }
     }
 
+    const payload3 = await supabase
+      .from("project_subtask_tbl")
+      .update({
+        is_done: true,
+      })
+      .eq("subtask_id", taskId);
+
     // navigate(-1);
   };
 
@@ -203,39 +236,42 @@ const DocumentPage = () => {
               {/* <span className="document-meta">Assigned to: {taskAssignee}</span> */}
             </div>
           </div>
-{role_id === 1 || user_id !== assignee_id ? (
-            <></>
-          ) : (
-          <div className="document-header-right">
-            <button
-              className="admin-btn btn-primary"
-              type="submit"
-              onClick={async () => {
-                if (shouldUpdate) {
-                  await handleUpdate();
-                  console.log("update running:");
-                } else {
-                  await handleSubmit();
-                  console.log("insert running:");
-                }
-              }}
-            >
-            
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <line x1="22" y1="2" x2="11" y2="13"></line>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                </svg>
-                Save my work
-              </button>
-            </div>
+          {!loading && (
+            <>
+              {accessLevel >= 3 || currentUser !== assignee ? (
+                <></>
+              ) : (
+                <div className="document-header-right">
+                  <button
+                    className="admin-btn btn-primary"
+                    type="submit"
+                    onClick={async () => {
+                      if (shouldUpdate) {
+                        await handleUpdate();
+                        console.log("update running: ", shouldUpdate);
+                      } else {
+                        await handleSubmit();
+                        console.log("insert running:", shouldUpdate);
+                      }
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <line x1="22" y1="2" x2="11" y2="13"></line>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                    Save my work
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
 
@@ -258,7 +294,7 @@ const DocumentPage = () => {
           ) : (
             <>
               <div className="document-editor-container1">
-                {role_id === 1 || user_id !== assignee_id ? (
+                {accessLevel >= 3 || currentUser !== assignee ? (
                   <input
                     type="text"
                     name="headline"
@@ -282,7 +318,7 @@ const DocumentPage = () => {
                   />
                 )}
 
-                {role_id === 1 || user_id !== assignee_id ? (
+                {accessLevel >= 3 || currentUser !== assignee ? (
                   <></>
                 ) : (
                   <div className="editor-footer">
@@ -301,7 +337,7 @@ const DocumentPage = () => {
               </div>
 
               <div className="document-editor-container2">
-                {role_id === 1 || user_id !== assignee_id ? (
+                {accessLevel >= 3 || currentUser !== assignee ? (
                   <textarea
                     name="content"
                     className="document-editor"
@@ -331,7 +367,7 @@ Tips:
                     onChange={(e) => setContent(e.target.value)}
                   />
                 )}
-                {role_id === 1 || user_id !== assignee_id ? (
+                {accessLevel >= 3 || currentUser !== assignee ? (
                   <></>
                 ) : (
                   <div className="editor-footer">

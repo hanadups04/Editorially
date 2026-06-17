@@ -120,7 +120,8 @@ const ProjectPage = () => {
     { step_id: "1", label: "Proposed" },
     { step_id: "2", label: "Approval" },
     { step_id: "3", label: "In Progress" },
-    { step_id: "4", label: "Published" },
+    { step_id: "4", label: "Submitted" },
+    { step_id: "5", label: "Published" },
   ];
 
   const handleAddTask = (newTask) => {
@@ -148,9 +149,7 @@ const ProjectPage = () => {
   const handleToggleComplete = (taskId, isCompleted) => {
     setSubtasks((prev) =>
       prev.map((task) =>
-        task.subtask_id === taskId
-          ? { ...task, status: isCompleted ? "Completed" : "In Progress" }
-          : task,
+        task.subtask_id === taskId ? { ...task, is_done: isCompleted } : task,
       ),
     );
   };
@@ -260,51 +259,50 @@ const ProjectPage = () => {
 
       <ProgressTracker currentStep="in-progress" steps={workflowSteps} />
 
-      {subtasks.length > 0 &&
-        subtasks.every((t) => t.status === "Completed") && (
-          <div className="construct-banner">
-            <div className="construct-banner-text">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
-              <span>
-                All tasks are completed and approved. Ready to construct the
-                article.
-              </span>
-            </div>
-            <button
-              className="admin-btn btn-primary"
-              onClick={() =>
-                navigate(
-                  `/create-article/${projectID}?section_id=${project.section_id}`,
-                )
-              }
+      {subtasks.length > 0 && subtasks.every((t) => t.is_done === true) && (
+        <div className="construct-banner">
+          <div className="construct-banner-text">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <line x1="22" y1="2" x2="11" y2="13"></line>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-              </svg>
-              Construct Article
-            </button>
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span>
+              All tasks are completed and approved. Ready to construct the
+              article.
+            </span>
           </div>
-        )}
+          <button
+            className="admin-btn btn-primary"
+            onClick={() =>
+              navigate(
+                `/create-article/${projectID}?section_id=${project.section_id}`,
+              )
+            }
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+            Construct Article
+          </button>
+        </div>
+      )}
 
       <div className="tasks-section">
         <div className="section-header">
@@ -316,6 +314,7 @@ const ProjectPage = () => {
               <button
                 className="admin-btn btn-primary"
                 onClick={() => setIsAddTaskModalOpen(true)}
+                disabled={Object.keys(project).length === 0}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -350,20 +349,23 @@ const ProjectPage = () => {
               accessLvl={accessLvl}
               sectionId={userSection}
               userId={userId}
+              submitted={subtask.is_done}
             />
           ))}
         </div>
       </div>
 
-      <AddTaskModal
-        isOpen={isAddTaskModalOpen}
-        onClose={() => setIsAddTaskModalOpen(false)}
-        onSubmit={handleAddTask}
-        section_id={project.section_id}
-        onAdd={() => {
-          setShowtask(true);
-        }}
-      />
+      {Object.keys(project).length > 0 && (
+        <AddTaskModal
+          isOpen={isAddTaskModalOpen}
+          onClose={() => setIsAddTaskModalOpen(false)}
+          onSubmit={handleAddTask}
+          section_id={project.section_id}
+          onAdd={() => {
+            setShowtask(true);
+          }}
+        />
+      )}
 
       <EditProjectModal
         isOpen={isEditProjectModalOpen}

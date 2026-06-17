@@ -12,6 +12,7 @@ import { isAuthenticated, signIn } from "../../context/auth.js";
 import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
 import { supabase } from "../../supabaseClient.js";
 import * as auth from "../../context/auth.js";
+import ForgotPasswordModal from "../admin/EnterEmail.jsx";
 
 export default function Login() {
   const [recovAcc, setRecoverAccount] = useState(false);
@@ -44,23 +45,19 @@ export default function Login() {
     async function checkAuthenticated() {
       const data = await auth.isAuthenticated();
 
-      if(isMounted) {
-        if(data.data) {
-          navigate("/dashboard");
+      if (isMounted) {
+        if (data.data) {
+          navigate("/projects");
         }
-
-
       }
-
-      
     }
 
     checkAuthenticated();
 
     return () => {
       isMounted = false;
-    }
-  }, [])
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     console.log("handle login called");
@@ -124,7 +121,7 @@ export default function Login() {
         return;
       }
 
-      navigate("/dashboard");
+      navigate("/projects");
     } else {
       console.error("User row not found");
       navigate(`/login`);
@@ -164,7 +161,9 @@ export default function Login() {
             </div> */}
             <div className="Login-FormHeader">
               <p className="BrandName">Editorially</p>
-              <p className="Signin">Log in with your Member credentials to continue</p>
+              <p className="Signin">
+                Log in with your Member credentials to continue
+              </p>
             </div>
             <div className="Login-FormContent">
               <p className="FormLabel">Email</p>
@@ -316,9 +315,9 @@ export default function Login() {
         </form>
       </div>
       {openForgotPassModal && (
-        <ForgotPassModal
+        <ForgotPasswordModal
+          isOpen={openForgotPassModal}
           onClose={() => setOpenForgotPassModal(false)}
-          // setIsForgotPassword={true}
         />
       )}
 
