@@ -21,7 +21,7 @@ const ContentDetail = () => {
   const [loading, setIsLoading] = useState(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [content, setContent] = useState({});
-  const [userRole, setRole] = useState([]);
+  const [accessLvl, setAccessLvl] = useState([]);
   const [userId, setId] = useState([]);
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
   const [isRequestsModalOpen, setIsRequestsModalOpen] = useState(false);
@@ -82,7 +82,7 @@ const ContentDetail = () => {
         if (isMounted) {
           console.log("userdata is: ", data);
           setId(user.data.id);
-          setRole(data.roles_tbl.access_level);
+          setAccessLvl(data.roles_tbl.access_level);
         }
       } catch (error) {
         console.error(error);
@@ -183,7 +183,7 @@ const ContentDetail = () => {
               columnGap: "10px",
             }}
           >
-            {userRole < 3 ? (
+            {accessLvl < 3 ? (
               <button
                 className="admin-btn btn-primary"
                 onClick={(e) => {

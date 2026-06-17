@@ -32,7 +32,7 @@ export default function CreateParentTaskModal({
 }) {
   const [sections, setSections] = useState([]);
   const [loading, setIsLoading] = useState(true);
-  const [userRole, setUserRole] = useState([]);
+  const [accessLvl, setAccessLvl] = useState([]);
   const [userSection, setUserSection] = useState([]);
   const dateModified = useRef(false);
 
@@ -60,7 +60,7 @@ export default function CreateParentTaskModal({
         const data = await ReadFunctions.getUserProfile(user.data.id);
         if (isMounted) {
           console.log("user role is", data);
-          setUserRole(data.roles_tbl.role_id);
+          setAccessLvl(data.roles_tbl.access_level);
           setUserSection(data.sections_tbl.section_id);
         }
       } catch (error) {
@@ -79,7 +79,7 @@ export default function CreateParentTaskModal({
   }, []);
 
   const filteredSections = sections.filter((section) => {
-    const checkRole = "role-0004".includes(userRole);
+    const checkRole = accessLvl === 3;
     if (checkRole) {
       return Number(section.section_id) === Number(userSection);
     }

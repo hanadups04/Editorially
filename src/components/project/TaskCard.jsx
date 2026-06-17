@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import * as DeleteFunctions from "../../context/functions/DeleteFunctions";
+import ConfirmationModal from "../../components/ArticleManagement/ConfirmationModal";
 import "./TaskCard.css";
 
 const TaskCard = ({
@@ -9,7 +11,7 @@ const TaskCard = ({
   onEditClick,
   task,
   projectId,
-  roleId,
+  accessLvl,
   sectionId,
   userId,
   submitted,
@@ -58,7 +60,7 @@ const TaskCard = ({
         path: "/docs",
       },
       2: {
-        label: `${roleId === "role-0003" && userId !== subtask.assignee_id ? "View Images" : "Upload Images"}`,
+        label: `${accessLvl === 1 && userId !== subtask.assignee_id ? "View Images" : "Upload Images"}`,
         icon: (
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -99,94 +101,150 @@ const TaskCard = ({
     }
   };
 
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState({});
+
+  const handleDeleteTask = async (subtask_id) => {
+    // const deleteTask = await DeleteFunctions.deleteTask(subtask_id);
+    // setDeleteConfirmOpen(true);
+    console.log("del task", subtask_id);
+  };
+
   return (
-    <div className="task-card">
-      {(roleId === "role-0002" ||
-        roleId === "role-0004" ||
-        roleId === "role-0006") && (
-        <button
-          className="task-edit-btn"
-          onClick={() => onEditClick && onEditClick(subtask)}
-          title="Edit Task"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
+    <>
+      <div className="task-card">
+        {(accessLvl === 5 || accessLvl === 4 || accessLvl === 3) && (
+          <button
+            className="task-edit-btn"
+            onClick={() => onEditClick && onEditClick(subtask)}
+            title="Edit Task"
           >
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-          </svg>
-        </button>
-      )}
-      <div className="task-header">
-        <span
-          // className={`task-role ${subtask.role.toLowerCase()}`}
-          className="task-role task-title"
-        >
-          {subtask.subtask_title}
-        </span>
-        {/* <span
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+          </button>
+        )}
+        {accessLvl === 1 || accessLvl === 2 ? (
+          <></>
+        ) : (
+          <button
+            type="button"
+            className="task-delete-btn"
+            aria-label="Delete task"
+            title="Delete Task"
+            onClick={(e) => {
+              e.stopPropagation();
+              setDeleteConfirmOpen(true);
+              setTaskToDelete(subtask.subtask_id);
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+              <path d="M10 11v6"></path>
+              <path d="M14 11v6"></path>
+              <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+        )}
+        <div className="task-header">
+          <span
+            // className={`task-role ${subtask.role.toLowerCase()}`}
+            className="task-role task-title"
+          >
+            {subtask.subtask_title}
+          </span>
+          {/* <span
           // className={`task-status ${subtask.status.toLowerCase().replace(" ", "-")}`}
           className="task-status"
         >
           {subtask.status}
         </span> */}
-      </div>
-
-      <div className="task-assignee">
-        <div className="assignee-avatar">
-          {getInitials(subtask.users_tbl.username)}
         </div>
-        <div className="assignee-info">
-          <div className="assignee-name">{subtask.users_tbl.username}</div>
-          <div className="assignee-email">{subtask.users_tbl.email}</div>
+
+        <div className="task-assignee">
+          <div className="assignee-avatar">
+            {getInitials(subtask.users_tbl.username)}
+          </div>
+          <div className="assignee-info">
+            <div className="assignee-name">{subtask.users_tbl.username}</div>
+            <div className="assignee-email">{subtask.users_tbl.email}</div>
+          </div>
         </div>
-      </div>
 
-      <p className="task-description">{subtask.subtask_details}</p>
+        <p className="task-description">{subtask.subtask_details}</p>
 
-      <div className="task-meta">
-        <div className="task-deadline">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
+        <div className="task-meta">
+          <div className="task-deadline">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>Due: {subtaskDeadline}</span>
+          </div>
+          <div className="badge badge-primary">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+              <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+              <line x1="6" y1="1" x2="6" y2="4"></line>
+              <line x1="10" y1="1" x2="10" y2="4"></line>
+              <line x1="14" y1="1" x2="14" y2="4"></line>
+            </svg>
+            {/* {task.priority} */}
+          </div>
+        </div>
+
+        {accessLvl === 5 && (
+          <label
+            className="checkbox-wrapper"
+            style={{ marginTop: "var(--spacing-md)" }}
           >
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-          </svg>
-          <span>Due: {subtaskDeadline}</span>
-        </div>
-        <div className="badge badge-primary">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="12"
-            height="12"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
-            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
-            <line x1="6" y1="1" x2="6" y2="4"></line>
-            <line x1="10" y1="1" x2="10" y2="4"></line>
-            <line x1="14" y1="1" x2="14" y2="4"></line>
-          </svg>
-          {/* {task.priority} */}
-        </div>
-      </div>
+            <input
+              type="checkbox"
+              className="checkbox-input"
+              checked={isCompleted}
+              onChange={handleToggleComplete}
+            />
+            <span className="checkbox-label">Mark as complete</span>
+          </label>
+        )}
 
-      {roleId === "role-0002" && (
+      {accessLvl === 5 && (
         <div
           className="checkbox-wrapper"
           style={{ marginTop: "var(--spacing-md)" }}
@@ -235,7 +293,21 @@ const TaskCard = ({
           {action.label}
         </button>
       </div>
-    </div>
+      <ConfirmationModal
+        isOpen={deleteConfirmOpen}
+        onClose={() => {
+          setDeleteConfirmOpen(false);
+        }}
+        onConfirm={() => {
+          handleDeleteTask(taskToDelete);
+        }}
+        title="Delete Task"
+        message="Are you sure you want to Delete this task?."
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+      />
+    </>
   );
 };
 
