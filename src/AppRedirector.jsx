@@ -35,7 +35,7 @@ const AppRedirector = () => {
         data.roles_tbl.access_level >= 1 &&
         data.roles_tbl.access_level <= 5
       ) {
-        navigate("/dashboard");
+        navigate("/projects");
       }
 
       //navigate to reader here

@@ -34,12 +34,17 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit, section_id, onAdd }) => {
   useEffect(() => {
     let isMounted = true;
 
-    async function fetchSections() {
+    async function fetchData() {
       try {
-        const data = await ReadFunctions.fetchAllSections();
+        const data1 = await ReadFunctions.fetchAllSections();
+        const data2 = await ReadFunctions.fetchSectionMembers(section_id);
+
         if (isMounted) {
-          console.log("data is: ", data);
-          setSections(data);
+          console.log("data is: ", data1);
+          console.log("addtask users is: ", data2);
+
+          setSections(data1);
+          setAllUsers(data2);
         }
       } catch (error) {
         console.error(error);
@@ -48,30 +53,7 @@ const AddTaskModal = ({ isOpen, onClose, onSubmit, section_id, onAdd }) => {
       }
     }
 
-    fetchSections();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function fetchUsers() {
-      try {
-        const data = await ReadFunctions.fetchSectionMembers(section_id);
-        if (isMounted) {
-          console.log("data is: ", data);
-          setAllUsers(data);
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        if (isMounted) setIsLoading(false);
-      }
-    }
-
-    fetchUsers();
+    fetchData();
     return () => {
       isMounted = false;
     };

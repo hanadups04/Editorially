@@ -12,11 +12,10 @@ const TaskCard = ({
   roleId,
   sectionId,
   userId,
+  submitted,
 }) => {
   const navigate = useNavigate();
-  const [isCompleted, setIsCompleted] = useState(
-    subtask.status === "Completed",
-  );
+  const [isCompleted, setIsCompleted] = useState(!!submitted);
   const getInitials = (name) => {
     return name
       .split(" ")
@@ -95,7 +94,7 @@ const TaskCard = ({
     } else {
       // Navigate to document page with task info
       navigate(
-        `/document?taskId=${subtask.subtask_id}&role=${encodeURIComponent(task)}&project_id=${projectId}&role_id=${roleId}&user_id=${userId}&assignee_id=${subtask.assignee_id}`,
+        `/document?taskId=${subtask.subtask_id}&project_id=${projectId}`,
       );
     }
   };
@@ -188,18 +187,46 @@ const TaskCard = ({
       </div>
 
       {roleId === "role-0002" && (
-        <label
+        <div
           className="checkbox-wrapper"
           style={{ marginTop: "var(--spacing-md)" }}
         >
-          <input
-            type="checkbox"
-            className="checkbox-input"
-            checked={isCompleted}
-            onChange={handleToggleComplete}
-          />
-          <span className="checkbox-label">Mark as complete</span>
-        </label>
+          {isCompleted ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          )}
+          <span className="checkbox-label">
+            Task {isCompleted ? "Completed" : "Not Completed"}
+          </span>
+        </div>
       )}
 
       <div className="task-actions">
