@@ -72,7 +72,7 @@ export default function ReaderFooter() {
               <h5>Contact Us</h5>
               <p>09777042093</p>
               <p>national-u.edu.ph</p>
-              <p>theNuntium@gmail.com</p>
+              <p>nupublication6@gmail.com</p>
             </div>
           )}
 

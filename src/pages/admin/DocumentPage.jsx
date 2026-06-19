@@ -62,7 +62,11 @@ const DocumentPage = () => {
           console.log("headline is: ", headline);
           console.log("assign:", assign.users_tbl.uid);
           console.log("currentuser:", userAuth.data.id);
-          console.log("accesslevel: ", user.roles_tbl.access_level);
+          console.log(
+            "accesslevel: ",
+            user.roles_tbl.access_level,
+            typeof user.roles_tbl.access_level,
+          );
 
           setHeadlineID(headline.content_id);
           setContentID(content.content_id);
@@ -238,9 +242,7 @@ const DocumentPage = () => {
           </div>
           {!loading && (
             <>
-              {accessLevel >= 3 || currentUser !== assignee ? (
-                <></>
-              ) : (
+              {accessLevel >= 3 || currentUser === assignee ? (
                 <div className="document-header-right">
                   <button
                     className="admin-btn btn-primary"
@@ -270,6 +272,8 @@ const DocumentPage = () => {
                     Save my work
                   </button>
                 </div>
+              ) : (
+                <></>
               )}
             </>
           )}
@@ -294,7 +298,17 @@ const DocumentPage = () => {
           ) : (
             <>
               <div className="document-editor-container1">
-                {accessLevel >= 3 || currentUser !== assignee ? (
+                {accessLevel >= 3 || currentUser === assignee ? (
+                  <input
+                    type="text"
+                    name="headline"
+                    className="document-editor"
+                    placeholder="Add your headline here..."
+                    maxLength={50}
+                    value={headline}
+                    onChange={(e) => setHeadline(e.target.value)}
+                  />
+                ) : (
                   <input
                     type="text"
                     name="headline"
@@ -306,21 +320,9 @@ const DocumentPage = () => {
                     readOnly
                     disabled
                   />
-                ) : (
-                  <input
-                    type="text"
-                    name="headline"
-                    className="document-editor"
-                    placeholder="Add your headline here..."
-                    maxLength={50}
-                    value={headline}
-                    onChange={(e) => setHeadline(e.target.value)}
-                  />
                 )}
 
-                {accessLevel >= 3 || currentUser !== assignee ? (
-                  <></>
-                ) : (
+                {accessLevel >= 3 || currentUser === assignee ? (
                   <div className="editor-footer">
                     <span className="word-count">
                       {
@@ -333,26 +335,13 @@ const DocumentPage = () => {
                       {headline.length} characters
                     </span>
                   </div>
+                ) : (
+                  <></>
                 )}
               </div>
 
               <div className="document-editor-container2">
-                {accessLevel >= 3 || currentUser !== assignee ? (
-                  <textarea
-                    name="content"
-                    className="document-editor"
-                    placeholder="Start writing your content here...
-
-Tips:
-• Begin with a compelling introduction
-• Include relevant quotes and data
-• Structure your content with clear sections
-• Proofread before submitting"
-                    value={content}
-                    readOnly
-                    disabled
-                  />
-                ) : (
+                {accessLevel >= 3 || currentUser === assignee ? (
                   <textarea
                     name="content"
                     className="document-editor"
@@ -366,10 +355,23 @@ Tips:
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                   />
-                )}
-                {accessLevel >= 3 || currentUser !== assignee ? (
-                  <></>
                 ) : (
+                  <textarea
+                    name="content"
+                    className="document-editor"
+                    placeholder="Start writing your content here...
+
+Tips:
+• Begin with a compelling introduction
+• Include relevant quotes and data
+• Structure your content with clear sections
+• Proofread before submitting"
+                    value={content}
+                    readOnly
+                    disabled
+                  />
+                )}
+                {accessLevel >= 3 || currentUser === assignee ? (
                   <div className="editor-footer">
                     <span className="word-count">
                       {
@@ -382,6 +384,8 @@ Tips:
                       {content.length} characters
                     </span>
                   </div>
+                ) : (
+                  <></>
                 )}
               </div>
             </>

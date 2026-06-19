@@ -50,8 +50,8 @@ const ProtectedRoute = ({ requiredAccessLvl, children }) => {
       setIsAuthenticated(!!session);
 
       if (!session) {
-        // navigate('/Readers')
-        navigate("/login");
+        navigate("/readers");
+        // navigate("/login");
       }
     };
 
