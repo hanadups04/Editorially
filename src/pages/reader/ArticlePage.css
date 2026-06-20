@@ -112,6 +112,8 @@
 }
 
 .article-page__thumbnail {
+  display: flex;
+  justify-content: center;
   max-width: 56rem;
   margin: 0 auto 3rem;
   padding: 0 1.5rem;
@@ -121,7 +123,8 @@
   border-radius: 1rem;
   overflow: hidden;
   background: hsl(var(--muted));
-  aspect-ratio: 21 / 9;
+  aspect-ratio: 1 / 1;
+  width: 85%;
 }
 
 .article-page__thumbnail-inner img {

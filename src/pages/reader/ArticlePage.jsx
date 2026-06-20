@@ -65,7 +65,6 @@ export default function ArticlePageCSS3JSX() {
   return (
     <div className="article-page">
       <NavbarCSS3 />
-      <div style={{ height: "104px" }} />
 
       {loading ? (
         <div className="article-page__loading">
