@@ -154,59 +154,6 @@ const EditTaskModal = ({ isOpen, onClose, subtask, onSubmit }) => {
         {/* <form onSubmit={handleSubmit}> */}
         <div className="admin-body">
           <div className="form-roww">
-            <div className="form-groupp">
-              {/* <label className="form-label">Task Type</label> */}
-              {["radio"].map((type) => (
-                <div
-                  className="TaskSubmissionTypeCont mb-3"
-                  key={`inline-${type}`}
-                >
-                  <label className="form-label">TASK TYPE</label>
-                  <div className="TaskSubmissionType">
-                    <Form.Check
-                      className="type_form"
-                      label="Writing"
-                      name="subtask_type"
-                      type={type}
-                      id={`inline-${type}-1`}
-                      value={1}
-                      checked={formData.subtask_type === 1}
-                      onChange={handleChange}
-                      required
-                    />
-
-                    {/* <OverlayTrigger
-                    placement="left"
-                    delay={{ show: 250, hide: 400 }}
-                    overlay={renderTooltip(1)}
-                  >
-                    <img className="InfoSubType" src={InfoB} />
-                  </OverlayTrigger> */}
-                  </div>
-                  <div className="TaskSubmissionType">
-                    <Form.Check
-                      className="formType"
-                      label="Pubmat"
-                      name="subtask_type"
-                      type={type}
-                      id={`inline-${type}-2`}
-                      value={2}
-                      checked={formData.subtask_type === 2}
-                      onChange={handleChange}
-                    />
-
-                    {/* <OverlayTrigger
-                    placement="left"
-                    delay={{ show: 250, hide: 400 }}
-                    overlay={renderTooltip(2)}
-                  >
-                    <img className="InfoSubType" src={InfoB} />
-                  </OverlayTrigger> */}
-                  </div>
-                </div>
-              ))}
-            </div>
-
             {/* <div className="form-group">
               <label className="form-label">Section</label>
               <select

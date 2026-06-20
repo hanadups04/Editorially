@@ -68,7 +68,6 @@
     box-shadow 180ms ease;
 }
 
-
 /* .task-card:hover .task-delete-btn,
 .task-delete-btn:focus-visible {
   opacity: 1;
@@ -80,6 +79,18 @@
   color: #dc2626;
   border-color: #fecaca;
   box-shadow: 0 2px 6px -2px rgba(220, 38, 38, 0.25);
+}
+
+.task-delete-btn:disabled {
+  /* pointer-events: none; */
+  cursor: not-allowed;
+}
+
+.task-delete-btn:disabled:hover {
+  background: #ffffff;
+  color: #94a3b8;
+  border-color: #d2d2d3;
+  box-shadow: none;
 }
 
 .task-delete-btn:focus-visible {

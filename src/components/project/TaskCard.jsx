@@ -133,39 +133,72 @@ const TaskCard = ({
             </svg>
           </button>
         )}
-        {accessLvl === 1 || accessLvl === 2 ? (
-          <></>
-        ) : (
-          <button
-            type="button"
-            className="task-delete-btn"
-            aria-label="Delete task"
-            title="Delete Task"
-            onClick={(e) => {
-              e.stopPropagation();
-              setDeleteConfirmOpen(true);
-              setTaskToDelete(subtask.subtask_id);
-            }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+        {isCompleted ? (
+          <>
+            <button
+              type="button"
+              className="task-delete-btn"
+              aria-label="Delete task"
+              title="Delete Task"
+              disabled={true}
             >
-              <polyline points="3 6 5 6 21 6"></polyline>
-              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
-              <path d="M10 11v6"></path>
-              <path d="M14 11v6"></path>
-              <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path>
-            </svg>
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                <path d="M10 11v6"></path>
+                <path d="M14 11v6"></path>
+                <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          </>
+        ) : (
+          <>
+            {accessLvl === 1 || accessLvl === 2 ? (
+              <></>
+            ) : (
+              <button
+                type="button"
+                className="task-delete-btn"
+                aria-label="Delete task"
+                title="Delete Task"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDeleteConfirmOpen(true);
+                  setTaskToDelete(subtask.subtask_id);
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                  <path d="M10 11v6"></path>
+                  <path d="M14 11v6"></path>
+                  <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path>
+                </svg>
+              </button>
+            )}
+          </>
         )}
+
         <div className="task-header">
           <span
             // className={`task-role ${subtask.role.toLowerCase()}`}
