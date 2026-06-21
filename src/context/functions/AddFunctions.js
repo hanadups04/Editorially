@@ -64,7 +64,7 @@ export async function createArticle(data, project_id) {
   const { error1 } = await supabase
     .from("projects_tbl")
     .update({
-      step_id: 4,
+      step_id: 5,
     })
     .eq("project_id", project_id);
 
