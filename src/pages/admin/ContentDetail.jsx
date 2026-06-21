@@ -242,20 +242,25 @@ const ContentDetail = () => {
                 </span>
               )}
             </button>
-            {content.visible ? (
-              <button
-                className="admin-btn btn-delete"
-                onClick={(e) => setDeleteConfirmOpen(true)}
-              >
-                Hide Article
-              </button>
-            ) : (
-              <button
-                className="admin-btn btn-primary"
-                onClick={(e) => setShowConfirmOpen(true)}
-              >
-                Show Article
-              </button>
+
+            {accessLvl >= 3 && (
+              <>
+                {content.visible ? (
+                  <button
+                    className="admin-btn btn-delete"
+                    onClick={(e) => setDeleteConfirmOpen(true)}
+                  >
+                    Hide Article
+                  </button>
+                ) : (
+                  <button
+                    className="admin-btn btn-primary"
+                    onClick={(e) => setShowConfirmOpen(true)}
+                  >
+                    Show Article
+                  </button>
+                )}
+              </>
             )}
           </div>
         </div>
@@ -305,23 +310,25 @@ const ContentDetail = () => {
               </div>
             </div>
 
-            <div
-              className="featured-toggle"
-              style={{
-                backgroundColor: content.is_featured ? "#2563eb" : "#64748b",
-                color: "white",
-              }}
-            >
-              {content.is_featured
-                ? "★ Article is Featured"
-                : "☆ Mark as Featured"}
-              <button
-                className={`toggle-btn ${content.is_featured ? "active" : ""}`}
-                onClick={handleToggleFeatured}
+            {accessLvl >= 3 && (
+              <div
+                className="featured-toggle"
+                style={{
+                  backgroundColor: content.is_featured ? "#2563eb" : "#64748b",
+                  color: "white",
+                }}
               >
-                <span className="toggle-slider"></span>
-              </button>
-            </div>
+                {content.is_featured
+                  ? "★ Article is Featured"
+                  : "☆ Mark as Featured"}
+                <button
+                  className={`toggle-btn ${content.is_featured ? "active" : ""}`}
+                  onClick={handleToggleFeatured}
+                >
+                  <span className="toggle-slider"></span>
+                </button>
+              </div>
+            )}
 
             <div className="article-body">
               {content.content.split("\n\n").map((paragraph, index) => (
