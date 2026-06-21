@@ -237,7 +237,13 @@ const DocumentPage = () => {
             </button>
             <div className="document-info">
               <h1 className="document-title"> Work Submission</h1>
-              {/* <span className="document-meta">Assigned to: {taskAssignee}</span> */}
+              {assignee === currentUser ? (
+                <></>
+              ) : (
+                <span className="document-meta">
+                  Note: Viewing only since you are not the assignee
+                </span>
+              )}
             </div>
           </div>
           {!loading && (
