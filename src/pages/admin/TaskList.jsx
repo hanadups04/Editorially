@@ -7,6 +7,7 @@ import * as ReadFunctions from "../../context/functions/ReadFunctions.js";
 import * as DeleteFunctions from "../../context/functions/DeleteFunctions";
 import ConfirmationModal from "../../components/ArticleManagement/ConfirmationModal";
 import * as auth from "../../context/auth.js";
+
 import "./TaskList.css";
 import ReactLoading from "react-loading";
 import { supabase } from "../../supabaseClient.js";
@@ -25,6 +26,7 @@ const TaskList = () => {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [projToDelete, setProjToDelete] = useState({});
   const [accessLvl, setAccessLvl] = useState([]);
+  const [userSection, setUserSection] = useState([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -112,6 +114,11 @@ const TaskList = () => {
         // No valid deadline → treat as not matching time-based filters
         matchesDeadline = false;
       }
+    }
+
+    const checkRole = [1, 3].includes(accessLvl);
+    if (checkRole && project.section_id !== userSection) {
+      return false;
     }
 
     return matchesSearch && matchesStatus && matchesDeadline;
