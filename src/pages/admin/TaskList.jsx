@@ -52,6 +52,7 @@ const TaskList = () => {
         if (isMounted) {
           console.log("data is", data);
           setAccessLvl(data.roles_tbl.access_level);
+          setUserSection(data.section_id);
         }
       } catch (error) {
         console.error("Error", error);
