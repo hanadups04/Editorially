@@ -124,7 +124,10 @@ function App() {
           <Route path="/our-process" element={<OurProcessPage />} />
           {/* <Route path="/Readers/:id" element={<LandingPage />} /> */}
           {/* <Route path="/Search" element={<LandingPage />} /> */}
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/login"
+            element={isAdmin ? <Login /> : <Navigate to="/readers" replace />}
+          />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="*" element={<NotFound />} />
 
