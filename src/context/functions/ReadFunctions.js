@@ -244,7 +244,7 @@ export async function getFeaturedArticles() {
     .select(
       "*, sections_tbl(section_name), author1:users_tbl!author_id1(username), author2:users_tbl!author_id2(username)",
     )
-    .lt("date_posted", new Date().toISOString())
+    // .lt("date_posted", new Date().toISOString())
     .order("date_posted", { ascending: false })
     .eq("is_featured", true)
     .limit(5);
