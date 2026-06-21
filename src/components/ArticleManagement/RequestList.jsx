@@ -7,6 +7,7 @@ const EditRequestsModal = ({
   onClose,
   requests = [],
   onToggleResolved,
+  accessLevel,
 }) => {
   if (!isOpen) return null;
 
@@ -88,31 +89,33 @@ const EditRequestsModal = ({
                     </span>
                   </div>
                   <div className="request-description">{request.content}</div>
-                  <div
-                    className="request-description"
-                    style={{ marginTop: "10px" }}
-                  >
-                    <div className="form-group urgency-group">
-                      <label className="urgency-label">
-                        <input
-                          type="checkbox"
-                          name="is_resolved"
-                          checked={!!request.resolved}
-                          onChange={(event) =>
-                            onToggleResolved?.(index, event.target.checked)
-                          }
-                          className="urgency-checkbox"
-                        />
-                        <span className="urgency-indicator"></span>
-                        <span className="urgency-text">
-                          Close this Request
-                          <span className="urgency-hint">
-                            This will mark the request as resolved
+                  {accessLevel >= 3 && (
+                    <div
+                      className="request-description"
+                      style={{ marginTop: "10px" }}
+                    >
+                      <div className="form-group urgency-group">
+                        <label className="urgency-label">
+                          <input
+                            type="checkbox"
+                            name="is_resolved"
+                            checked={!!request.resolved}
+                            onChange={(event) =>
+                              onToggleResolved?.(index, event.target.checked)
+                            }
+                            className="urgency-checkbox"
+                          />
+                          <span className="urgency-indicator"></span>
+                          <span className="urgency-text">
+                            Close this Request
+                            <span className="urgency-hint">
+                              This will mark the request as resolved
+                            </span>
                           </span>
-                        </span>
-                      </label>
+                        </label>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               ))}
             </div>

@@ -363,6 +363,7 @@ const ContentDetail = () => {
         onClose={() => setIsRequestsModalOpen(false)}
         requests={editRequests}
         onToggleResolved={handleToggleRequestResolved}
+        accessLevel={accessLvl}
       />
 
       <ConfirmationModal
