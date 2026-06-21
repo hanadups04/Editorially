@@ -14,7 +14,7 @@ const navLinks = [
   { label: "Sports", to: "/section/Sports" },
   { label: "Literary", to: "/section/Literary" },
   { label: "Opinion", to: "/section/Opinion" },
-  { label: "General", to: "/section/General" },
+  // { label: "General", to: "/section/General" },
   { label: "Sci-Tech", to: "/section/Sci-tech" },
   { label: "Feature", to: "/section/Feature" },
   { label: "About Us", to: "/about" },
