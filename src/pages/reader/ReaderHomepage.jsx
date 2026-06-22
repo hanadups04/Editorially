@@ -15,7 +15,7 @@ import {
 import { useProjectContext } from "../../context/Context";
 import { Loader2 } from "lucide-react";
 import * as ReadFunctions from "../../context/functions/ReadFunctions";
-import "./ReaderHomepage";
+import "./ReaderHomepage.css";
 
 export default function IndexCSS3JSX() {
   const { useInfiniteScroll } = useProjectContext();
