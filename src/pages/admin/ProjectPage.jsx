@@ -259,7 +259,7 @@ const ProjectPage = () => {
 
       <ProgressTracker currentStep="in-progress" steps={workflowSteps} />
 
-      {accessLevel >= 4 && (
+      {accessLvl >= 4 && (
            {subtasks.length > 0 && subtasks.every((t) => t.is_done === true) && (
         <div className="construct-banner">
           <div className="construct-banner-text">
