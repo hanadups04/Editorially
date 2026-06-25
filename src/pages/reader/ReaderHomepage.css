@@ -7,15 +7,15 @@
   background: hsl(var(--background));
 }
 
-.index-page__spacer {
+/* .index-page__spacer {
   height: 88px;
-}
+} */
 
-@media (min-width: 1024px) {
+/* @media (min-width: 1024px) {
   .index-page__spacer {
     height: 104px;
   }
-}
+} */
 
 .index-page__scroll-trigger {
   display: flex;
