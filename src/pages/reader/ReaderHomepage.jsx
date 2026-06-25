@@ -79,7 +79,7 @@ export default function IndexCSS3JSX() {
       ) : (
         <div className="index-page">
           <NavbarCSS3 />
-          <div className="index-page__spacer" />
+          {/* <div className="index-page__spacer" /> */}
           <MarqueeCSS3 articles={featured} />
           <FeaturedSectionCSS3 articles={featured} />
           <SectionDividerCSS3 />
