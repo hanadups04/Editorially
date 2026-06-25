@@ -259,7 +259,8 @@ const ProjectPage = () => {
 
       <ProgressTracker currentStep="in-progress" steps={workflowSteps} />
 
-      {subtasks.length > 0 && subtasks.every((t) => t.is_done === true) && (
+      {accessLevel >= 4 && (
+           {subtasks.length > 0 && subtasks.every((t) => t.is_done === true) && (
         <div className="construct-banner">
           <div className="construct-banner-text">
             <svg
@@ -303,6 +304,10 @@ const ProjectPage = () => {
           </button>
         </div>
       )}
+      
+      )}
+
+     
 
       <div className="tasks-section">
         <div className="section-header">
